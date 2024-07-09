@@ -31,7 +31,7 @@ public:
     float speed;
 
 public:
-    Bullet(Vec2 postion, Vec2 direction, float speed)
+    Bullet(Vec2 position, Vec2 direction, float speed)
         : position(position), direction(direction.GetNormalized()), speed(speed) { }
 
     void Process(float ds) {
