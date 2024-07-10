@@ -21,7 +21,7 @@ public:
 	void Destroy(Entity entity);
 
 private:
-	std::queue<Entity> _availableEntities;
-	std::array<Signature, MAX_ENTITIES> _signatures;
+	std::queue<Entity> _availableEntities{};
+	std::array<Signature, MAX_ENTITIES> _signatures{};
 	int _entityCount;
 };

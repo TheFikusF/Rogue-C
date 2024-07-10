@@ -10,6 +10,8 @@
 struct Enemy {
     float speed;
     Health health;
+
+    Enemy() = default;
 };
 
 class EnemySystem : public System {

@@ -14,8 +14,8 @@
 
 void EnemySystem::Spawn(Vec2 position) {
     Entity entity = ECS::Instance.CreateEntity();
-    ECS::Instance.AddComponent<MTransform>(entity, { position, Vec2(20, 20) });
-    ECS::Instance.AddComponent<Enemy>(entity, { 40, Health(5, [entity]() -> void { ECS::Instance.DestoryEntity(entity); }) });
+    ECS::Instance.AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
+    ECS::Instance.AddComponent<Enemy>(entity, Enemy{ 40, Health(5, [entity]() -> void { ECS::Instance.DestoryEntity(entity); }) });
 }
 
 void EnemySystem::Update(float dt) {
