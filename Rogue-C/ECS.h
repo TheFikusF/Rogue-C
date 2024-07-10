@@ -1,5 +1,5 @@
 #pragma once
-#include "Registry.h"
+#include "ComponentManager.h"
 
 class ECS
 {

@@ -8,3 +8,9 @@ struct Enemy {
     float size;
     Health health;
 };
+
+class EnemySystem {
+    void Update(float dt) {
+        
+    }
+};
