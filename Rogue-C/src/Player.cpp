@@ -10,9 +10,6 @@ void Player::Process(float ds) {
     if(Input::IsShooting() && canShoot) {
         Bullet::bullets.push_back(Bullet(position, Input::GetShootingAxis(), 100));
         canShoot = false;
-        Timer timer(shotCooldown, [this]() -> void { 
-            this->canShoot = true; 
-            std::cout << "ready" << std::endl;
-        });
+        Timer timer(shotCooldown, [this]() -> void { this->canShoot = true; });
     }
 }

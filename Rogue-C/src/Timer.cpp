@@ -1,10 +1,12 @@
 #include "Timer.h"
+#include <iostream>
 
 std::vector<Timer> Timer::timers;
 
 Timer::Timer(float time, std::function<void (void)> callback) : 
     callback(callback), time(time), id(timers.size()), currentTime(0) {
     timers.push_back(*this);
+    std::cout << "created timer #" << id << " for " << time << " sec" << std::endl;
 }
 
 void Timer::ProcessAll(float ds) {
