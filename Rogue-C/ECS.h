@@ -1,17 +1,39 @@
 #pragma once
 #include "ComponentManager.h"
+#include "Entity.h"
+#include "System.h"
+#include <memory>
 
 class ECS
 {
 public:
-	ECS() { }
+	void Init();
 
-	Registry* GetRegistry();
-	EntityManager* GetEM();
+	template<typename T>
+	void RegisterSystem();
+
+	template<typename T>
+	void SetSystemSignature(Signature signature);
+
+	template<typename T>
+	void RegisterComponent();
+
+	Entity CreateEntity();
+	void DestoryEntity(Entity entity);
+
+	template<typename T>
+	void AddComponent(Entity entity, T component);
+
+	template<typename T>
+	void RemoveComponent(Entity entity);
+
+	template<typename T>
+	T& GetComponent(Entity entity);
+
+	static ECS Instance;
 
 private:
-	EntityManager _entityManager;
-	Registry _registry;
+	std::unique_ptr<EntityManager> _entityManager;
+	std::unique_ptr<SystemManager> _systemManager;
+	std::unique_ptr<ComponentManager> _componentManager;
 };
-
-ECS MainECS;

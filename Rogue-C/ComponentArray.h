@@ -2,51 +2,19 @@
 #include <unordered_map>
 #include "Entity.h"
 
-class IComponentArray
-{
+class IComponentArray {
 public:
 	virtual ~IComponentArray() = default;
 	virtual void EntityDestroyed(Entity entity) = 0;
 };
 
-
 template<typename T>
 class ComponentArray : public IComponentArray {
 public:
-	void AddComponent(Entity entity, T component); {
-		size_t newIndex = _size;
-		_entityToIndexMap[entity] = newIndex;
-		_indexToEntityMap[newIndex] = entity;
-		_components[newIndex] = component;
-	}
-
-	void RemoveComponent(Entity entity) {
-		size_t indexOfRemovedEntity = _entityToIndexMap[entity];
-		size_t indexOfLastElement = _size - 1;
-		_components[indexOfRemovedEntity] = _components[indexOfLastElement];
-
-		Entity entityOfLastElement = _indexToEntityMap[indexOfLastElement];
-		_entityToIndexMap[entityOfLastElement] = indexOfRemovedEntity;
-		_indexToEntityMap[indexOfRemovedEntity] = entityOfLastElement;
-
-		_entityToIndexMap.erase(entity);
-		_indexToEntityMap.erase(indexOfLastElement);
-
-		--_size;
-	}
-
-	T& GetData(Entity entity) {
-		return _components[_entityToIndexMap[entity]];
-	}
-
-	void EntityDestroyed(Entity entity) override
-	{
-		if (mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
-		{
-			RemoveData(entity);
-		}
-	}
-
+	void AddComponent(Entity entity, T component);
+	void RemoveComponent(Entity entity);
+	T& GetData(Entity entity);
+	void EntityDestroyed(Entity entity) override;
 
 private:
 	std::array<T, MAX_ENTITIES> _components;

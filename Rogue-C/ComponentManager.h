@@ -7,25 +7,26 @@
 class ComponentManager {
 public:
 	template<typename T>
-	void RegisterComponent() {
-
-	}
-
-private:
-	std::unordered_map<const char*, ComponentType> mComponentTypes;
-
-	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> mComponentArrays;
-
-	ComponentType mNextComponentType{};
+	void RegisterComponent();
 
 	template<typename T>
-	std::shared_ptr<ComponentArray<T>> GetComponentArray()
-	{
-		const char* typeName = typeid(T).name();
+	void AddComponent(Entity entity, T component);
 
-		assert(mComponentTypes.find(typeName) != mComponentTypes.end() && "Component not registered before use.");
+	template<typename T>
+	void RemoveComponent(Entity entity);
 
-		return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[typeName]);
-	}
+	template<typename T>
+	T& GetComponent(Entity entity);
 
+	void EntityDestroyed(Entity entity);
+
+private:
+	std::unordered_map<const char*, ComponentType> _componentTypes;
+
+	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> _componentArrays;
+
+	ComponentType _nextComponentType;
+
+	template<typename T>
+	std::shared_ptr<ComponentArray<T>> GetComponentArray();
 };

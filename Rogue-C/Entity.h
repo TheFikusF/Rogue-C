@@ -2,7 +2,7 @@
 #include <queue>
 #include <cstdint>
 #include <bitset>
-#include "ECS.h"
+#include <array>
 
 using Entity = std::uint32_t;
 using ComponentType = std::uint8_t;

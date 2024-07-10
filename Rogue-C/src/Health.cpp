@@ -14,6 +14,6 @@ void Health::TakeDamage(int amount) {
     }
 }
 
-int Health::GetCurrent() { return 0; }
+int Health::GetCurrent() { return current; }
 
-int Health::GetMax() { return 0; }
+int Health::GetMax() { return max; }
