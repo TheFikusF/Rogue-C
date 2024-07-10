@@ -5,15 +5,18 @@
     endif()
 endif()
 
-add_executable (Rogue-C "Rogue-C.cpp" "Rogue-C.h")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+add_executable (Rogue-C ${SOURCES})
+
+include_directories(${CMAKE_SOURCE_DIR}/Rogue-C/include)
+include_directories(${CMAKE_SOURCE_DIR}/Rogue-C)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Rogue-C PROPERTY CXX_STANDARD 20)
 endif()
 
 if (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/Rogue-C/include)
-
     set(RAYLIB_LIB_PATH ${CMAKE_SOURCE_DIR}/Rogue-C/lib/win64)
 
     target_link_libraries(Rogue-C PRIVATE ${RAYLIB_LIB_PATH}/raylibdll.lib)
