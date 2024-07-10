@@ -4,6 +4,7 @@
 
 class Bullet {
 public:
+    int id;
     Vec2 position;
     Vec2 direction;
     float speed;
@@ -12,10 +13,10 @@ public:
     static std::vector<Bullet> bullets;
 
 public:
-    Bullet(Vec2 position, Vec2 direction, float speed)
-        : position(position), direction(direction.GetNormalized()), speed(speed), timer(0) { }
+    Bullet(Vec2 position, Vec2 direction, float speed);
 
     //~Bullet() { std::cout << "bullet gone" << std::endl; }
 
     void Process(float ds);
+    void Destroy();
 };
