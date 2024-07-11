@@ -16,7 +16,7 @@ const int WIDTH = 800;
 const int HEIGHT = 450;
 
 int main() {
-    InitWindow(WIDTH, HEIGHT, "raylib [core] example - basic window");
+    InitWindow(WIDTH, HEIGHT, "Rogue-C");
     ECS::Init();
 
     ECS::RegisterComponent<MTransform>();
