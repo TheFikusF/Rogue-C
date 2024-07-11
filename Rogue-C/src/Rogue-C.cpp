@@ -31,7 +31,7 @@ int main() {
     auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
 
     Entity player = ECS::CreateEntity();
-    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer{ .started = false, .finished = false, .time = 0.2f, .currentTime = 0, } });
+    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
     

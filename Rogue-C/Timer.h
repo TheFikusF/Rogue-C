@@ -3,12 +3,17 @@
 #include <functional>
 
 class Timer {
-public:
+private:
     bool started;
     bool finished;
 
     float time;
     float currentTime;
+
+public:
+
+    Timer() = default;
+    Timer(float time);
 
     void Process(float ds);
     void Start();

@@ -1,6 +1,8 @@
 #include "Timer.h"
 #include <iostream>
 
+Timer::Timer(float time) : time(time), currentTime(0), finished(false), started(false) {}
+
 void Timer::Process(float ds) {
     if(started == false) {
         return;
