@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "ECS.h"
 #include "Drawer.h"
+#include "Physics.h"
 
 //void Player::Process(float ds) {
 //    position += Input::GetMovementAxis() * ds * speed;
@@ -20,13 +21,16 @@ PlayerSystem::PlayerSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Player>());
     signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Collider2D>());
 }
 
 void PlayerSystem::Update(float dt) {
     for (Entity const& player : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(player);
         Player& pl = ECS::GetComponent<Player>(player);
-        tr.position += Input::GetMovementAxis() * dt * pl.speed;
+        Collider2D& col = ECS::GetComponent<Collider2D>(player);
+        //tr.position += Input::GetMovementAxis() * dt * pl.speed;
+        col.velocity = Input::GetMovementAxis() * dt * pl.speed;
 
         pl.shootCooldown.Process(dt);
         if(pl.shootCooldown.GetFinished() == true) {

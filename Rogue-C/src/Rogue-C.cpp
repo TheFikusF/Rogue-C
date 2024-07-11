@@ -10,7 +10,8 @@
 #include "./include/raylib/raylib.h"
 #include "./include/raylib/raymath.h"
 #include "ECS.h"
-#include <Drawer.h>
+#include "Drawer.h"
+#include "Physics.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 450;
@@ -24,17 +25,20 @@ int main() {
     ECS::RegisterComponent<Enemy>();
     ECS::RegisterComponent<Bullet>();
     ECS::RegisterComponent<Drawer>();
+    ECS::RegisterComponent<Collider2D>();
 
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
     auto enemySystem = ECS::RegisterSystem<EnemySystem>();
     auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
     auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
+    auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
 
     Entity player = ECS::CreateEntity();
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
-    
+    ECS::AddComponent<Collider2D>(player, Collider2D{ .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
+
     float spawnTime = 0;
     SetRandomSeed(GetTime());
     enemySystem->SetPlayer(player);
@@ -54,6 +58,8 @@ int main() {
         playerSystem->Update(dt);
         bulletSystem->Update(dt);
         enemySystem->Update(dt);
+
+        physicsSystem->Update(dt);
 
         BeginDrawing();
         ClearBackground(BLACK);

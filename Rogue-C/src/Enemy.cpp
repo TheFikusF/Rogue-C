@@ -1,21 +1,13 @@
 #include "Enemy.h"
 #include "ECS.h"
 #include "Drawer.h"
-
-// void Enemy::Die() {
-//     //enemies.erase(enemies.begin() + id);
-// }
-
-// void Enemy::DrawAll() {
-//     for(const Enemy &enemy : enemies) {
-//         DrawCircle(enemy.position.x, enemy.position.y, enemy.size, RED);
-//     }
-// }
+#include "Physics.h"
 
 EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Enemy>());
     signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Collider2D>());
 }
 
 void EnemySystem::Spawn(Vec2 position) {
@@ -23,6 +15,7 @@ void EnemySystem::Spawn(Vec2 position) {
     ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
     ECS::AddComponent<Enemy>(entity, Enemy{ .speed = 40, .health = Health{ .current = 5, .max = 5, .onDeath = [entity]() -> void { ECS::DestoryEntity(entity); }} });
     ECS::AddComponent<Drawer>(entity, Drawer{ RED });
+    ECS::AddComponent<Collider2D>(entity, Collider2D{ .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 }
 
 void EnemySystem::Update(float dt) {
@@ -30,7 +23,11 @@ void EnemySystem::Update(float dt) {
     for (auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Enemy& enemy = ECS::GetComponent<Enemy>(entity);
-        tr.position += (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
+        Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
+
+        collider.velocity = (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
+        
+        //tr.position += (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
     }
 }
 

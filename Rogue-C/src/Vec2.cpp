@@ -64,3 +64,7 @@ const Vec2 Vec2::GetNormalized() const {
 const float Vec2::Distance(const Vec2 &a, const Vec2 &b) {
     return (a - b).GetMagnitude();
 }
+
+const float Vec2::Dot(const Vec2& a, const Vec2& b) {
+    return a.x * a.y + b.x * b.y;
+}

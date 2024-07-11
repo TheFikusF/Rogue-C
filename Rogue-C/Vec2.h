@@ -23,5 +23,6 @@ public:
     const float GetMagnitude() const;
     const Vec2 GetNormalized() const;
 
-    static const float Distance(const Vec2 &a, const Vec2 &b);
+    static const float Distance(const Vec2& a, const Vec2& b);
+    static const float Dot(const Vec2 &a, const Vec2 &b);
 };
