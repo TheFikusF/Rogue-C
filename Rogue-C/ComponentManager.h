@@ -20,6 +20,14 @@ public:
 	}
 
 	template<typename T>
+	ComponentType GetComponentType()
+	{
+		const char* typeName = typeid(T).name();
+		return _componentTypes[typeName];
+	}
+
+
+	template<typename T>
 	void AddComponent(Entity entity, T component) {
 		GetComponentArray<T>()->AddComponent(entity, component);
 	}
@@ -44,11 +52,11 @@ public:
 	}
 
 private:
-	std::unordered_map<const char*, ComponentType> _componentTypes;
+	std::unordered_map<const char*, ComponentType> _componentTypes{};
 
-	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> _componentArrays;
+	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> _componentArrays{};
 
-	ComponentType _nextComponentType;
+	ComponentType _nextComponentType{};
 
 	template<typename T>
 	std::shared_ptr<ComponentArray<T>> GetComponentArray() {

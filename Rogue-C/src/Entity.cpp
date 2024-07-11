@@ -9,13 +9,21 @@ EntityManager::EntityManager() : _entityCount(0) {
 Entity EntityManager::New() {
     Entity id = _availableEntities.front();
     _availableEntities.pop();
-    _entityCount++;
-
+    ++_entityCount;
+    
     return id;
 }
 
 void EntityManager::Destroy(Entity entity) {
     _signatures[entity].reset();
     _availableEntities.push(entity);
-    _entityCount--;
+    --_entityCount;
+}
+
+void EntityManager::SetSignature(Entity entity, Signature signature) {
+    _signatures[entity] = signature;
+}
+
+Signature EntityManager::GetSignature(Entity entity) {
+	return _signatures[entity];
 }

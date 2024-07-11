@@ -16,6 +16,7 @@ public:
 		_entityToIndexMap[entity] = newIndex;
 		_indexToEntityMap[newIndex] = entity;
 		_components[newIndex] = component;
+		++_size;
 	}
 	
 	void RemoveComponent(Entity entity) {
@@ -50,7 +51,7 @@ public:
 
 private:
 	std::array<T, MAX_ENTITIES> _components{};
-	std::unordered_map<Entity, size_t> _entityToIndexMap;
-	std::unordered_map<size_t, Entity> _indexToEntityMap;
+	std::unordered_map<Entity, size_t> _entityToIndexMap{};
+	std::unordered_map<size_t, Entity> _indexToEntityMap{};
 	size_t _size;
 };

@@ -20,8 +20,13 @@ public:
 
 	void Destroy(Entity entity);
 
+	void SetSignature(Entity entity, Signature signature);
+
+	Signature GetSignature(Entity entity);
+
+
 private:
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};
-	int _entityCount;
+	std::uint32_t _entityCount;
 };

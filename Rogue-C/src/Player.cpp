@@ -4,7 +4,8 @@
 #include "Timer.h"
 #include <iostream>
 #include "Transform.h"
-#include <ECS.h>
+#include "ECS.h"
+#include "Drawer.h"
 
 //void Player::Process(float ds) {
 //    position += Input::GetMovementAxis() * ds * speed;
@@ -16,10 +17,16 @@
 //    }
 //}
 
+PlayerSystem::PlayerSystem() {
+    signature.set(ECS::GetComponentType<MTransform>());
+    signature.set(ECS::GetComponentType<Player>());
+    signature.set(ECS::GetComponentType<Drawer>());
+}
+
 void PlayerSystem::Update(float dt) {
-	for (Entity const& player : Entities) {
-		MTransform& tr = ECS::Instance.GetComponent<MTransform>(player);
-		Player& pl = ECS::Instance.GetComponent<Player>(player);
-		tr.position += Input::GetMovementAxis() * dt * pl.speed;
-	}
+    for (Entity const& player : Entities) {
+        MTransform& tr = ECS::GetComponent<MTransform>(player);
+        Player& pl = ECS::GetComponent<Player>(player);
+        tr.position += Input::GetMovementAxis() * dt * pl.speed;
+    }
 }

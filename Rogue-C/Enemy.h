@@ -9,21 +9,21 @@
 
 struct Enemy {
     float speed;
-    Health health;
-
-    Enemy() = default;
+    Health health{};
 };
 
 class EnemySystem : public System {
 public:
+    EnemySystem();
+
     void Spawn(Vec2 position);
     
     void Update(float dt);
 
     void Draw();
 
-    void SetPlayer(MTransform* player);
+    void SetPlayer(Entity player);
     
 private:
-    MTransform* _player;
+    Entity _player;
 };

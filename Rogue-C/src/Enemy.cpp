@@ -1,6 +1,6 @@
 #include "Enemy.h"
-#include "./include/raylib/raylib.h"
 #include "ECS.h"
+#include "Drawer.h"
 
 // void Enemy::Die() {
 //     //enemies.erase(enemies.begin() + id);
@@ -12,28 +12,36 @@
 //     }
 // }
 
+EnemySystem::EnemySystem() {
+    signature.set(ECS::GetComponentType<MTransform>());
+    signature.set(ECS::GetComponentType<Enemy>());
+    signature.set(ECS::GetComponentType<Drawer>());
+}
+
 void EnemySystem::Spawn(Vec2 position) {
-    Entity entity = ECS::Instance.CreateEntity();
-    ECS::Instance.AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
-    ECS::Instance.AddComponent<Enemy>(entity, Enemy{ 40, Health(5, [entity]() -> void { ECS::Instance.DestoryEntity(entity); }) });
+    Entity entity = ECS::CreateEntity();
+    ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
+    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = 40, .health = Health{ .current = 5, .max = 5, .onDeath = [entity]() -> void { ECS::DestoryEntity(entity); }} });
+    ECS::AddComponent<Drawer>(entity, Drawer{ RED });
 }
 
 void EnemySystem::Update(float dt) {
+    Vec2 playerPosition = ECS::GetComponent<MTransform>(_player).position;
     for (auto const& entity : Entities) {
-        MTransform& tr = ECS::Instance.GetComponent<MTransform>(entity);
-        const Enemy& enemy = ECS::Instance.GetComponent<Enemy>(entity);
-        tr.position += (_player->position - tr.position).GetNormalized() * enemy.speed * dt;
+        MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        const Enemy& enemy = ECS::GetComponent<Enemy>(entity);
+        tr.position += (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
     }
 }
 
 void EnemySystem::Draw() {
     for (auto const& entity : Entities) {
-        const MTransform& tr = ECS::Instance.GetComponent<MTransform>(entity);
-        const Enemy& enemy = ECS::Instance.GetComponent<Enemy>(entity);
+        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        const Enemy& enemy = ECS::GetComponent<Enemy>(entity);
         DrawCircle(tr.position.x, tr.position.y, tr.scale.x, RED);
     }
 }
 
-void EnemySystem::SetPlayer(MTransform* player) {
+void EnemySystem::SetPlayer(Entity player) {
     _player = player;
 }
