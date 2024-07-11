@@ -24,9 +24,9 @@ public:
 
 	Signature GetSignature(Entity entity);
 
+	std::uint32_t _entityCount;
 
 private:
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};
-	std::uint32_t _entityCount;
 };

@@ -28,9 +28,10 @@ int main() {
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
     auto enemySystem = ECS::RegisterSystem<EnemySystem>();
     auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
+    auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
 
     Entity player = ECS::CreateEntity();
-    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shotCooldown = 0.3f });
+    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer{ .started = false, .finished = false, .time = 0.2f, .currentTime = 0, } });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
     
@@ -51,6 +52,7 @@ int main() {
         }
         
         playerSystem->Update(dt);
+        bulletSystem->Update(dt);
         enemySystem->Update(dt);
 
         BeginDrawing();
@@ -58,7 +60,8 @@ int main() {
 
         drawerSystem->Update(dt);
 
-        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 20, LIGHTGRAY);
+        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, LIGHTGRAY);
+        DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, LIGHTGRAY);
         EndDrawing();
     }
 

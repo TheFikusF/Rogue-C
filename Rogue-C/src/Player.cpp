@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Input.h"
 #include "Bullet.h"
-#include "Timer.h"
 #include <iostream>
 #include "Transform.h"
 #include "ECS.h"
@@ -28,5 +27,16 @@ void PlayerSystem::Update(float dt) {
         MTransform& tr = ECS::GetComponent<MTransform>(player);
         Player& pl = ECS::GetComponent<Player>(player);
         tr.position += Input::GetMovementAxis() * dt * pl.speed;
+
+        pl.shootCooldown.Process(dt);
+        if(pl.shootCooldown.GetFinished() == true) {
+            pl.canShoot = true;
+        }
+
+        if(Input::IsShooting() && pl.canShoot) {
+            SpawnBullet(tr.position, Input::GetShootingAxis());
+            pl.canShoot = false;
+            pl.shootCooldown.Start();
+        }
     }
 }

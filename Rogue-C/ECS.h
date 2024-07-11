@@ -72,6 +72,10 @@ public:
 		return _componentManager->GetComponent<T>(entity);
 	}
 
+	static Entity GetEntityCount() {
+		return _entityManager->_entityCount;
+	}
+
 private:
 	static std::unique_ptr<EntityManager> _entityManager;
 	static std::unique_ptr<SystemManager> _systemManager;
