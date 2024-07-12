@@ -13,7 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/Rogue-C/include)
 include_directories(${CMAKE_SOURCE_DIR}/Rogue-C)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET Rogue-C PROPERTY CXX_STANDARD 20)
+    set_property(TARGET Rogue-C PROPERTY CXX_STANDARD 20)
 endif()
 
 if (WIN32)

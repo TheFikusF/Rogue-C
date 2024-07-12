@@ -32,12 +32,22 @@ void log_message(const int& level, const std::string& message) {
     std::cout << color << "[" << std::put_time(&local_tm, "%H:%M:%S") << "] " << logLevelStr << ": " << message << "\033[0m" << std::endl;
 }
 
-#ifdef ENABLE_LOGGING
+#ifdef LOG_LEVEL_ALL
     #define LOG(msg) log_message(DEFAULT, msg)
     #define LOG_WARNING(msg) log_message(WARNING, msg)
+    #define LOG_ERROR(msg) log_message(ERROR, msg)
+#elif LOG_LEVEL_WARNING
+    #define LOG(msg)
+    #define LOG_WARNING(msg) log_message(WARNING, msg)
+    #define LOG_ERROR(msg) log_message(ERROR, msg)
+#elif LOG_LEVEL_ERROR
+    #define LOG(msg)
+    #define LOG_WARNING(msg)
     #define LOG_ERROR(msg) log_message(ERROR, msg)
 #else
     #define LOG(msg)
     #define LOG_WARNING(msg)
     #define LOG_ERROR(msg)
 #endif
+
+
