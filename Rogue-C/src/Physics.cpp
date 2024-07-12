@@ -10,8 +10,21 @@ void PhysicsSystem::Update(float dt) {
 
 	FindCollisions();
 	ResolveCollisions();
-	
 	UpdateVelocities(dt);
+
+	for(Collision2D const& collision : collisions) {
+		ECS::HandleCollision(collision);
+		ECS::HandleCollision(Collision2D {
+			.isTrigger = collision.isTrigger,
+			.hasCollision = true,
+			.a = collision.b,
+			.b = collision.a,
+			.pointA = collision.pointB,
+			.pointB = collision.pointA,
+			.normal = collision.normal,
+			.depth = collision.depth,
+		});
+	}
 
 	collisions.clear();
 }
@@ -114,6 +127,7 @@ Collision2D IsColliding(const Collider2D& a, const Collider2D& b, const MTransfo
 	Vec2 pointB = trB.position + trA.position - trB.position;
 	
 	return Collision2D{
+		.isTrigger = a.isTrigger || b.isTrigger,
 		.hasCollision = Vec2::Distance(trA.position, trB.position) <= trA.scale.x + trB.scale.x,
 		.a = 0,
 		.b = 0,

@@ -2,7 +2,10 @@
 #include "ComponentManager.h"
 #include "Entity.h"
 #include "System.h"
+#include "Collisions.h"
 #include <memory>
+#include <iostream>
+#include <chrono>
 
 class ECS
 {
@@ -37,7 +40,7 @@ public:
 		return _componentManager->GetComponentType<T>();
 	}
 
-	static void DestoryEntity(Entity entity) {
+	static void DestroyEntity(Entity entity) {
 		_entityManager->Destroy(entity);
 		_componentManager->EntityDestroyed(entity);
 		_systemManager->EntityDestroyed(entity);
@@ -72,8 +75,31 @@ public:
 		return _componentManager->GetComponent<T>(entity);
 	}
 
+	template<typename T>
+	static bool TryGetComponent(Entity entity, T* component) {
+		if(_entityManager->GetSignature(entity).test(_componentManager->GetComponentType<T>())) {
+			component = &GetComponent<T>(entity);
+			return true;
+		}
+		return false;
+	}
+
+	template<typename T>
+	static bool HasComponent(Entity entity) {
+		return _entityManager->GetSignature(entity).test(_componentManager->GetComponentType<T>());
+	}
+
 	static Entity GetEntityCount() {
 		return _entityManager->_entityCount;
+	}
+
+	static void HandleCollision(const Collision2D& collision) {
+		//std::cout << std::chrono::system_clock::now() << " Handling collision " << std::endl;
+		_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
+	}
+
+	static Signature GetEntitySignature(const Entity entity) {
+		return _entityManager->GetSignature(entity);
 	}
 
 private:

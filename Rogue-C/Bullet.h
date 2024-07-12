@@ -15,6 +15,7 @@ public:
     BulletSystem();
 
     void Update(float dt);
+    void OnTrigger(const Collision2D& collision) override;
 };
 
 Entity SpawnBullet(Vec2 position, Vec2 direction);

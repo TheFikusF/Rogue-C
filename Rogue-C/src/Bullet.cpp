@@ -1,34 +1,12 @@
 #include "Bullet.h"
 #include <Enemy.h>
-
-//std::vector<Bullet> Bullet::bullets;
-//
-//Bullet::Bullet(Vec2 position, Vec2 direction, float speed) 
-//    : position(position), direction(direction.GetNormalized()), speed(speed), timer(0), id(bullets.size()) {
-//    bullets.push_back(*this);
-//}
-//
-//void Bullet::Process(float ds) {
-//    position += direction * speed * ds;
-//    timer += ds;
-//
-//    for(Enemy &enemy : Enemy::enemies) {
-//        if(Vec2::Distance(position, enemy.position) < enemy.size + 5) {
-//            enemy.health.TakeDamage(1);
-//            Destroy();
-//            return;
-//        }
-//    }
-//}
-//
-//void Bullet::Destroy() {
-//    Bullet::bullets.erase(Bullet::bullets.begin() + id);
-//}
+#include <iostream>
 
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Bullet>());
     signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Collider2D>());
 }
 
 void BulletSystem::Update(float dt) {
@@ -36,24 +14,25 @@ void BulletSystem::Update(float dt) {
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         Bullet& bullet = ECS::GetComponent<Bullet>(entity);
-        tr.position += bullet.direction * bullet.speed * dt;
+        Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
+        collider.velocity = bullet.direction * bullet.speed * dt;
         bullet.timer += dt;
 
         if(bullet.timer >= 3) {
             requireDeletion.push_back(entity);
         }
-
-        // for(Enemy &enemy : Enemy::enemies) {
-        //     if(Vec2::Distance(position, enemy.position) < enemy.size + 5) {
-        //         enemy.health.TakeDamage(1);
-        //         ECS::DestoryEntity(entity);
-        //         return;
-        //     }
-        // }
     }
 
     for(auto const& entity : requireDeletion) {
-        ECS::DestoryEntity(entity);
+        ECS::DestroyEntity(entity);
+    }
+}
+
+void BulletSystem::OnTrigger(const Collision2D& collision) {
+    if(ECS::HasComponent<Enemy>(collision.b)) {
+        Enemy& enemy = ECS::GetComponent<Enemy>(collision.b);
+        enemy.health.TakeDamage(1);
+        ECS::DestroyEntity(collision.a);
     }
 }
 
@@ -62,6 +41,9 @@ Entity SpawnBullet(Vec2 position, Vec2 direction) {
     ECS::AddComponent<MTransform>(entity, MTransform{ .position = position, .scale = Vec2(5,5) });
     ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 100, .timer = 0 });
     ECS::AddComponent<Drawer>(entity, Drawer{ .color = YELLOW });
+    ECS::AddComponent<Collider2D>(entity, Collider2D{ .isStatic = false, .isTrigger = true, .useGravity = false, .kinematic = false, .mass = 5, .force = Vec2(), .velocity = Vec2() });
 
     return entity; 
 }
+
+
