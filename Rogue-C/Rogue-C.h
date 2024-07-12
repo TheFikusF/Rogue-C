@@ -6,4 +6,6 @@
 #include <iostream>
 #include <math.h>
 
+#define ENABLE_LOGGING
+
 // TODO: Reference additional headers your program requires here.

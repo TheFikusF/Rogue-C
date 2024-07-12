@@ -12,6 +12,7 @@
 #include "ECS.h"
 #include "Drawer.h"
 #include "Physics.h"
+#include "LOG.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 450;
@@ -53,6 +54,10 @@ int main() {
             spawnTime = 0;
             long r = GetRandomValue(0, 360);
             enemySystem->Spawn(Vec2(WIDTH / 2, HEIGHT / 2) + Vec2(sin(r), cos(r)) * WIDTH/2);
+        
+            //LOG("sad");
+            LOG_WARNING("enemy spawned");
+            //LOG_ERROR("sad");
         }
         
         playerSystem->Update(dt);
