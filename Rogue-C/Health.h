@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include "LOG.h"
 
 struct Health {
     int current;

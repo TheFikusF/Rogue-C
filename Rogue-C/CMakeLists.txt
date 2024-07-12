@@ -7,6 +7,8 @@ endif()
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+add_definitions(-DLOG_LEVEL_ALL)
+
 add_executable (Rogue-C ${SOURCES})
 
 include_directories(${CMAKE_SOURCE_DIR}/Rogue-C/include)

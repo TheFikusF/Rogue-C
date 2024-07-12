@@ -40,7 +40,6 @@ int main() {
     ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
     ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 
-    float spawnTime = 0;
     SetRandomSeed(GetTime());
     enemySystem->SetPlayer(player);
 
@@ -48,18 +47,6 @@ int main() {
         float dt = GetFrameTime();
         Input::Process(ECS::GetComponent<MTransform>(player).position, dt);
 
-        spawnTime += dt;
-
-        if(spawnTime > 3) {
-            spawnTime = 0;
-            long r = GetRandomValue(0, 360);
-            enemySystem->Spawn(Vec2(WIDTH / 2, HEIGHT / 2) + Vec2(sin(r), cos(r)) * WIDTH/2);
-        
-            //LOG("sad");
-            LOG_WARNING("enemy spawned");
-            //LOG_ERROR("sad");
-        }
-        
         playerSystem->Update(dt);
         bulletSystem->Update(dt);
         enemySystem->Update(dt);

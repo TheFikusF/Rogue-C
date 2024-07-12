@@ -6,6 +6,4 @@
 #include <iostream>
 #include <math.h>
 
-#define LOG_LEVEL_ALL
-
 // TODO: Reference additional headers your program requires here.

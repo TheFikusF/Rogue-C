@@ -8,6 +8,8 @@ EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<Enemy>());
     signature.set(ECS::GetComponentType<Drawer>());
     signature.set(ECS::GetComponentType<Collider2D>());
+
+    _spawnTime = 0;
 }
 
 void EnemySystem::Spawn(Vec2 position) {
@@ -19,6 +21,17 @@ void EnemySystem::Spawn(Vec2 position) {
 }
 
 void EnemySystem::Update(float dt) {
+    _spawnTime += dt;
+
+    if (_spawnTime >= 3) {
+        _spawnTime = 0;
+        long r = GetRandomValue(0, 360);
+        int width = GetRenderWidth() / 2;
+        int height = GetRenderHeight() / 2;
+        Spawn(Vec2(width + sin(r) * width, height + cos(r) * height));
+        LOG_WARNING("SPAWNED enemy OMG");
+    }
+
     Vec2 playerPosition = ECS::GetComponent<MTransform>(_player).position;
     for (auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);

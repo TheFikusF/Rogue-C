@@ -1,4 +1,5 @@
 #pragma once
+#include "LOG.h"
 #include "Vec2.h"
 #include "Health.h"
 #include "System.h"
@@ -26,4 +27,5 @@ public:
     
 private:
     Entity _player;
+    float _spawnTime;
 };
