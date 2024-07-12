@@ -37,7 +37,7 @@ int main() {
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
-    ECS::AddComponent<Collider2D>(player, Collider2D{ .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
+    ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 
     float spawnTime = 0;
     SetRandomSeed(GetTime());

@@ -8,9 +8,10 @@ PhysicsSystem::PhysicsSystem() {
 
 void PhysicsSystem::Update(float dt) {
 
-	UpdateVelocities(dt);
 	FindCollisions();
 	ResolveCollisions();
+	
+	UpdateVelocities(dt);
 
 	collisions.clear();
 }
@@ -21,6 +22,10 @@ void PhysicsSystem::UpdateVelocities(float dt) {
 	for (auto const& entity : Entities) {
 		MTransform& tr = ECS::GetComponent<MTransform>(entity);
 		Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
+
+		if(collider.isStatic) {
+			continue;
+		}
 
 		if (collider.useGravity) {
 			collider.velocity.y -= gravity * dt;
@@ -47,6 +52,10 @@ void PhysicsSystem::FindCollisions() {
 				break;
 			}
 
+			if(collider1.isStatic == true && collider2.isStatic == true) {
+				continue;
+			}
+
 			Collision2D collision = IsColliding(collider1, collider2, tr1, tr2);
 			collision.a = entity1;
 			collision.b = entity2;
@@ -60,29 +69,44 @@ void PhysicsSystem::FindCollisions() {
 
 void PhysicsSystem::ResolveCollisions() {
 	for (Collision2D const& collision : collisions) {
-		MTransform& tr1 = ECS::GetComponent<MTransform>(collision.a);
-		MTransform& tr2 = ECS::GetComponent<MTransform>(collision.b);
 		Collider2D& collider1 = ECS::GetComponent<Collider2D>(collision.a);
 		Collider2D& collider2 = ECS::GetComponent<Collider2D>(collision.b);
-		Vec2 relativeVelocity = collider1.velocity - collider2.velocity;
-		float velocityAlongNormal = Vec2::Dot(relativeVelocity, collision.normal);
 
-		if (velocityAlongNormal > 0) {
+		if(collider1.isTrigger == true || collider2.isTrigger == true) {
 			continue;
 		}
 
-		float e = 1.0f; // coefficient of restitution (1 for elastic, 0 for inelastic)
-		float j = -(1 + e) * velocityAlongNormal / (1 / collider1.mass + 1 / collider2.mass);
+		MTransform& tr1 = ECS::GetComponent<MTransform>(collision.a);
+		MTransform& tr2 = ECS::GetComponent<MTransform>(collision.b);
 
-		Vec2 impulse = collision.normal * j;
-		collider1.velocity -= impulse / collider1.mass;
-		collider2.velocity += impulse / collider2.mass;
+        CorrectPositions(collider1, collider2, collision, tr1, tr2);
 
-		float totalMass = collider1.mass + collider2.mass;
-		Vec2 correction = collision.normal * (collision.depth / totalMass);
-		tr1.position = tr1.position - correction * (collider1.mass / totalMass);
-		tr2.position = tr2.position + correction * (collider2.mass / totalMass);
+        CorrectVelocities(collider1, collider2, collision);
 	}
+}
+
+void PhysicsSystem::CorrectPositions(const Collider2D& a, const Collider2D& b, 
+	const Collision2D& collision, MTransform& tr1, MTransform& tr2) {
+    float totalMass = a.mass + b.mass;
+    Vec2 correction = collision.normal * (collision.depth / totalMass);
+    tr1.position = tr1.position - correction * (a.mass / totalMass);
+    tr2.position = tr2.position + correction * (b.mass / totalMass);
+}
+
+void PhysicsSystem::CorrectVelocities(Collider2D& a, Collider2D& b, const Collision2D& collision) {
+	Vec2 relativeVelocity = a.velocity - b.velocity;
+	float velocityAlongNormal = Vec2::Dot(relativeVelocity, collision.normal);
+
+	if (velocityAlongNormal > 0) {
+		return;
+	}
+
+	float e = 1.0f; // coefficient of restitution (1 for elastic, 0 for inelastic)
+	float j = -(1 + e) * velocityAlongNormal / (1 / a.mass + 1 / b.mass);
+
+	Vec2 impulse = collision.normal * j;
+	a.velocity -= impulse / a.mass;
+	a.velocity += impulse / b.mass;
 }
 
 Collision2D IsColliding(const Collider2D& a, const Collider2D& b, const MTransform& trA, const MTransform& trB) {

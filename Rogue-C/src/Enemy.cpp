@@ -15,7 +15,7 @@ void EnemySystem::Spawn(Vec2 position) {
     ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
     ECS::AddComponent<Enemy>(entity, Enemy{ .speed = 40, .health = Health{ .current = 5, .max = 5, .onDeath = [entity]() -> void { ECS::DestoryEntity(entity); }} });
     ECS::AddComponent<Drawer>(entity, Drawer{ RED });
-    ECS::AddComponent<Collider2D>(entity, Collider2D{ .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
+    ECS::AddComponent<Collider2D>(entity, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 }
 
 void EnemySystem::Update(float dt) {

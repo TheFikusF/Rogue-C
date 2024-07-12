@@ -5,6 +5,8 @@
 #include "Transform.h"
 
 struct Collider2D {
+	bool isStatic;
+	bool isTrigger;
 	bool useGravity;
 	bool kinematic;
 	float mass;
@@ -30,8 +32,14 @@ public:
 private:
 	void UpdateVelocities(float dt);
 	void FindCollisions();
-	void ResolveCollisions();
+    void ResolveCollisions();
 
+    void CorrectPositions(const Collider2D& a, const Collider2D& b, const Collision2D& collision, 
+		MTransform& tr1, MTransform& tr2);
+
+    void CorrectVelocities(Collider2D& a, Collider2D& b, const Collision2D& collision);
+
+private:
 	std::vector<Collision2D> collisions;
 };
 
