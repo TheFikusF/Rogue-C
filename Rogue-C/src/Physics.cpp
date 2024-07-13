@@ -8,23 +8,17 @@ PhysicsSystem::PhysicsSystem() {
 
 void PhysicsSystem::Update(float dt) {
 
+    auto findClock = std::chrono::high_resolution_clock::now();
 	FindCollisions();
+    auto resolveClock = std::chrono::high_resolution_clock::now();
 	ResolveCollisions();
+    auto updateClock = std::chrono::high_resolution_clock::now();
 	UpdateVelocities(dt);
+    auto endClock = std::chrono::high_resolution_clock::now();
 
-	for(Collision2D const& collision : collisions) {
-		ECS::HandleCollision(collision);
-		ECS::HandleCollision(Collision2D {
-			.isTrigger = collision.isTrigger,
-			.hasCollision = true,
-			.a = collision.b,
-			.b = collision.a,
-			.pointA = collision.pointB,
-			.pointB = collision.pointA,
-			.normal = collision.normal,
-			.depth = collision.depth,
-		});
-	}
+	findTime = (resolveClock - findClock).count();
+	resolveTime = (updateClock - resolveClock).count();
+	correctTime = (endClock - updateClock).count();
 
 	collisions.clear();
 }
@@ -65,6 +59,10 @@ void PhysicsSystem::FindCollisions() {
 				break;
 			}
 
+			if(collider1.layer == collider2.layer) {
+				continue;
+			}
+
 			if(collider1.isStatic == true && collider2.isStatic == true) {
 				continue;
 			}
@@ -94,6 +92,18 @@ void PhysicsSystem::ResolveCollisions() {
         CorrectPositions(collider1, collider2, collision, tr1, tr2);
 
         CorrectVelocities(collider1, collider2, collision);
+
+		ECS::HandleCollision(collision);
+		ECS::HandleCollision(Collision2D {
+			.isTrigger = collision.isTrigger,
+			.hasCollision = true,
+			.a = collision.b,
+			.b = collision.a,
+			.pointA = collision.pointB,
+			.pointB = collision.pointA,
+			.normal = collision.normal,
+			.depth = collision.depth,
+		});
 	}
 }
 

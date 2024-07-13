@@ -7,6 +7,11 @@
 
 class PhysicsSystem : public System {
 public:
+	uint32_t findTime;
+	uint32_t resolveTime;
+	uint32_t correctTime;
+
+public:
 	PhysicsSystem();
 	void Update(float dt);
 

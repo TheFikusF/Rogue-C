@@ -7,6 +7,7 @@ struct Collider2D {
 	bool isTrigger;
 	bool useGravity;
 	bool kinematic;
+	std::uint8_t layer;
 	float mass;
 	Vec2 force;
 	Vec2 velocity;
