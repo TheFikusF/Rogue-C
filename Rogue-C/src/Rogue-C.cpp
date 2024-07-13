@@ -77,6 +77,9 @@ int main() {
     auto drawerClock = std::chrono::high_resolution_clock::now();
     auto endClock = std::chrono::high_resolution_clock::now();
 
+    // std::thread physicsThread(ProcessPhysics, 1.0f / 60.0f, physicsSystem); 
+    // std::thread drawingThread(ProcessDrawing, drawerSystem); 
+
     while (!WindowShouldClose()) {
         float dt = GetFrameTime();
         Input::Process(ECS::GetComponent<MTransform>(player).position, dt);
@@ -90,30 +93,30 @@ int main() {
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(dt);
 
-//        physicsClock = std::chrono::high_resolution_clock::now();
-//        physicsSystem->Update(dt);
+        physicsClock = std::chrono::high_resolution_clock::now();
+        physicsSystem->Update(dt);
 
-        // BeginDrawing();
-        // ClearBackground(GREEN);
+        BeginDrawing();
+        ClearBackground(GREEN);
 
-        // drawerClock = std::chrono::high_resolution_clock::now();
-        // drawerSystem->Update(dt);
-        // endClock = std::chrono::high_resolution_clock::now();
+        drawerClock = std::chrono::high_resolution_clock::now();
+        drawerSystem->Update(dt);
+        endClock = std::chrono::high_resolution_clock::now();
 
-        // DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
-        // DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
-        // DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
-        // DrawText(std::format("player: {}", (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
-        // DrawText(std::format("bullet: {}", (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
-        // DrawText(std::format("spheres: {}", (enemyClock - spheresClock).count()).c_str(), 0, 40, 10, WHITE);
-        // DrawText(std::format("enemy: {}", (physicsClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
-        // DrawText(std::format("physics: {}", (drawerClock - physicsClock).count()).c_str(), 0, 60, 10, WHITE);
-        // DrawText(std::format("drawer: {}", (endClock - drawerClock).count()).c_str(), 0, 70, 10, WHITE);
-        // DrawText("----------------", 0, 80, 10, WHITE);
-        // DrawText(std::format("find: {}", physicsSystem->findTime).c_str(), 0, 90, 10, WHITE);
-        // DrawText(std::format("resolve: {}", physicsSystem->resolveTime).c_str(), 0, 100, 10, WHITE);
-        // DrawText(std::format("correct: {}", physicsSystem->correctTime).c_str(), 0, 110, 10, WHITE);
-        // EndDrawing();
+        DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
+        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
+        DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
+        DrawText(std::format("player: {}", (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
+        DrawText(std::format("bullet: {}", (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
+        DrawText(std::format("spheres: {}", (enemyClock - spheresClock).count()).c_str(), 0, 40, 10, WHITE);
+        DrawText(std::format("enemy: {}", (physicsClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
+        DrawText(std::format("physics: {}", (drawerClock - physicsClock).count()).c_str(), 0, 60, 10, WHITE);
+        DrawText(std::format("drawer: {}", (endClock - drawerClock).count()).c_str(), 0, 70, 10, WHITE);
+        DrawText("----------------", 0, 80, 10, WHITE);
+        DrawText(std::format("find: {}", physicsSystem->findTime).c_str(), 0, 90, 10, WHITE);
+        DrawText(std::format("resolve: {}", physicsSystem->resolveTime).c_str(), 0, 100, 10, WHITE);
+        DrawText(std::format("correct: {}", physicsSystem->correctTime).c_str(), 0, 110, 10, WHITE);
+        EndDrawing();
     }
 
     CloseWindow(); 
