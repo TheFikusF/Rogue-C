@@ -69,9 +69,8 @@ void PhysicsSystem::FindCollisions() {
 				continue;
 			}
 
-			Collision2D collision = IsColliding(collider1, collider2, tr1, tr2);
-			collision.a = entity1;
-			collision.b = entity2;
+			Collision2D collision = IsColliding(entity1, entity2, tr1, tr2);
+			collision.isTrigger = collider1.isTrigger || collider2.isTrigger;
 
 			if (collision.hasCollision) {
 				collisions.emplace_back(collision);
@@ -122,18 +121,19 @@ void PhysicsSystem::CorrectVelocities(Collider2D& a, Collider2D& b, const Collis
 	a.velocity += impulse / b.mass;
 }
 
-Collision2D IsColliding(const Collider2D& a, const Collider2D& b, const MTransform& trA, const MTransform& trB) {
-	Vec2 pointA = trA.position + trB.position - trA.position;
-	Vec2 pointB = trB.position + trA.position - trB.position;
+Collision2D IsColliding(const Entity& a, const Entity& b, const MTransform& trA, const MTransform& trB) {
+	Vec2 posA = MTransformSystem::GetRealPosition(a);
+	Vec2 posB = MTransformSystem::GetRealPosition(b);
+	Vec2 pointA = posA + posB - posA;
+	Vec2 pointB = posB + posA - posB;
 	
 	return Collision2D{
-		.isTrigger = a.isTrigger || b.isTrigger,
-		.hasCollision = Vec2::Distance(trA.position, trB.position) <= trA.scale.x + trB.scale.x,
-		.a = 0,
-		.b = 0,
+		.hasCollision = Vec2::Distance(posA, posB) <= trA.scale.x + trB.scale.x,
+		.a = a,
+		.b = b,
 		.pointA = pointA,
 		.pointB = pointB,
-		.normal = (trB.position - trA.position).GetNormalized(),
+		.normal = (posB - posA).GetNormalized(),
 		.depth = Vec2::Distance(pointA, pointB),
 	};
 }

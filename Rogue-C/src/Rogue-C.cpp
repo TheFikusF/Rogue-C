@@ -13,6 +13,7 @@
 #include "Drawer.h"
 #include "Physics.h"
 #include "LOG.h"
+#include "SpinningSphere.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 450;
@@ -27,11 +28,13 @@ int main() {
     ECS::RegisterComponent<Bullet>();
     ECS::RegisterComponent<Drawer>();
     ECS::RegisterComponent<Collider2D>();
+    ECS::RegisterComponent<SpinningSphere>();
 
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
     auto enemySystem = ECS::RegisterSystem<EnemySystem>();
     auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
     auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
+    auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
 
     Entity player = ECS::CreateEntity();
@@ -49,6 +52,7 @@ int main() {
 
         playerSystem->Update(dt);
         bulletSystem->Update(dt);
+        spheresSystem->Update(dt);
         enemySystem->Update(dt);
 
         physicsSystem->Update(dt);

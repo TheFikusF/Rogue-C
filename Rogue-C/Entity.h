@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <bitset>
 #include <array>
+#include <unordered_map>
 
 using Entity = std::uint32_t;
 using ComponentType = std::uint8_t;
@@ -24,9 +25,16 @@ public:
 
 	Signature GetSignature(Entity entity);
 
+	Entity GetParent(const Entity entity);
+	
+	void SetParent(const Entity& child, const Entity& parent);
+
 	std::uint32_t _entityCount;
 
 private:
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};
+
+	std::unordered_map<Entity, Entity> _childToParent{};
+	std::unordered_map<Entity, std::vector<Entity>> _parentToChildren{};
 };

@@ -53,8 +53,7 @@ const float Vec2::GetMagnitude() const {
 
 const Vec2 Vec2::GetNormalized() const {
     float magnitude = GetMagnitude();
-    if(magnitude == 0)
-    {
+    if(magnitude == 0) {
         return Vec2();
     }
 
@@ -67,4 +66,8 @@ const float Vec2::Distance(const Vec2 &a, const Vec2 &b) {
 
 const float Vec2::Dot(const Vec2& a, const Vec2& b) {
     return a.x * a.y + b.x * b.y;
+}
+
+const Vec2 Vec2::Lerp(const Vec2& a, const Vec2& b, const float& t) {
+    return Vec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
 }

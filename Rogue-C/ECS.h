@@ -41,9 +41,9 @@ public:
 	}
 
 	static void DestroyEntity(Entity entity) {
-		_entityManager->Destroy(entity);
-		_componentManager->EntityDestroyed(entity);
 		_systemManager->EntityDestroyed(entity);
+		_componentManager->EntityDestroyed(entity);
+		_entityManager->Destroy(entity);
 	}
 
 	template<typename T>
@@ -55,19 +55,16 @@ public:
 		_entityManager->SetSignature(entity, signature);
 
 		_systemManager->EntitySignatureChanged(entity, signature);
-
 	}
 
 	template<typename T>
 	static void RemoveComponent(Entity entity) {
-		_componentManager->RemoveComponent<T>(entity);
-
 		auto signature = _entityManager->GetSignature(entity);
 		signature.set(_componentManager->GetComponentType<T>(), false);
-		_entityManager->SetSignature(entity, signature);
 
 		_systemManager->EntitySignatureChanged(entity, signature);
-
+		_entityManager->SetSignature(entity, signature);
+		_componentManager->RemoveComponent<T>(entity);
 	}
 
 	template<typename T>
@@ -77,7 +74,7 @@ public:
 
 	template<typename T>
 	static bool TryGetComponent(Entity entity, T* component) {
-		if(_entityManager->GetSignature(entity).test(_componentManager->GetComponentType<T>())) {
+		if(HasComponent<T>(entity)) {
 			component = &GetComponent<T>(entity);
 			return true;
 		}
@@ -94,12 +91,19 @@ public:
 	}
 
 	static void HandleCollision(const Collision2D& collision) {
-		//std::cout << std::chrono::system_clock::now() << " Handling collision " << std::endl;
 		_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
 	}
 
 	static Signature GetEntitySignature(const Entity entity) {
 		return _entityManager->GetSignature(entity);
+	}
+
+	static Entity GetParent(const Entity entity) {
+		return _entityManager->GetParent(entity);
+	}
+
+	static void SetParent(const Entity& child, const Entity& parent) {
+		_entityManager->SetParent(child, parent);
 	}
 
 private:

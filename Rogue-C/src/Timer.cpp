@@ -1,35 +1,31 @@
 #include "Timer.h"
 #include <iostream>
 
-Timer::Timer(float time) : time(time), currentTime(0), finished(false), started(false) {}
+Timer::Timer(float time) : time(time), currentTime(0), started(false) {}
 
-void Timer::Process(float ds) {
+bool Timer::Check(float ds) {
     if(started == false) {
-        return;
+        return false;
     }
     
     currentTime += ds;
 
     if(currentTime >= time) {
-        finished = true;
-    }
-}
-
-void Timer::Start() {
-    started = true;
-    finished = false;
-    currentTime = 0;
-}
-
-bool Timer::GetFinished() {
-    if(finished == true) {
-        finished == false;
+        started = false;
         return true;
     }
     return false;
 }
 
+void Timer::Start() {
+    started = true;
+    currentTime = 0;
+}
+
+void Timer::Continue() {
+    started = true;
+}
+
 void Timer::Stop() {
     started = false;
-    finished = false;
 }

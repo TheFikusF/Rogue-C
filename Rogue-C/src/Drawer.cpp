@@ -9,8 +9,10 @@ DrawerSystem::DrawerSystem() {
 
 void DrawerSystem::Update(float dt) {
     for(auto const& entity : Entities) {
-        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
-        DrawCircle(tr.position.x, tr.position.y, tr.scale.x, drawer.color);
+        Vec2 realpos = MTransformSystem::GetRealPosition(entity);
+        DrawCircle(realpos.x, realpos.y, tr.scale.x, drawer.color);
+//        DrawCircle(tr.position.x, tr.position.y, tr.scale.x, drawer.color);
     }
 }

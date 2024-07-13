@@ -1,9 +1,8 @@
 #pragma once
 #include <math.h>
 
-class Vec2
+struct Vec2
 {
-public:
     float x, y;
 
     Vec2();
@@ -24,5 +23,6 @@ public:
     const Vec2 GetNormalized() const;
 
     static const float Distance(const Vec2& a, const Vec2& b);
-    static const float Dot(const Vec2 &a, const Vec2 &b);
+    static const float Dot(const Vec2& a, const Vec2& b);
+    static const Vec2 Lerp(const Vec2& a, const Vec2& b, const float& t);
 };

@@ -24,4 +24,4 @@ private:
 	std::vector<Collision2D> collisions;
 };
 
-Collision2D IsColliding(const Collider2D& a, const Collider2D& b, const MTransform& trA, const MTransform& trB);
+Collision2D IsColliding(const Entity& a, const Entity& b, const MTransform& trA, const MTransform& trB);

@@ -1,6 +1,5 @@
 #include "Bullet.h"
-#include <Enemy.h>
-#include <iostream>
+#include "Enemy.h"
 
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -45,5 +44,3 @@ Entity SpawnBullet(Vec2 position, Vec2 direction) {
 
     return entity; 
 }
-
-

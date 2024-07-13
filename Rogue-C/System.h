@@ -4,14 +4,14 @@
 #include <set>
 #include <unordered_map>
 #include "Collisions.h"
-#include <chrono>
-#include <iostream>
 
 class System {
 public:
 	Signature signature;
 	std::set<Entity> Entities;
 
+	virtual void OnEntityAdded(const Entity entity) { }
+	virtual void OnEntityRemoved(const Entity entity) { }
 	virtual void OnCollision(const Collision2D& collision) { }
 	virtual void OnTrigger(const Collision2D& collision) { }
 };
@@ -43,6 +43,7 @@ public:
 		for (auto const& pair : _systems) {
 			auto const& system = pair.second;
 
+			system->OnEntityRemoved(entity);
 			system->Entities.erase(entity);
 		}
 	}
@@ -55,7 +56,9 @@ public:
 
 			if ((entitySignature & systemSignature) == systemSignature) {
 				system->Entities.insert(entity);
+				system->OnEntityAdded(entity);
 			} else {
+				system->OnEntityRemoved(entity);
 				system->Entities.erase(entity);
 			}
 		}
@@ -71,9 +74,7 @@ public:
 				continue;
 			}
 
-			//std::cout << std::chrono::system_clock::now() << " Handling collision " << type << " is trigger: " << collision.isTrigger << std::endl;
 			if(collision.isTrigger) {
-				//std::cout << std::chrono::system_clock::now() << " Handling collision " << type << " is trigger: " << collision.isTrigger << std::endl;
 				system->OnTrigger(collision);
 			} else {
 				system->OnCollision(collision);
