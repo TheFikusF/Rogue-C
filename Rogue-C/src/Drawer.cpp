@@ -1,6 +1,7 @@
 #include "Drawer.h"
 #include <ECS.h>
 #include <Transform.h>
+#include <omp.h>
 
 DrawerSystem::DrawerSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -8,6 +9,7 @@ DrawerSystem::DrawerSystem() {
 }
 
 void DrawerSystem::Update() {
+
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);

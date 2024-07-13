@@ -8,7 +8,7 @@
 class System {
 public:
 	Signature signature;
-	std::set<Entity> Entities;
+	std::vector<Entity> Entities;
 
 	virtual void OnEntityAdded(const Entity entity) { }
 	virtual void OnEntityRemoved(const Entity entity) { }
@@ -44,7 +44,7 @@ public:
 			auto const& system = pair.second;
 
 			system->OnEntityRemoved(entity);
-			system->Entities.erase(entity);
+			system->Entities.erase(std::remove(system->Entities.begin(), system->Entities.end(), entity), system->Entities.end());
 		}
 	}
 
@@ -55,11 +55,13 @@ public:
 			auto const& systemSignature = _signatures[type];
 
 			if ((entitySignature & systemSignature) == systemSignature) {
-				system->Entities.insert(entity);
+				//system->Entities.insert(entity);
+				system->Entities.emplace_back(entity);
 				system->OnEntityAdded(entity);
 			} else {
 				system->OnEntityRemoved(entity);
-				system->Entities.erase(entity);
+				system->Entities.erase(std::remove(system->Entities.begin(), system->Entities.end(), entity), system->Entities.end());
+				//system->Entities.erase(entity);
 			}
 		}
 	}

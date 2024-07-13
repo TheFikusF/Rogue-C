@@ -1,4 +1,6 @@
 #include "Physics.h"
+#include <omp.h>
+#include "LOG.h"
 
 PhysicsSystem::PhysicsSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
@@ -47,7 +49,12 @@ void PhysicsSystem::UpdateVelocities(float dt) {
 }
 
 void PhysicsSystem::FindCollisions() {
-	for (auto const& entity1 : Entities) {
+	//std::vector<Entity> EntitiesVector(Entities.begin(), Entities.end());
+
+#pragma omp parallel for
+	for (int32_t i = 0; i < Entities.size(); i++) {
+		const Entity entity1 = Entities[i];
+		//LOG(std::format("thread: {} entity: {}", omp_get_thread_num(), entity1));
 		const MTransform& tr1 = ECS::GetComponent<MTransform>(entity1);
 		const Collider2D& collider1 = ECS::GetComponent<Collider2D>(entity1);
 
@@ -71,6 +78,7 @@ void PhysicsSystem::FindCollisions() {
 			collision.isTrigger = collider1.isTrigger || collider2.isTrigger;
 
 			if (collision.hasCollision) {
+#pragma omp critical
 				collisions.emplace_back(collision);
 			}
 		}
@@ -81,6 +89,18 @@ void PhysicsSystem::ResolveCollisions() {
 	for (Collision2D const& collision : collisions) {
 		Collider2D& collider1 = ECS::GetComponent<Collider2D>(collision.a);
 		Collider2D& collider2 = ECS::GetComponent<Collider2D>(collision.b);
+
+		ECS::HandleCollision(collision);
+		ECS::HandleCollision(Collision2D{
+			.isTrigger = collision.isTrigger,
+			.hasCollision = true,
+			.a = collision.b,
+			.b = collision.a,
+			.pointA = collision.pointB,
+			.pointB = collision.pointA,
+			.normal = collision.normal,
+			.depth = collision.depth,
+			});
 
 		if(collider1.isTrigger == true || collider2.isTrigger == true) {
 			continue;
@@ -93,17 +113,7 @@ void PhysicsSystem::ResolveCollisions() {
 
         CorrectVelocities(collider1, collider2, collision);
 
-		ECS::HandleCollision(collision);
-		ECS::HandleCollision(Collision2D {
-			.isTrigger = collision.isTrigger,
-			.hasCollision = true,
-			.a = collision.b,
-			.b = collision.a,
-			.pointA = collision.pointB,
-			.pointB = collision.pointA,
-			.normal = collision.normal,
-			.depth = collision.depth,
-		});
+		//continue;
 	}
 }
 
