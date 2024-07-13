@@ -14,7 +14,7 @@ void BulletSystem::Update(float dt) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         Bullet& bullet = ECS::GetComponent<Bullet>(entity);
         Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
-        collider.velocity = bullet.direction * bullet.speed * dt;
+        collider.velocity = bullet.direction * bullet.speed;
         bullet.timer += dt;
 
         if(bullet.timer >= 3) {

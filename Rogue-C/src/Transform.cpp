@@ -1,8 +1,9 @@
 #include "Transform.h"
 
 const Vec2 MTransformSystem::GetRealPosition(const Entity& entity) {
-	Vec2 pos = ECS::GetComponent<MTransform>(entity).position;
-	//GetPosition(entity, pos);
+	//Vec2 pos = ECS::GetComponent<MTransform>(entity).position;
+	Vec2 pos;
+	GetPosition(entity, pos);
 	return pos;
 }
 

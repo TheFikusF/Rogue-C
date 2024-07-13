@@ -38,7 +38,7 @@ void PhysicsSystem::UpdateVelocities(float dt) {
 			collider.velocity.y -= gravity * dt;
 		}
 
-		tr.position += collider.velocity;
+		tr.position += collider.velocity * dt;
 		
 		if (collider.kinematic) {
 			collider.velocity = Vec2();
@@ -59,9 +59,9 @@ void PhysicsSystem::FindCollisions() {
 				break;
 			}
 
-			if(collider1.layer == collider2.layer) {
-				continue;
-			}
+			// if(collider1.layer == collider2.layer) {
+			// 	continue;
+			// }
 
 			if(collider1.isStatic == true && collider2.isStatic == true) {
 				continue;

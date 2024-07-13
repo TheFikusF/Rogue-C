@@ -13,7 +13,7 @@ void SpinningSphereSystem::Update(float dt) {
         Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
         
         Vec2 target = Vec2(cos(bullet.timer), sin(bullet.timer)) * bullet.radius;
-        collider.velocity = (target - tr.position).GetNormalized() * bullet.speed * dt * 14;
+        collider.velocity = (target - tr.position).GetNormalized() * bullet.speed * 14;
         bullet.timer += dt * bullet.speed / 2;
     }
 }

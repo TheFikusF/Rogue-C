@@ -11,5 +11,5 @@ class DrawerSystem : public System {
 public:
     DrawerSystem();
     
-    void Update(float dt);
+    void Update();
 };

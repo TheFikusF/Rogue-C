@@ -7,7 +7,7 @@ DrawerSystem::DrawerSystem() {
     signature.set(ECS::GetComponentType<Drawer>());
 }
 
-void DrawerSystem::Update(float dt) {
+void DrawerSystem::Update() {
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);

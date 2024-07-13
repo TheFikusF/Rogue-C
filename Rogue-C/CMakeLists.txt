@@ -8,6 +8,7 @@ endif()
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_definitions(-DLOG_LEVEL_ALL)
+set(CMAKE_BUILD_TYPE Debug)
 
 add_executable (Rogue-C ${SOURCES})
 

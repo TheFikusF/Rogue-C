@@ -59,6 +59,9 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "bitset": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

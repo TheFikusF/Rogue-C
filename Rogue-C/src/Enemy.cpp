@@ -38,7 +38,7 @@ void EnemySystem::Update(float dt) {
         const Enemy& enemy = ECS::GetComponent<Enemy>(entity);
         Collider2D& collider = ECS::GetComponent<Collider2D>(entity);
 
-        collider.velocity = (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
+        collider.velocity = (playerPosition - tr.position).GetNormalized() * enemy.speed;
         
         //tr.position += (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
     }

@@ -21,7 +21,7 @@ void PlayerSystem::Update(float dt) {
         Player& pl = ECS::GetComponent<Player>(player);
         Collider2D& col = ECS::GetComponent<Collider2D>(player);
         
-        col.velocity = Input::GetMovementAxis() * dt * pl.speed;
+        col.velocity = Input::GetMovementAxis() * pl.speed;
 
         if(pl.shootCooldown.Check(dt) == true) {
             pl.canShoot = true;
