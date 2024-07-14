@@ -16,28 +16,17 @@ public:
 	}
 	
 	void RemoveComponent(Entity entity) {
-		//_components[entity] = T();
+		
 	}
 	
 	T& GetData(Entity entity) {
-		/*if (_entityToIndexMap.find(entity) == _entityToIndexMap.end()) {
-			return NULL;
-		}*/
-
 		return _components[entity];
 	}
 	
 	void EntityDestroyed(Entity entity) override {
-		// if (_entityToIndexMap.find(entity) != _entityToIndexMap.end())
-		// {
-		// 	RemoveComponent(entity);
-		// }
+
 	}
 
 private:
-	//std::array<T, MAX_ENTITIES> _components{};
 	T _components[MAX_ENTITIES];
-	// std::unordered_map<Entity, size_t> _entityToIndexMap{};
-	// std::unordered_map<size_t, Entity> _indexToEntityMap{};
-	// size_t _size;
 };

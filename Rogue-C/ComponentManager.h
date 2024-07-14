@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "Entity.h"
 #include <memory>
+#include "LOG.h"
 
 class ComponentManager {
 public:
@@ -29,12 +30,13 @@ public:
 
 	template<typename T>
 	void AddComponent(Entity entity, T component) {
+		LOG(std::format("adding component {}", typeid(T).name()));
 		GetComponentArray<T>()->AddComponent(entity, component);
 	}
 
 	template<typename T>
 	void RemoveComponent(Entity entity) {
-		GetComponentArray<T>()->RemoveComponent(entity);
+		//GetComponentArray<T>()->RemoveComponent(entity);
 	}
 
 	template<typename T>
@@ -43,12 +45,12 @@ public:
 	}
 
 	void EntityDestroyed(Entity entity) {
-		for (auto const& pair : _componentArrays)
-		{
-			auto const& component = pair.second;
+		// for (auto const& pair : _componentArrays)
+		// {
+		// 	auto const& component = pair.second;
 
-			component->EntityDestroyed(entity);
-		}
+		// 	component->EntityDestroyed(entity);
+		// }
 	}
 
 private:

@@ -8,6 +8,7 @@ endif()
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_definitions(-DLOG_LEVEL_ALL)
+add_definitions(-DDEBUG_PANEL)
 add_compile_options(-fopenmp)
 set(CMAKE_BUILD_TYPE Debug)
 
