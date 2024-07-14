@@ -31,9 +31,8 @@ float mainDt = 1;
 float physicsDt = 1.0f / 60.0f;
 //float physicsTime = 0;
 
-std::barrier barrier(2, []() {
+std::barrier barrier(3, []() {
     ECS::FreeBin();
-    //std::cout << "All threads reached the barrier, proceeding to the next phase.\n";
 });
 
 
@@ -52,10 +51,6 @@ uint32_t enemyTime = 0;
 uint32_t physicsTime = 0;
 uint32_t drawerTime = 0;
 uint32_t total = 0;
-
-std::binary_semaphore
-    smphSignalMainToThread{0},
-    smphSignalThreadToMain{0};
 
 void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem, 
     std::shared_ptr<BulletSystem> bulletSystem, 
@@ -80,33 +75,35 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         spheresSystem->Update(mainDt);
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
-
-        physicsClock = std::chrono::high_resolution_clock::now();
-        physicsSystem->Update(mainDt);
         endClock = std::chrono::high_resolution_clock::now();
+
+        // physicsClock = std::chrono::high_resolution_clock::now();
+        // physicsSystem->Update(mainDt);
 
         playerTime = (bulletClock - playerClock).count();
         bulletTime = (spheresClock - bulletClock).count();
         spheresTime = (enemyClock - spheresClock).count();
-        enemyTime = (physicsClock - enemyClock).count();
-        physicsTime = (endClock - physicsClock).count();
-        total = playerTime + bulletTime + spheresTime + enemyTime + physicsTime;
+        enemyTime = (endClock - enemyClock).count();
+        //physicsTime = (endClock - physicsClock).count();
+        total = playerTime + bulletTime + spheresTime + enemyTime; //+ physicsTime;
         barrier.arrive_and_wait();
-        // smphSignalMainToThread.acquire();
-        // smphSignalThreadToMain.release();
     }
 
     gameRunning = false;
 }
 
-void ProcessPhysics(float dt, std::shared_ptr<PhysicsSystem> physicsSystem) {
+void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
+    float previousTime = GetTime();
     while (gameRunning) {
         {
-            std::lock_guard<std::mutex> guard(physicsMutex);
-            //physicsTime = GetTime();
-            physicsSystem->Update(dt);
-            //physicsTime = GetTime() - physicsTime;
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            float currentTime = GetTime();
+            physicsDt = currentTime - previousTime;
+            previousTime = currentTime;
+            {
+            }
+//                std::lock_guard<std::mutex> guard(physicsMutex);
+                physicsSystem->Update(physicsDt);
+            barrier.arrive_and_wait();
         }
     }
 }
@@ -140,7 +137,7 @@ int main() {
     enemySystem->SetPlayer(player);
 
     std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem); 
-    //std::thread physicsThread(ProcessPhysics, 1.0f / 60.0f, physicsSystem); 
+    std::thread physicsThread(ProcessPhysics, physicsSystem); 
 
     while (!WindowShouldClose()) {
        // mainDt = GetFrameTime();
@@ -154,10 +151,15 @@ int main() {
        //physicsSystem->Update(mainDt);
 
         BeginDrawing();
-        ClearBackground(GREEN);
+        ClearBackground(BLACK);
         drawerSystem->Update();
        
         //drawerTime = (endClock - drawerClock).count();
+        uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
+        uint32_t totalT = std::max(std::max(sum, total), drawerSystem->drawTime);
+        totalT = std::max(totalT, 1u);
+        total = std::max(total, 1u);
+        sum = std::max(sum, 1u);
 
         DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
@@ -165,17 +167,21 @@ int main() {
         DrawText(std::format("player: {}%, {}", playerTime * 100 / total, (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
         DrawText(std::format("bullet: {}%, {}", bulletTime * 100 / total, (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
         DrawText(std::format("spheres: {}%, {}", spheresTime * 100 / total, (enemyClock - spheresClock).count()).c_str(), 0, 40, 10, WHITE);
-        DrawText(std::format("enemy: {}%, {}", enemyTime * 100 / total, (physicsClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
-        DrawText(std::format("physics: {}%, {}", physicsTime * 100 / total, (endClock - physicsClock).count()).c_str(), 0, 60, 10, WHITE);
+        DrawText(std::format("enemy: {}%, {}", enemyTime * 100 / total, (endClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
+        DrawText(std::format("total: {}%, {}", total * 100 / totalT, total).c_str(), 0, 60, 10, WHITE);
+        //DrawText(std::format("physics: {}%, {}", physicsTime * 100 / total, (endClock - physicsClock).count()).c_str(), 0, 60, 10, WHITE);
         //DrawText(std::format("drawer: {}%, {}", (endClock - drawerClock).count()).c_str(), 0, 70, 10, WHITE);
-        DrawText("----------------", 0, 80, 10, WHITE);
-        uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
+        DrawText("----------------", 0, 70, 10, WHITE);
+        DrawText(std::format("drawer: {}%, {}", drawerSystem->drawTime * 100 / totalT, drawerSystem->drawTime).c_str(), 0, 80, 10, WHITE);
+        DrawText("----------------", 0, 90, 10, WHITE);
         uint32_t a = physicsSystem->findTime * 100 / sum;
         uint32_t b = physicsSystem->resolveTime * 100 / sum;
         uint32_t c = physicsSystem->correctTime * 100 / sum;
-        DrawText(std::format("find: {}%, {}", a, physicsSystem->findTime).c_str(), 0, 90, 10, WHITE);
-        DrawText(std::format("resolve: {}%, {}", b, physicsSystem->resolveTime).c_str(), 0, 100, 10, WHITE);
-        DrawText(std::format("correct: {}%, {}", c, physicsSystem->correctTime).c_str(), 0, 110, 10, WHITE);
+        DrawText(std::format("find: {}%, {}", a, physicsSystem->findTime).c_str(), 0, 100, 10, WHITE);
+        DrawText(std::format("resolve: {}%, {}", b, physicsSystem->resolveTime).c_str(), 0, 110, 10, WHITE);
+        DrawText(std::format("correct: {}%, {}", c, physicsSystem->correctTime).c_str(), 0, 120, 10, WHITE);
+        DrawText(std::format("total: {}%, {}", sum * 100 / totalT , sum).c_str(), 0, 130, 10, WHITE);
+        DrawText("----------------", 0, 140, 10, WHITE);
         EndDrawing();
         barrier.arrive_and_wait();
         // smphSignalMainToThread.release();
@@ -239,5 +245,9 @@ int main() {
     // }
 
     CloseWindow(); 
+
+    mainThread.join();
+    physicsThread.join();
+
     return 0;
 }

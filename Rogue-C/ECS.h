@@ -12,7 +12,7 @@ class ECS
 {
 public:
 	static void Init() {
-		scheduledForDeletion.reserve(MAX_ENTITIES);
+		_scheduledForDeletion.reserve(MAX_ENTITIES);
 		_entityManager = std::make_unique<EntityManager>();
 		_componentManager = std::make_unique<ComponentManager>();
 		_systemManager = std::make_unique<SystemManager>();
@@ -44,30 +44,40 @@ public:
 	}
 
 	static void DestroyEntity(Entity entity) {
-		scheduledForDeletion.emplace_back(entity);
+		_scheduledForDeletion.emplace_back(entity);
 	}
 
 	template<typename T>
 	static void AddComponent(Entity entity, T component) {
         std::lock_guard<std::mutex> guard(ecsMutex);
+		if(_scheduledSignatures.contains(entity) == false) {
+			_scheduledSignatures[entity] = _entityManager->GetSignature(entity);
+		}
+		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), true);
 		_componentManager->AddComponent<T>(entity, component);
+		//_componentManager->AddComponent<T>(entity, component);
 
-		auto signature = _entityManager->GetSignature(entity);
-		signature.set(_componentManager->GetComponentType<T>(), true);
-		_entityManager->SetSignature(entity, signature);
+		// auto signature = _entityManager->GetSignature(entity);
+		// signature.set(_componentManager->GetComponentType<T>(), true);
+		// _entityManager->SetSignature(entity, signature);
 
-		_systemManager->EntitySignatureChanged(entity, signature);
+		// _systemManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
 	static void RemoveComponent(Entity entity) {
         std::lock_guard<std::mutex> guard(ecsMutex);
-		auto signature = _entityManager->GetSignature(entity);
-		signature.set(_componentManager->GetComponentType<T>(), false);
-
-		_systemManager->EntitySignatureChanged(entity, signature);
-		_entityManager->SetSignature(entity, signature);
+		if(_scheduledSignatures.contains(entity) == false) {
+			_scheduledSignatures[entity] = _entityManager->GetSignature(entity);
+		}
+		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), false);
 		_componentManager->RemoveComponent<T>(entity);
+		// auto signature = _entityManager->GetSignature(entity);
+		// signature.set(_componentManager->GetComponentType<T>(), false);
+
+		// _systemManager->EntitySignatureChanged(entity, signature);
+		// _entityManager->SetSignature(entity, signature);
+		// _componentManager->RemoveComponent<T>(entity);
 	}
 
 	template<typename T>
@@ -113,18 +123,27 @@ public:
 	static void FreeBin() {
         std::lock_guard<std::mutex> guard(ecsMutex);
 
-		for(int i = scheduledForDeletion.size() - 1; i >= 0; i--) {
-			_systemManager->EntityDestroyed(scheduledForDeletion[i]);
-			_componentManager->EntityDestroyed(scheduledForDeletion[i]);
-			_entityManager->Destroy(scheduledForDeletion[i]);
+		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
+			_systemManager->EntityDestroyed(_scheduledForDeletion[i]);
+			_componentManager->EntityDestroyed(_scheduledForDeletion[i]);
+			_entityManager->Destroy(_scheduledForDeletion[i]);
 		}
-		scheduledForDeletion.clear();
+		_scheduledForDeletion.clear();
+		
+		for(auto const& pair : _scheduledSignatures) {
+			_entityManager->SetSignature(pair.first, pair.second);
+			_systemManager->EntitySignatureChanged(pair.first, pair.second);
+		}
+		_scheduledSignatures.clear();
 	}
 
 private:
 	static std::mutex ecsMutex;
+	
 	static std::unique_ptr<EntityManager> _entityManager;
 	static std::unique_ptr<SystemManager> _systemManager;
 	static std::unique_ptr<ComponentManager> _componentManager;
-	static std::vector<Entity> scheduledForDeletion;
+
+	static std::vector<Entity> _scheduledForDeletion;
+	static std::unordered_map<Entity, Signature> _scheduledSignatures;
 };

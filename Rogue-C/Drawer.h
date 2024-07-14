@@ -9,6 +9,9 @@ struct Drawer
 
 class DrawerSystem : public System {
 public:
+	uint32_t drawTime;
+
+public:
     DrawerSystem();
     
     void Update();
