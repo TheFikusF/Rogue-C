@@ -4,6 +4,7 @@
 #include "Vec2.h"
 #include "Transform.h"
 #include "Collisions.h"
+#include <mutex>
 
 class PhysicsSystem : public System {
 public:
@@ -27,6 +28,7 @@ private:
 
 private:
 	std::vector<Collision2D> collisions;
+	std::mutex physicsMutex;
 };
 
 Collision2D IsColliding(const Entity& a, const Entity& b, const MTransform& trA, const MTransform& trB);

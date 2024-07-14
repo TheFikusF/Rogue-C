@@ -6,11 +6,13 @@
 #include <memory>
 #include <iostream>
 #include <chrono>
+#include <mutex>
 
 class ECS
 {
 public:
 	static void Init() {
+		scheduledForDeletion.reserve(MAX_ENTITIES);
 		_entityManager = std::make_unique<EntityManager>();
 		_componentManager = std::make_unique<ComponentManager>();
 		_systemManager = std::make_unique<SystemManager>();
@@ -32,6 +34,7 @@ public:
 	}
 
 	static Entity CreateEntity() {
+        std::lock_guard<std::mutex> guard(ecsMutex);
 		return _entityManager->New();
 	}
 
@@ -41,13 +44,12 @@ public:
 	}
 
 	static void DestroyEntity(Entity entity) {
-		_systemManager->EntityDestroyed(entity);
-		_componentManager->EntityDestroyed(entity);
-		_entityManager->Destroy(entity);
+		scheduledForDeletion.emplace_back(entity);
 	}
 
 	template<typename T>
 	static void AddComponent(Entity entity, T component) {
+        std::lock_guard<std::mutex> guard(ecsMutex);
 		_componentManager->AddComponent<T>(entity, component);
 
 		auto signature = _entityManager->GetSignature(entity);
@@ -59,6 +61,7 @@ public:
 
 	template<typename T>
 	static void RemoveComponent(Entity entity) {
+        std::lock_guard<std::mutex> guard(ecsMutex);
 		auto signature = _entityManager->GetSignature(entity);
 		signature.set(_componentManager->GetComponentType<T>(), false);
 
@@ -103,11 +106,25 @@ public:
 	}
 
 	static void SetParent(const Entity& child, const Entity& parent) {
+        std::lock_guard<std::mutex> guard(ecsMutex);
 		_entityManager->SetParent(child, parent);
 	}
 
+	static void FreeBin() {
+        std::lock_guard<std::mutex> guard(ecsMutex);
+
+		for(int i = scheduledForDeletion.size() - 1; i >= 0; i--) {
+			_systemManager->EntityDestroyed(scheduledForDeletion[i]);
+			_componentManager->EntityDestroyed(scheduledForDeletion[i]);
+			_entityManager->Destroy(scheduledForDeletion[i]);
+		}
+		scheduledForDeletion.clear();
+	}
+
 private:
+	static std::mutex ecsMutex;
 	static std::unique_ptr<EntityManager> _entityManager;
 	static std::unique_ptr<SystemManager> _systemManager;
 	static std::unique_ptr<ComponentManager> _componentManager;
+	static std::vector<Entity> scheduledForDeletion;
 };
