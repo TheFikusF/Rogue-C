@@ -21,8 +21,6 @@ public:
     
     void Update(float dt);
 
-    void Draw();
-
     void SetPlayer(Entity player);
     
 private:

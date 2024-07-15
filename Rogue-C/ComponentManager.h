@@ -30,7 +30,7 @@ public:
 
 	template<typename T>
 	void AddComponent(Entity entity, T component) {
-		LOG(std::format("adding component {}", typeid(T).name()));
+		//LOG(std::format("adding component {}", typeid(T).name()));
 		GetComponentArray<T>()->AddComponent(entity, component);
 	}
 

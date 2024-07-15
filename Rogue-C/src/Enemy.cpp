@@ -44,14 +44,6 @@ void EnemySystem::Update(float dt) {
     }
 }
 
-void EnemySystem::Draw() {
-    for (auto const& entity : Entities) {
-        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
-        const Enemy& enemy = ECS::GetComponent<Enemy>(entity);
-        DrawCircle(tr.position.x, tr.position.y, tr.scale.x, RED);
-    }
-}
-
 void EnemySystem::SetPlayer(Entity player) {
     _player = player;
 }

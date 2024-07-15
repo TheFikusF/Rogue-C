@@ -31,9 +31,7 @@ float mainDt = 1;
 float physicsDt = 1;
 
 std::barrier barrier(3, []() noexcept {
-    LOG_WARNING("freeing bin");
     ECS::FreeBin();
-    LOG_WARNING("freed bin");
 });
 
 
@@ -70,12 +68,16 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
 
         playerClock = std::chrono::high_resolution_clock::now();
         playerSystem->Update(mainDt);
+        LOG_WARNING("player system done");
         bulletClock = std::chrono::high_resolution_clock::now();
         bulletSystem->Update(mainDt);
+        LOG_WARNING("bullet system done");
         spheresClock = std::chrono::high_resolution_clock::now();
         spheresSystem->Update(mainDt);
+        LOG_WARNING("spheres system done");
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
+        LOG_WARNING("enemy system done");
         endClock = std::chrono::high_resolution_clock::now();
 
         playerTime = (bulletClock - playerClock).count();
