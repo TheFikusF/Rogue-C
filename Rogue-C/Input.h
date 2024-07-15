@@ -1,8 +1,7 @@
 #pragma once
 #include "Vec2.h"
 
-class Input
-{
+class Input {
 private:
     Vec2 movementAxis;
     Vec2 shootingAxis;

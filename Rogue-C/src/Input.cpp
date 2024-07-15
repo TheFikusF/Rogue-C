@@ -3,8 +3,7 @@
 
 Input Input::_input;
 
-void Input::Process(Vec2 center, float ds)
-{
+void Input::Process(Vec2 center, float ds) {
     _input.movementAxis = Vec2(0, 0);
     if(IsKeyDown(KEY_A)) {
         _input.movementAxis.x = -1;
@@ -24,14 +23,12 @@ void Input::Process(Vec2 center, float ds)
 
     _input.shootingAxis = Vec2(GetMouseX(), GetMouseY()) - center;
     _input.shootPressed = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
-    if(GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X) != 0 || GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y) != 0)
-    {
+    if(GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X) != 0 || GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y) != 0) {
         _input.shootingAxis = Vec2(GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y));
         _input.shootPressed = true;
     }
     
-    if(_input.movementAxis.x == 0 && _input.movementAxis.y == 0)
-    {
+    if(_input.movementAxis.x == 0 && _input.movementAxis.y == 0) {
         _input.movementAxis = Vec2(GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y));
     }
 
@@ -40,17 +37,14 @@ void Input::Process(Vec2 center, float ds)
 
 }
 
-const Vec2 Input::GetMovementAxis()
-{
+const Vec2 Input::GetMovementAxis() {
     return _input.movementAxis;
 }
 
-const Vec2 Input::GetShootingAxis()
-{
+const Vec2 Input::GetShootingAxis() {
     return _input.shootingAxis;
 }
 
-const bool Input::IsShooting()
-{
+const bool Input::IsShooting() {
     return _input.shootPressed;
 }

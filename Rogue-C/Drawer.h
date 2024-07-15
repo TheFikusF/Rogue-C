@@ -2,8 +2,7 @@
 #include "System.h"
 #include "./include/raylib/raylib.h"
 
-struct Drawer
-{
+struct Drawer {
     Color color;
 };
 
