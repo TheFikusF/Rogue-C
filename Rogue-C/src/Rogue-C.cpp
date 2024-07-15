@@ -30,8 +30,10 @@ std::mutex drawingMutex;
 float mainDt = 1;
 float physicsDt = 1;
 
-std::barrier barrier(3, []() {
+std::barrier barrier(3, []() noexcept {
+    LOG_WARNING("freeing bin");
     ECS::FreeBin();
+    LOG_WARNING("freed bin");
 });
 
 
@@ -80,8 +82,7 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         bulletTime = (spheresClock - bulletClock).count();
         spheresTime = (enemyClock - spheresClock).count();
         enemyTime = (endClock - enemyClock).count();
-        //physicsTime = (endClock - physicsClock).count();
-        total = playerTime + bulletTime + spheresTime + enemyTime; //+ physicsTime;
+        total = playerTime + bulletTime + spheresTime + enemyTime;
         barrier.arrive_and_wait();
     }
 
