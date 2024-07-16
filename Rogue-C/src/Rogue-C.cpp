@@ -34,7 +34,6 @@ std::barrier barrier(3, []() noexcept {
     ECS::FreeBin();
 });
 
-
 auto playerClock = std::chrono::high_resolution_clock::now();
 auto bulletClock = std::chrono::high_resolution_clock::now();
 auto spheresClock = std::chrono::high_resolution_clock::now();
@@ -51,7 +50,7 @@ uint32_t physicsTime = 0;
 uint32_t drawerTime = 0;
 uint32_t total = 0;
 
-void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem, 
+static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
     std::shared_ptr<BulletSystem> bulletSystem, 
     std::shared_ptr<SpinningSphereSystem> spheresSystem,
     std::shared_ptr<EnemySystem> enemySystem,
@@ -68,16 +67,12 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
 
         playerClock = std::chrono::high_resolution_clock::now();
         playerSystem->Update(mainDt);
-        LOG_WARNING("player system done");
         bulletClock = std::chrono::high_resolution_clock::now();
         bulletSystem->Update(mainDt);
-        LOG_WARNING("bullet system done");
         spheresClock = std::chrono::high_resolution_clock::now();
         spheresSystem->Update(mainDt);
-        LOG_WARNING("spheres system done");
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
-        LOG_WARNING("enemy system done");
         endClock = std::chrono::high_resolution_clock::now();
 
         playerTime = (bulletClock - playerClock).count();
@@ -91,16 +86,14 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
     gameRunning = false;
 }
 
-void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
+static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
     float previousTime = GetTime();
     while (gameRunning) {
-        LOG_WARNING("physics started!!!");
         float currentTime = GetTime();
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
             
         physicsSystem->Update(physicsDt);
-        LOG_WARNING("physics ended!!!");
 
         barrier.arrive_and_wait();
     }
@@ -173,63 +166,7 @@ int main() {
         EndDrawing();
         barrier.arrive_and_wait();
     }
-    //std::thread drawingThread(ProcessDrawing, drawerSystem); 
-
-    // while (!WindowShouldClose()) {
-    //     float dt = GetFrameTime();
-
-    //     std::lock_guard<std::mutex> guard(physicsMutex);
-    //     Input::Process(ECS::GetComponent<MTransform>(player).position, dt);
-
-        
-    //     playerClock = std::chrono::high_resolution_clock::now();
-    //     playerSystem->Update(dt);
-    //     bulletClock = std::chrono::high_resolution_clock::now();
-    //     bulletSystem->Update(dt);
-    //     spheresClock = std::chrono::high_resolution_clock::now();
-    //     spheresSystem->Update(dt);
-    //     enemyClock = std::chrono::high_resolution_clock::now();
-    //     enemySystem->Update(dt);
-
-    //     physicsClock = std::chrono::high_resolution_clock::now();
-    //     physicsSystem->Update(dt);
-
-    //     BeginDrawing();
-    //     ClearBackground(GREEN);
-
-    //     drawerClock = std::chrono::high_resolution_clock::now();
-    //     drawerSystem->Update();
-    //     endClock = std::chrono::high_resolution_clock::now();
-
-    //     uint32_t playerTime = (bulletClock - playerClock).count();
-    //     uint32_t bulletTime = (spheresClock - bulletClock).count();
-    //     uint32_t spheresTime = (enemyClock - spheresClock).count();
-    //     uint32_t enemyTime = (physicsClock - enemyClock).count();
-    //     uint32_t physicsTime = (drawerClock - physicsClock).count();
-    //     uint32_t drawerTime = (endClock - drawerClock).count();
-
-    //     uint32_t total = playerTime + bulletTime + spheresTime + enemyTime + physicsTime + drawerTime;
-
-    //     DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
-    //     DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
-    //     DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
-    //     DrawText(std::format("player: {}%, {}", playerTime * 100 / total, (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
-    //     DrawText(std::format("bullet: {}%, {}", bulletTime * 100 / total, (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
-    //     DrawText(std::format("spheres: {}%, {}", spheresTime * 100 / total, (enemyClock - spheresClock).count()).c_str(), 0, 40, 10, WHITE);
-    //     DrawText(std::format("enemy: {}%, {}", enemyTime * 100 / total, (physicsClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
-    //     DrawText(std::format("physics: {}%, {}", physicsTime * 100 / total, (drawerClock - physicsClock).count()).c_str(), 0, 60, 10, WHITE);
-    //     DrawText(std::format("drawer: {}%, {}", drawerTime * 100 / total, (endClock - drawerClock).count()).c_str(), 0, 70, 10, WHITE);
-    //     DrawText("----------------", 0, 80, 10, WHITE);
-    //     uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
-    //     uint32_t a = physicsSystem->findTime * 100 / sum;
-    //     uint32_t b = physicsSystem->resolveTime * 100 / sum;
-    //     uint32_t c = physicsSystem->correctTime * 100 / sum;
-    //     DrawText(std::format("find: {}%, {}", a, physicsSystem->findTime).c_str(), 0, 90, 10, WHITE);
-    //     DrawText(std::format("resolve: {}%, {}", b, physicsSystem->resolveTime).c_str(), 0, 100, 10, WHITE);
-    //     DrawText(std::format("correct: {}%, {}", c, physicsSystem->correctTime).c_str(), 0, 110, 10, WHITE);
-    //     EndDrawing();
-    // }
-
+    
     CloseWindow(); 
 
     mainThread.join();
