@@ -55,13 +55,6 @@ public:
 		}
 		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), true);
 		_componentManager->AddComponent<T>(entity, component);
-		//_componentManager->AddComponent<T>(entity, component);
-
-		// auto signature = _entityManager->GetSignature(entity);
-		// signature.set(_componentManager->GetComponentType<T>(), true);
-		// _entityManager->SetSignature(entity, signature);
-
-		// _systemManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
@@ -72,12 +65,6 @@ public:
 		}
 		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), false);
 		_componentManager->RemoveComponent<T>(entity);
-		// auto signature = _entityManager->GetSignature(entity);
-		// signature.set(_componentManager->GetComponentType<T>(), false);
-
-		// _systemManager->EntitySignatureChanged(entity, signature);
-		// _entityManager->SetSignature(entity, signature);
-		// _componentManager->RemoveComponent<T>(entity);
 	}
 
 	template<typename T>
