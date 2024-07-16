@@ -103,8 +103,8 @@ public:
 		return _entityManager->_entityCount;
 	}
 
-	static void HandleCollision(const Collision2D& collision) {
-		_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
+	static void HandleCollisions(const std::vector<Collision2D>& collision) {
+		_collisions.assign(collision.begin(), collision.end());
 	}
 
 	static Signature GetEntitySignature(const Entity entity) {
@@ -123,18 +123,33 @@ public:
 	static void FreeBin() {
         std::lock_guard<std::mutex> guard(ecsMutex);
 
+		for(auto const& collision : _collisions) {
+			_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
+			_systemManager->HandleCollision(Collision2D{
+				.isTrigger = collision.isTrigger,
+				.hasCollision = collision.hasCollision,
+				.a = collision.b,
+				.b = collision.a,
+				.pointA = collision.pointB,
+				.pointB = collision.pointA,
+				.normal = collision.normal,
+				.depth = collision.depth,
+
+			}, ECS::GetEntitySignature(collision.b));
+		}
+
+		for(auto const& pair : _scheduledSignatures) {
+			_entityManager->SetSignature(pair.first, pair.second);
+			_systemManager->EntitySignatureChanged(pair.first, pair.second);
+		}
+		_scheduledSignatures.clear();
+
 		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
 			_systemManager->EntityDestroyed(_scheduledForDeletion[i]);
 			_componentManager->EntityDestroyed(_scheduledForDeletion[i]);
 			_entityManager->Destroy(_scheduledForDeletion[i]);
 		}
 		_scheduledForDeletion.clear();
-		
-		for(auto const& pair : _scheduledSignatures) {
-			_entityManager->SetSignature(pair.first, pair.second);
-			_systemManager->EntitySignatureChanged(pair.first, pair.second);
-		}
-		_scheduledSignatures.clear();
 	}
 
 private:
@@ -146,4 +161,5 @@ private:
 
 	static std::vector<Entity> _scheduledForDeletion;
 	static std::unordered_map<Entity, Signature> _scheduledSignatures;
+	static std::vector<Collision2D> _collisions;
 };

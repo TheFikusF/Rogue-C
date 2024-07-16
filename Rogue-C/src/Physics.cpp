@@ -10,8 +10,10 @@ PhysicsSystem::PhysicsSystem() {
 
 void PhysicsSystem::Update(float dt) {
 
+	collisions.clear();
     auto findClock = std::chrono::high_resolution_clock::now();
 	FindCollisions();
+	ECS::HandleCollisions(collisions);
     auto resolveClock = std::chrono::high_resolution_clock::now();
 	ResolveCollisions();
     auto updateClock = std::chrono::high_resolution_clock::now();
@@ -21,8 +23,6 @@ void PhysicsSystem::Update(float dt) {
 	findTime = (resolveClock - findClock).count();
 	resolveTime = (updateClock - resolveClock).count();
 	correctTime = (endClock - updateClock).count();
-
-	collisions.clear();
 }
 
 void PhysicsSystem::UpdateVelocities(float dt) {
@@ -91,18 +91,18 @@ void PhysicsSystem::ResolveCollisions() {
 		Collider2D& collider2 = ECS::GetComponent<Collider2D>(collision.b);
 
 		{
-			std::lock_guard<std::mutex> guard(physicsMutex);
-			ECS::HandleCollision(collision);
-			ECS::HandleCollision(Collision2D{
-				.isTrigger = collision.isTrigger,
-				.hasCollision = true,
-				.a = collision.b,
-				.b = collision.a,
-				.pointA = collision.pointB,
-				.pointB = collision.pointA,
-				.normal = collision.normal,
-				.depth = collision.depth,
-				});
+			//std::lock_guard<std::mutex> guard(physicsMutex);
+			// ECS::HandleCollision(collision);
+			// ECS::HandleCollision(Collision2D{
+			// 	.isTrigger = collision.isTrigger,
+			// 	.hasCollision = true,
+			// 	.a = collision.b,
+			// 	.b = collision.a,
+			// 	.pointA = collision.pointB,
+			// 	.pointB = collision.pointA,
+			// 	.normal = collision.normal,
+			// 	.depth = collision.depth,
+			// 	});
 		}
 
 		if(collider1.isTrigger == true || collider2.isTrigger == true) {

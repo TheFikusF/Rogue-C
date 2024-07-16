@@ -94,11 +94,13 @@ void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
 void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
     float previousTime = GetTime();
     while (gameRunning) {
+        LOG_WARNING("physics started!!!");
         float currentTime = GetTime();
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
             
         physicsSystem->Update(physicsDt);
+        LOG_WARNING("physics ended!!!");
 
         barrier.arrive_and_wait();
     }
