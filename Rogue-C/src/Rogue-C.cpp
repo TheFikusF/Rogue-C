@@ -31,9 +31,9 @@ float mainDt = 1;
 float physicsDt = 1;
 
 std::barrier barrier(3, []() noexcept {
-    LOG("sync start");
+    //LOG("sync start");
     ECS::FreeBin();
-    LOG("sync done");
+    //LOG("sync done");
 });
 
 auto playerClock = std::chrono::high_resolution_clock::now();
@@ -97,9 +97,9 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
             
-        LOG("physics start");
+        //LOG("physics start");
         physicsSystem->Update(physicsDt);
-        LOG("physics done");
+        //LOG("physics done");
 
         barrier.arrive_and_wait();
     }

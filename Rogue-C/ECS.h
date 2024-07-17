@@ -103,8 +103,7 @@ public:
 	}
 
 	static void SetParent(const Entity& child, const Entity& parent) {
-        std::lock_guard<std::mutex> guard(ecsMutex);
-		_entityManager->SetParent(child, parent);
+		_scheduledParents[child] = parent;
 	}
 
 	static void FreeBin() {
@@ -131,6 +130,11 @@ public:
 		}
 		_scheduledSignatures.clear();
 
+		for(auto const& pair : _scheduledParents) {
+			_entityManager->SetParent(pair.first, pair.second);
+		}
+		_scheduledParents.clear();
+
 		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
 			_systemManager->EntityDestroyed(_scheduledForDeletion[i]);
 			_componentManager->EntityDestroyed(_scheduledForDeletion[i]);
@@ -148,5 +152,6 @@ private:
 
 	static std::vector<Entity> _scheduledForDeletion;
 	static std::unordered_map<Entity, Signature> _scheduledSignatures;
+	static std::unordered_map<Entity, Entity> _scheduledParents;
 	static std::vector<Collision2D> _collisions;
 };
