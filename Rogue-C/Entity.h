@@ -4,6 +4,7 @@
 #include <bitset>
 #include <array>
 #include <unordered_map>
+#include <mutex>
 
 using Entity = std::uint32_t;
 using ComponentType = std::uint8_t;
@@ -32,6 +33,8 @@ public:
 	std::uint32_t _entityCount;
 
 private:
+	std::mutex entityMutex;
+	
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};
 

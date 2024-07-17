@@ -13,7 +13,14 @@ void DrawerSystem::Update() {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
         Vec2 realpos = MTransformSystem::GetRealPosition(entity);
-        DrawCircle(realpos.x, realpos.y, tr.scale.x, drawer.color);
+
+        if(drawer.isColor) {
+            DrawCircle(realpos.x, realpos.y, tr.scale.x, drawer.color);
+        } else {
+            Texture2D& tex = SpriteManager::GetTexture(drawer.sprite);
+            Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
+            DrawTextureEx(tex, { realpos.x - tr.scale.x, realpos.y - tr.scale.y}, 0, scale.x * 2,  drawer.color);
+        }
     }
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();

@@ -30,7 +30,7 @@ void SpawnSphere(const Entity& parent) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform{ .position = Vec2(), .scale = Vec2(5,5)});
     ECS::AddComponent<SpinningSphere>(entity, SpinningSphere{ .radius = 30, .speed = 20, .timer = 0 });
-    ECS::AddComponent<Drawer>(entity, Drawer{ .color = YELLOW });
+    ECS::AddComponent<Drawer>(entity, Drawer(YELLOW));
     ECS::AddComponent<Collider2D>(entity, Collider2D{ .isStatic = false, .isTrigger = true, .useGravity = false, .kinematic = false, .mass = 5, .force = Vec2(), .velocity = Vec2() });
     ECS::SetParent(entity, parent);
 }

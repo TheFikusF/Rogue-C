@@ -125,14 +125,17 @@ int main() {
     auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
 
+    Sprite playerSprite = SpriteManager::RegisterTexture("Pasted image.png");
+    Sprite enemySprite = SpriteManager::RegisterTexture("Pasted image 1.png");
+
     Entity player = ECS::CreateEntity();
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
-    ECS::AddComponent<Drawer>(player, Drawer{ .color = WHITE });
+    ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 
     SetRandomSeed(GetTime());
-    enemySystem->SetPlayer(player);
+    enemySystem->SetUp(player, enemySprite);
 
     std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem); 
     std::thread physicsThread(ProcessPhysics, physicsSystem); 

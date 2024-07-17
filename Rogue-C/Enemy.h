@@ -5,6 +5,7 @@
 #include "System.h"
 #include "Entity.h"
 #include "Transform.h"
+#include "SpriteManager.h"
 #include <vector>
 #include <memory>
 
@@ -21,9 +22,10 @@ public:
     
     void Update(float dt);
 
-    void SetPlayer(Entity player);
+    void SetUp(Entity player, Sprite defaultSprite);
     
 private:
+    Sprite _defaultEnemySprite;
     Entity _player;
     float _spawnTime;
 };

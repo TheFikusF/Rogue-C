@@ -7,6 +7,7 @@ EntityManager::EntityManager() : _entityCount(0) {
 }
 
 Entity EntityManager::New() {
+    std::unique_lock<std::mutex> lock(entityMutex);
     Entity id = _availableEntities.front();
     _availableEntities.pop();
     ++_entityCount;
