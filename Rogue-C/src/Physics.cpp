@@ -10,19 +10,25 @@ PhysicsSystem::PhysicsSystem() {
 
 void PhysicsSystem::Update(float dt) {
 
+	//LOG(">");
 	collisions.clear();
     auto findClock = std::chrono::high_resolution_clock::now();
 	FindCollisions();
+	//LOG("found collisions");
 	ECS::HandleCollisions(collisions);
+	//LOG("sent to handle");
     auto resolveClock = std::chrono::high_resolution_clock::now();
 	ResolveCollisions();
+	//LOG("resolving");
     auto updateClock = std::chrono::high_resolution_clock::now();
 	UpdateVelocities(dt);
+	//LOG("updating");
     auto endClock = std::chrono::high_resolution_clock::now();
 
 	findTime = (resolveClock - findClock).count();
 	resolveTime = (updateClock - resolveClock).count();
 	correctTime = (endClock - updateClock).count();
+	//LOG("<");
 }
 
 void PhysicsSystem::UpdateVelocities(float dt) {

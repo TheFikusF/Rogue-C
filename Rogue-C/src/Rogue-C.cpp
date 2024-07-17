@@ -31,7 +31,9 @@ float mainDt = 1;
 float physicsDt = 1;
 
 std::barrier barrier(3, []() noexcept {
+    LOG("sync start");
     ECS::FreeBin();
+    LOG("sync done");
 });
 
 auto playerClock = std::chrono::high_resolution_clock::now();
@@ -63,6 +65,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         mainDt = currentTime - previousTime;
         previousTime = currentTime;
         
+        //LOG("main start");
         Input::Process(ECS::GetComponent<MTransform>(0).position, mainDt);
 
         playerClock = std::chrono::high_resolution_clock::now();
@@ -74,6 +77,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
         endClock = std::chrono::high_resolution_clock::now();
+        //LOG("main done");
 
         playerTime = (bulletClock - playerClock).count();
         bulletTime = (spheresClock - bulletClock).count();
@@ -93,7 +97,9 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
             
+        LOG("physics start");
         physicsSystem->Update(physicsDt);
+        LOG("physics done");
 
         barrier.arrive_and_wait();
     }
@@ -101,6 +107,7 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Rogue-C");
+    OPEN_LOG();
     ECS::Init();
 
     ECS::RegisterComponent<MTransform>();
@@ -133,7 +140,9 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
+        //LOG("drawing start");
         drawerSystem->Update();
+        //LOG("drawing done");
 
 #ifdef DEBUG_PANEL
         uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
@@ -143,7 +152,6 @@ int main() {
         sum = std::max(sum, 1u);
 
         DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
-        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
         DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
         DrawText(std::format("player: {}%, {}", playerTime * 100 / total, (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
         DrawText(std::format("bullet: {}%, {}", bulletTime * 100 / total, (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
@@ -162,7 +170,7 @@ int main() {
         DrawText(std::format("total: {}%, {}", sum * 100 / totalT , sum).c_str(), 0, 130, 10, WHITE);
         DrawText("----------------", 0, 140, 10, WHITE);
 #endif
-
+        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
         EndDrawing();
         barrier.arrive_and_wait();
     }
@@ -171,6 +179,6 @@ int main() {
 
     mainThread.join();
     physicsThread.join();
-
+    CLOSE_LOG();
     return 0;
 }
