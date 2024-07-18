@@ -16,7 +16,7 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 class EntityManager {
 public:
-	EntityManager();
+EntityManager();
 
 	Entity New();
 
@@ -40,6 +40,6 @@ private:
 
 	std::queue<Entity> _scheduledToAdd{};
 	
-	std::unordered_map<Entity, Entity> _childToParent{};
-	std::unordered_map<Entity, std::vector<Entity>> _parentToChildren{};
+	std::array<Entity, MAX_ENTITIES> _childToParent{};
+	std::array<std::vector<Entity>, MAX_ENTITIES> _parentToChildren{};
 };
