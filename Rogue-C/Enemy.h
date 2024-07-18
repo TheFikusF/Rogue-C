@@ -23,6 +23,8 @@ public:
     void Update(float dt);
 
     void SetUp(Entity player, Sprite defaultSprite);
+
+    void OnCollision(const Collision2D& collision) override;
     
 private:
     Sprite _defaultEnemySprite;

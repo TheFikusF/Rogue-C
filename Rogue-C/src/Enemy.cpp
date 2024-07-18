@@ -2,6 +2,7 @@
 #include "ECS.h"
 #include "Drawer.h"
 #include "Physics.h"
+#include "Player.h"
 
 EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -48,4 +49,11 @@ void EnemySystem::Update(float dt) {
 void EnemySystem::SetUp(Entity player, Sprite defaultSprite) {
     _player = player;
     _defaultEnemySprite = defaultSprite;
+}
+
+void EnemySystem::OnCollision(const Collision2D& collision) {
+    if(ECS::HasComponent<Player>(collision.b)) {
+        Player& player = ECS::GetComponent<Player>(collision.b);
+        player.health.TakeDamage(1);
+    }
 }
