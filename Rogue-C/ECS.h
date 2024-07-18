@@ -124,16 +124,16 @@ public:
 			}, ECS::GetEntitySignature(collision.b));
 		}
 
+		for(auto const& pair : _scheduledParents) {
+			_entityManager->SetParent(pair.first, pair.second);
+		}
+		_scheduledParents.clear();
+
 		for(auto const& pair : _scheduledSignatures) {
 			_entityManager->SetSignature(pair.first, pair.second);
 			_systemManager->EntitySignatureChanged(pair.first, pair.second);
 		}
 		_scheduledSignatures.clear();
-
-		for(auto const& pair : _scheduledParents) {
-			_entityManager->SetParent(pair.first, pair.second);
-		}
-		_scheduledParents.clear();
 
 		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
 			_systemManager->EntityDestroyed(_scheduledForDeletion[i]);

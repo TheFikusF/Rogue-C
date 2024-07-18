@@ -38,6 +38,8 @@ private:
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};
 
+	std::queue<Entity> _scheduledToAdd{};
+	
 	std::unordered_map<Entity, Entity> _childToParent{};
 	std::unordered_map<Entity, std::vector<Entity>> _parentToChildren{};
 };

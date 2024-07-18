@@ -31,9 +31,9 @@ float mainDt = 1;
 float physicsDt = 1;
 
 std::barrier barrier(3, []() noexcept {
-    //LOG("sync start");
+    LOG("sync start");
     ECS::FreeBin();
-    //LOG("sync done");
+    LOG("sync done");
 });
 
 auto playerClock = std::chrono::high_resolution_clock::now();
@@ -65,7 +65,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         mainDt = currentTime - previousTime;
         previousTime = currentTime;
         
-        //LOG("main start");
+        LOG("main start");
         Input::Process(ECS::GetComponent<MTransform>(0).position, mainDt);
 
         playerClock = std::chrono::high_resolution_clock::now();
@@ -77,7 +77,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
         endClock = std::chrono::high_resolution_clock::now();
-        //LOG("main done");
+        LOG("main done");
 
         playerTime = (bulletClock - playerClock).count();
         bulletTime = (spheresClock - bulletClock).count();
@@ -97,9 +97,9 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
             
-        //LOG("physics start");
+        LOG("physics start");
         physicsSystem->Update(physicsDt);
-        //LOG("physics done");
+        LOG("physics done");
 
         barrier.arrive_and_wait();
     }
@@ -146,9 +146,9 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        //LOG("drawing start");
+        LOG("drawing start");
         drawerSystem->Update();
-        //LOG("drawing done");
+        LOG("drawing done");
 
 #ifdef DEBUG_PANEL
         uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
@@ -182,6 +182,7 @@ int main() {
     }
     
     CloseWindow(); 
+    SpriteManager::UnloadAll();
 
     mainThread.join();
     physicsThread.join();
