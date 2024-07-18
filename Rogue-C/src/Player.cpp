@@ -23,6 +23,7 @@ void PlayerSystem::Update(float dt) {
         
         col.velocity = Input::GetMovementAxis() * pl.speed;
 
+        pl.health.Process(dt);
         if(pl.shootCooldown.Check(dt) == true) {
             pl.canShoot = true;
         }

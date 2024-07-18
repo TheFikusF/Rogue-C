@@ -132,7 +132,7 @@ int main() {
     Sprite enemySprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
 
     Entity player = ECS::CreateEntity();
-    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
+    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
