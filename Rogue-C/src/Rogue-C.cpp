@@ -106,7 +106,10 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
 }
 
 int main() {
-    InitWindow(WIDTH, HEIGHT, "Rogue-C");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED);
+    InitWindow(800, 450, "Rogue-C");
+    MaximizeWindow();
+    
     OPEN_LOG();
     ECS::Init();
 
@@ -125,12 +128,12 @@ int main() {
     auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
 
-    Sprite playerSprite = SpriteManager::RegisterTexture("Pasted image.png");
-    Sprite enemySprite = SpriteManager::RegisterTexture("Pasted image 1.png");
+    Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
+    Sprite enemySprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
 
     Entity player = ECS::CreateEntity();
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .shootCooldown = Timer(0.2f) });
-    ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(WIDTH/2, HEIGHT/2), .scale = Vec2(10, 10) });
+    ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 

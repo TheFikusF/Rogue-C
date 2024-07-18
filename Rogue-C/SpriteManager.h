@@ -12,11 +12,18 @@ private:
     
 public:
     static Sprite RegisterTexture(const char* path) { 
-        textures.emplace_back(LoadTexture(path));
+        Image image = LoadImage(path);
+        textures.emplace_back(LoadTextureFromImage(image));
         return textures.size() - 1; 
     }
 
     static Texture2D& GetTexture(const Sprite& sprite) {
         return textures[sprite];
+    }
+
+    static void UnloadAll() {
+        for (int i = textures.size() - 1; i >= 0; i--) {
+            UnloadTexture(textures[i]);
+        }
     }
 };

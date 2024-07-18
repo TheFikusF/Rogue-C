@@ -13,6 +13,12 @@ add_definitions(-DLOG_TO_FILE)
 add_compile_options(-fopenmp)
 set(CMAKE_BUILD_TYPE Debug)
 
+set(PICTURES_DIR "${CMAKE_SOURCE_DIR}/Rogue-C/textures")
+set(DESTINATION_DIR "${CMAKE_BINARY_DIR}/Rogue-C/textures")
+
+file(GLOB PICTURES "${PICTURES_DIR}/*.*")
+file(COPY ${PICTURES} DESTINATION ${DESTINATION_DIR})
+
 add_executable (Rogue-C ${SOURCES})
 
 include_directories(${CMAKE_SOURCE_DIR}/Rogue-C/include)
