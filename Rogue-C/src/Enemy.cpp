@@ -14,10 +14,21 @@ EnemySystem::EnemySystem() {
 }
 
 void EnemySystem::Spawn(Vec2 position) {
+    int enemy = GetRandomValue(0, 2);
+    switch (enemy)
+    {
+    case 1: SpawnType(position, 10, 30, 30, _bigEnemySprite); break;
+    case 2: SpawnType(position, 3, 60, 12, _smallEnemySprite); break;
+    default: SpawnType(position, 5, 40, 20, _defaultEnemySprite); break;
+    }
+}
+
+
+void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
     Entity entity = ECS::CreateEntity();
-    ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(20, 20) });
-    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = 40, .health = Health(5, 0, [entity]() -> void { ECS::DestroyEntity(entity); }) } );
-    ECS::AddComponent<Drawer>(entity, Drawer(_defaultEnemySprite));
+    ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(size, size) });
+    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0, [entity]() -> void { ECS::DestroyEntity(entity); }) } );
+    ECS::AddComponent<Drawer>(entity, Drawer(sprite));
     ECS::AddComponent<Collider2D>(entity, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
 }
 
@@ -46,9 +57,11 @@ void EnemySystem::Update(float dt) {
     }
 }
 
-void EnemySystem::SetUp(Entity player, Sprite defaultSprite) {
+void EnemySystem::SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite) {
     _player = player;
     _defaultEnemySprite = defaultSprite;
+    _bigEnemySprite = bigSprite;
+    _smallEnemySprite = smallSprite;
 }
 
 void EnemySystem::OnCollision(const Collision2D& collision) {

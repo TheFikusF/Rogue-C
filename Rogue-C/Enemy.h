@@ -22,12 +22,16 @@ public:
     
     void Update(float dt);
 
-    void SetUp(Entity player, Sprite defaultSprite);
+    void SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite);
 
     void OnCollision(const Collision2D& collision) override;
     
 private:
     Sprite _defaultEnemySprite;
+    Sprite _bigEnemySprite;
+    Sprite _smallEnemySprite;
     Entity _player;
     float _spawnTime;
+
+    void SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite);
 };
