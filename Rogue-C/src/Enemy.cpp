@@ -28,10 +28,10 @@ void EnemySystem::Spawn(Vec2 position) {
 void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(size, size) });
-    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0, [entity]() -> void { 
+    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0.05f, [entity]() -> void { 
         const MTransform& tr = ECS::GetComponent<MTransform>(entity);
-        PickUpSystem::Spawn(tr.position);
         ECS::DestroyEntity(entity); 
+        PickUpSystem::Spawn(tr.position);
     }) } );
     ECS::AddComponent<Drawer>(entity, Drawer(sprite));
     ECS::AddComponent<Collider2D>(entity, Collider2D(false, false, 5));

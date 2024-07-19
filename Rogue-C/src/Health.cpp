@@ -24,7 +24,7 @@ void Health::Heal(int amount) {
         return;
     }
 
-    current = std::max(0, current + amount);
+    current = std::min(max, current + amount);
 }
 
 int Health::GetCurrent() { return current; }
