@@ -40,7 +40,7 @@ Entity SpawnBullet(Vec2 position, Vec2 direction) {
     ECS::AddComponent<MTransform>(entity, MTransform{ .position = position, .scale = Vec2(5,5) });
     ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 100, .timer = 0 });
     ECS::AddComponent<Drawer>(entity, Drawer(YELLOW) );
-    ECS::AddComponent<Collider2D>(entity, Collider2D{ .isStatic = false, .isTrigger = true, .useGravity = false, .kinematic = false, .mass = 5, .force = Vec2(), .velocity = Vec2() });
+    ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 5));
 
     return entity; 
 }

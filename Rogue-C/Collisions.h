@@ -11,6 +11,10 @@ struct Collider2D {
 	float mass;
 	Vec2 force;
 	Vec2 velocity;
+
+	Collider2D() = default; 
+	Collider2D(bool trigger, bool useGravity, float mass) 
+		: isTrigger(trigger), useGravity(useGravity), mass(mass), isStatic(false), kinematic(false), force(), velocity() {}
 };
 
 struct Collision2D {

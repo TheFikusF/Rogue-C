@@ -3,6 +3,7 @@
 #include "Drawer.h"
 #include "Physics.h"
 #include "Player.h"
+#include "PickUp.h"
 
 EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -27,9 +28,13 @@ void EnemySystem::Spawn(Vec2 position) {
 void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(size, size) });
-    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0, [entity]() -> void { ECS::DestroyEntity(entity); }) } );
+    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0, [entity]() -> void { 
+        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        PickUpSystem::Spawn(tr.position);
+        ECS::DestroyEntity(entity); 
+    }) } );
     ECS::AddComponent<Drawer>(entity, Drawer(sprite));
-    ECS::AddComponent<Collider2D>(entity, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
+    ECS::AddComponent<Collider2D>(entity, Collider2D(false, false, 5));
 }
 
 void EnemySystem::Update(float dt) {

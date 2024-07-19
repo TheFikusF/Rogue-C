@@ -19,6 +19,14 @@ void Health::TakeDamage(int amount) {
     }
 }
 
+void Health::Heal(int amount) {
+    if(current == 0) {
+        return;
+    }
+
+    current = std::max(0, current + amount);
+}
+
 int Health::GetCurrent() { return current; }
 
 int Health::GetMax() { return max; }

@@ -107,8 +107,6 @@ public:
 	}
 
 	static void FreeBin() {
-        std::lock_guard<std::mutex> guard(ecsMutex);
-
 		for(auto const& collision : _collisions) {
 			_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
 			_systemManager->HandleCollision(Collision2D{
@@ -124,6 +122,7 @@ public:
 			}, ECS::GetEntitySignature(collision.b));
 		}
 
+        std::lock_guard<std::mutex> guard(ecsMutex);
 		for(auto const& pair : _scheduledParents) {
 			_entityManager->SetParent(pair.first, pair.second);
 		}

@@ -14,6 +14,7 @@
 #include "Physics.h"
 #include "LOG.h"
 #include "SpinningSphere.h"
+#include "PickUp.h"
 #include <thread>
 #include <atomic>
 #include <mutex>
@@ -120,6 +121,7 @@ int main() {
     ECS::RegisterComponent<Drawer>();
     ECS::RegisterComponent<Collider2D>();
     ECS::RegisterComponent<SpinningSphere>();
+    ECS::RegisterComponent<PickUp>();
 
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
     auto enemySystem = ECS::RegisterSystem<EnemySystem>();
@@ -127,6 +129,7 @@ int main() {
     auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
     auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
+    auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
 
     Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
@@ -137,9 +140,9 @@ int main() {
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.2f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
-    ECS::AddComponent<Collider2D>(player, Collider2D{ .isTrigger = false, .useGravity = false, .kinematic = true,  .mass = 5, .force = Vec2(), .velocity = Vec2() });
+    ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
 
-    SetRandomSeed(GetTime());
+    SetRandomSeed(std::chrono::high_resolution_clock::to_time_t(std::chrono::high_resolution_clock::now()));
     enemySystem->SetUp(player, enemySprite1, enemySprite2, enemySprite3);
 
     std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem); 
@@ -178,15 +181,18 @@ int main() {
         DrawText(std::format("total: {}%, {}", sum * 100 / totalT , sum).c_str(), 0, 130, 10, WHITE);
         DrawText("----------------", 0, 140, 10, WHITE);
 #endif
+
+        const Player& playerComp = ECS::GetComponent<Player>(player);
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
-        //DrawText(std::format("FPS: {}", ).c_str(), 0, 0, 30, WHITE);
+        DrawText(std::format("H: {}|{}", playerComp.health.current, playerComp.health.max).c_str(), 0, 10, 30, WHITE);
         EndDrawing();
         barrier.arrive_and_wait();
     }
     
-    CloseWindow(); 
     mainThread.join();
     physicsThread.join();
+    
+    CloseWindow(); 
     
     SpriteManager::UnloadAll();
     CLOSE_LOG();

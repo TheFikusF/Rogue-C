@@ -15,6 +15,7 @@ struct Health {
     Health(int max, float invincibilityTime, std::function<void (void)> onDeath);
 
     void TakeDamage(int amount);
+    void Heal(int amount);
     void Process(float dt);
     int GetCurrent();
     int GetMax();
