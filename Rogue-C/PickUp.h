@@ -3,9 +3,10 @@
 #include "System.h"
 #include "Player.h"
 
-enum PickUpType {
+enum class PickUpType : uint8_t {
     Heal,
     DamageBust,
+    SpinningSphere,
 };
 
 struct PickUp {

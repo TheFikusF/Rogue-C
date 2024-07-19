@@ -14,6 +14,7 @@
 #include "Physics.h"
 #include "LOG.h"
 #include "SpinningSphere.h"
+#include "ParticleSystem.h"
 #include "PickUp.h"
 #include <thread>
 #include <atomic>
@@ -32,9 +33,7 @@ float mainDt = 1;
 float physicsDt = 1;
 
 std::barrier barrier(3, []() noexcept {
-    //LOG("sync start");
     ECS::FreeBin();
-    //LOG("sync done");
 });
 
 auto playerClock = std::chrono::high_resolution_clock::now();
@@ -58,7 +57,8 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
     std::shared_ptr<SpinningSphereSystem> spheresSystem,
     std::shared_ptr<EnemySystem> enemySystem,
     std::shared_ptr<PhysicsSystem> physicsSystem,
-    std::shared_ptr<DrawerSystem> drawerSystem) {
+    std::shared_ptr<DrawerSystem> drawerSystem,
+    std::shared_ptr<ParticleSystemSystem> particleSystem) {
 
     float previousTime = GetTime();
     while (!WindowShouldClose()) {
@@ -66,7 +66,6 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         mainDt = currentTime - previousTime;
         previousTime = currentTime;
         
-        //LOG("main start");
         Input::Process(ECS::GetComponent<MTransform>(0).position, mainDt);
 
         playerClock = std::chrono::high_resolution_clock::now();
@@ -78,7 +77,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         enemyClock = std::chrono::high_resolution_clock::now();
         enemySystem->Update(mainDt);
         endClock = std::chrono::high_resolution_clock::now();
-        //LOG("main done");
+        particleSystem->Update(mainDt);
 
         playerTime = (bulletClock - playerClock).count();
         bulletTime = (spheresClock - bulletClock).count();
@@ -97,10 +96,8 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
         float currentTime = GetTime();
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
-            
-        //LOG("physics start");
+
         physicsSystem->Update(physicsDt);
-        //LOG("physics done");
 
         barrier.arrive_and_wait();
     }
@@ -121,6 +118,7 @@ int main() {
     ECS::RegisterComponent<Drawer>();
     ECS::RegisterComponent<Collider2D>();
     ECS::RegisterComponent<SpinningSphere>();
+    ECS::RegisterComponent<ParticleSystem>();
     ECS::RegisterComponent<PickUp>();
 
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
@@ -130,6 +128,7 @@ int main() {
     auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
     auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
+    auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
 
     Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
@@ -137,24 +136,24 @@ int main() {
     Sprite enemySprite3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
 
     Entity player = ECS::CreateEntity();
-    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.2f) });
+    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.5f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
 
-    SetRandomSeed(std::chrono::high_resolution_clock::to_time_t(std::chrono::high_resolution_clock::now()));
+    SetRandomSeed(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
     enemySystem->SetUp(player, enemySprite1, enemySprite2, enemySprite3);
 
-    std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem); 
+    std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem, particleSystem); 
     std::thread physicsThread(ProcessPhysics, physicsSystem); 
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        //LOG("drawing start");
-        drawerSystem->Update();
-        //LOG("drawing done");
 
+        drawerSystem->Update();
+        particleSystem->Draw();
+        
 #ifdef DEBUG_PANEL
         uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
         uint32_t totalT = std::max(std::max(sum, total), drawerSystem->drawTime);

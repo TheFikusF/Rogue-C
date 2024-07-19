@@ -11,11 +11,14 @@ private:
 
 public:
 
-    Timer() = default;
+    Timer() : started(false) { }
     Timer(float time);
 
     bool Check(float ds);
     void Start();
     void Continue();
     void Stop();
+
+    const bool& IsStarted() const;
+    float GetProgress() const;
 };

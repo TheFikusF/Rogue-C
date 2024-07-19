@@ -29,8 +29,8 @@ void PlayerSystem::Update(float dt) {
         }
 
         if(Input::IsShooting() && pl.canShoot) {
-            //SpawnBullet(tr.position, Input::GetShootingAxis());
-            SpawnSphere(player);
+            SpawnBullet(tr.position, Input::GetShootingAxis());
+            //SpawnSphere(player);
             pl.canShoot = false;
             pl.shootCooldown.Start();
         }

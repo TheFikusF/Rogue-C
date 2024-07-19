@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Enemy.h"
+#include "ParticleSystem.h"
 
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -32,6 +33,7 @@ void BulletSystem::OnTrigger(const Collision2D& collision) {
         Enemy& enemy = ECS::GetComponent<Enemy>(collision.b);
         enemy.health.TakeDamage(1);
         ECS::DestroyEntity(collision.a);
+        ParticleSystemSystem::Spawn(collision.pointA, false);
     }
 }
 
