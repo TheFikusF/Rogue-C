@@ -4,16 +4,14 @@
 #include "./include/raylib/raylib.h"
 
 struct Drawer {
-    bool isColor;
     Color color;
     Sprite sprite;
     Rectangle sourceRect;
 
-    Drawer() : isColor(true), color(WHITE) {}
-    Drawer(const Color& color) : isColor(true), color(color) {}
+    Drawer() : sprite(0), color(WHITE) {}
+    Drawer(const Color& color) : sprite(0), color(color) {}
     Drawer(const Sprite& sprite) 
-        : isColor(false), 
-        sprite(sprite), 
+        : sprite(sprite), 
         color(WHITE), 
         sourceRect(Rectangle(0, 0, SpriteManager::GetTexture(sprite).width, SpriteManager::GetTexture(sprite).height)) {}
 };

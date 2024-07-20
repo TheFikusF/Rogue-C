@@ -11,6 +11,11 @@ private:
     static std::vector<Texture2D> textures;
     
 public:
+    static void Init() {
+        Image image = GenImageColor(10, 10, WHITE);
+        textures.emplace_back(LoadTextureFromImage(image));
+    }
+
     static Sprite RegisterTexture(const char* path) { 
         Image image = LoadImage(path);
         textures.emplace_back(LoadTextureFromImage(image));

@@ -135,6 +135,7 @@ int main() {
     auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
     auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
 
+    SpriteManager::Init();
     Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
     Sprite enemySprite2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
