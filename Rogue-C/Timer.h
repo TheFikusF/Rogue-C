@@ -14,7 +14,7 @@ public:
     Timer() : started(false) { }
     Timer(float time);
 
-    bool Check(float ds);
+    bool Check(float dt);
     void Start();
     void Continue();
     void Stop();

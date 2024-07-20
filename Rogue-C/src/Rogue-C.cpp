@@ -15,6 +15,7 @@
 #include "LOG.h"
 #include "SpinningSphere.h"
 #include "ParticleSystem.h"
+#include "Animation.h"
 #include "PickUp.h"
 #include <thread>
 #include <atomic>
@@ -58,6 +59,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
     std::shared_ptr<EnemySystem> enemySystem,
     std::shared_ptr<PhysicsSystem> physicsSystem,
     std::shared_ptr<DrawerSystem> drawerSystem,
+    std::shared_ptr<AnimationPlayerSystem> animationSystem,
     std::shared_ptr<ParticleSystemSystem> particleSystem) {
 
     float previousTime = GetTime();
@@ -78,6 +80,7 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         enemySystem->Update(mainDt);
         endClock = std::chrono::high_resolution_clock::now();
         particleSystem->Update(mainDt);
+        animationSystem->Update(mainDt);
 
         playerTime = (bulletClock - playerClock).count();
         bulletTime = (spheresClock - bulletClock).count();
@@ -120,6 +123,7 @@ int main() {
     ECS::RegisterComponent<SpinningSphere>();
     ECS::RegisterComponent<ParticleSystem>();
     ECS::RegisterComponent<PickUp>();
+    ECS::RegisterComponent<AnimationPlayer>();
 
     auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
     auto enemySystem = ECS::RegisterSystem<EnemySystem>();
@@ -129,22 +133,26 @@ int main() {
     auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
     auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
     auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
+    auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
 
     Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
     Sprite enemySprite2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
     Sprite enemySprite3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
 
+    Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
+
     Entity player = ECS::CreateEntity();
     ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.5f) });
     ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
+    ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
 
     SetRandomSeed(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
     enemySystem->SetUp(player, enemySprite1, enemySprite2, enemySprite3);
 
-    std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem, particleSystem); 
+    std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem, animationSystem, particleSystem); 
     std::thread physicsThread(ProcessPhysics, physicsSystem); 
 
     while (!WindowShouldClose()) {

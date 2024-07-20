@@ -4,12 +4,12 @@
 
 Timer::Timer(float time) : time(time), currentTime(0), started(false) {}
 
-bool Timer::Check(float ds) {
+bool Timer::Check(float dt) {
     if(started == false) {
         return false;
     }
     
-    currentTime += ds;
+    currentTime += dt;
 
     if(currentTime >= time) {
         started = false;
