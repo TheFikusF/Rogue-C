@@ -8,6 +8,12 @@
 struct MTransform {
 	Vec2 position;
 	Vec2 scale;
+	float rotation;
+
+	MTransform();
+	MTransform(Vec2 position);
+	MTransform(Vec2 position, Vec2 scale);
+	MTransform(Vec2 position, Vec2 scale, float rotation);
 };
 
 class MTransformSystem : public System {

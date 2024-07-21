@@ -24,14 +24,23 @@ void PlayerSystem::Update(float dt) {
         col.velocity = Input::GetMovementAxis() * pl.speed;
 
         pl.health.Process(dt);
-        if(pl.shootCooldown.Check(dt) == true) {
-            pl.canShoot = true;
+        if(IsKeyPressed(KEY_Q) && pl.shootCooldown.IsStarted() == false) {
+            pl.abilityAmplitude.Stop();
+
+            pl.shootCooldown.Start();
+            pl.abilityAmplitude.Start();
+            pl.abilityDuration.Start();
         }
 
-        if(Input::IsShooting() && pl.canShoot) {
+        if(pl.abilityDuration.InvCheck(dt) && pl.abilityAmplitude.Check(dt)) {
+            pl.abilityAmplitude.Start();
+            SpawnBulletWithOrbit(tr.position, Input::GetShootingAxis());
+            LOG("spawned orbiting bullet");
+        }
+
+        if(pl.shootCooldown.InvCheck(dt) == false && Input::IsShooting()) {
             SpawnBullet(tr.position, Input::GetShootingAxis());
             //SpawnSphere(player);
-            pl.canShoot = false;
             pl.shootCooldown.Start();
         }
     }

@@ -144,8 +144,13 @@ int main() {
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 
     Entity player = ECS::CreateEntity();
-    ECS::AddComponent<Player>(player, Player{ .speed = 50, .canShoot = true, .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), .shootCooldown = Timer(0.5f) });
-    ECS::AddComponent<MTransform>(player, MTransform{ .position = Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), .scale = Vec2(10, 10) });
+    ECS::AddComponent<Player>(player, Player{ 
+        .speed = 50, 
+        .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), 
+        .shootCooldown = Timer(0.5f), 
+        .abilityDuration = Timer(1.0f), 
+        .abilityAmplitude = Timer(0.2f) });
+    ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
     ECS::AddComponent<Drawer>(player, Drawer(playerSprite));
     ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
     ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));

@@ -15,6 +15,8 @@ public:
     Timer(float time);
 
     bool Check(float dt);
+    bool InvCheck(float dt);
+    
     void Start();
     void Continue();
     void Stop();

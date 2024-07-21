@@ -69,7 +69,7 @@ void ParticleSystemSystem::Draw() {
 
 void ParticleSystemSystem::Spawn(Vec2 position, bool loop) {
 	Entity ps = ECS::CreateEntity();
-	ECS::AddComponent<MTransform>(ps, MTransform{ position, Vec2() });
+	ECS::AddComponent<MTransform>(ps, MTransform(position));
 	Timer lifetime = 2;
 	Timer spawnrate = 0.1f;
 	lifetime.Start();

@@ -27,7 +27,7 @@ void EnemySystem::Spawn(Vec2 position) {
 
 void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
     Entity entity = ECS::CreateEntity();
-    ECS::AddComponent<MTransform>(entity, MTransform{ position, Vec2(size, size) });
+    ECS::AddComponent<MTransform>(entity, MTransform(position, Vec2(size, size)));
     ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0.05f, [entity]() -> void { 
         const MTransform& tr = ECS::GetComponent<MTransform>(entity);
         ECS::DestroyEntity(entity); 

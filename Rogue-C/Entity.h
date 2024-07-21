@@ -24,9 +24,11 @@ EntityManager();
 
 	void SetSignature(Entity entity, Signature signature);
 
-	Signature GetSignature(Entity entity);
+	Signature GetSignature(Entity entity) const;
 
-	Entity GetParent(const Entity entity);
+	Entity GetParent(const Entity entity) const;
+
+	const std::vector<Entity>& GetChildren(const Entity entity) const;
 	
 	void SetParent(const Entity& child, const Entity& parent);
 

@@ -27,9 +27,9 @@ void EntityManager::Destroy(Entity entity) {
     --_entityCount;
 
     _childToParent[entity] = MAX_ENTITIES + 1;
-    for (auto const& child : _parentToChildren[entity]) {
-        Destroy(child);
-    }
+    // for (auto const& child : _parentToChildren[entity]) {
+    //     Destroy(child);
+    // }
     _parentToChildren[entity].clear();
 }
 
@@ -37,8 +37,12 @@ void EntityManager::SetSignature(Entity entity, Signature signature) {
     _signatures[entity] = signature;
 }
 
-Entity EntityManager::GetParent(const Entity entity) {
+Entity EntityManager::GetParent(const Entity entity) const {
     return _childToParent[entity];
+}
+
+const std::vector<Entity>& EntityManager::GetChildren(const Entity entity) const {
+    return _parentToChildren[entity];
 }
 
 void EntityManager::SetParent(const Entity& child, const Entity& parent) {
@@ -46,6 +50,6 @@ void EntityManager::SetParent(const Entity& child, const Entity& parent) {
     _parentToChildren[parent].push_back(child);
 }
 
-Signature EntityManager::GetSignature(Entity entity) {
+Signature EntityManager::GetSignature(Entity entity) const {
 	return _signatures[entity];
 }

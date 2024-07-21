@@ -135,9 +135,7 @@ public:
 		_scheduledSignatures.clear();
 
 		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
-			_systemManager->EntityDestroyed(_scheduledForDeletion[i]);
-			_componentManager->EntityDestroyed(_scheduledForDeletion[i]);
-			_entityManager->Destroy(_scheduledForDeletion[i]);
+			DestroyEntityInstantly(_scheduledForDeletion[i]);
 		}
 		_scheduledForDeletion.clear();
 	}
@@ -153,4 +151,14 @@ private:
 	static std::unordered_map<Entity, Signature> _scheduledSignatures;
 	static std::unordered_map<Entity, Entity> _scheduledParents;
 	static std::vector<Collision2D> _collisions;
+
+	static void DestroyEntityInstantly(Entity entity) {
+		for(auto const& child : _entityManager->GetChildren(entity)) {
+			DestroyEntityInstantly(child);
+		}
+
+		_systemManager->EntityDestroyed(entity);
+		_componentManager->EntityDestroyed(entity);
+		_entityManager->Destroy(entity);
+	}
 };

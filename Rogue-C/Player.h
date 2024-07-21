@@ -6,9 +6,10 @@
 
 struct Player {
     float speed;
-    bool canShoot;
     Health health;
     Timer shootCooldown;
+    Timer abilityDuration;
+    Timer abilityAmplitude;
 };
 
 class PlayerSystem : public System {

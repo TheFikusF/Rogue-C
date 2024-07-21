@@ -13,7 +13,7 @@ PickUpSystem::PickUpSystem() {
 void PickUpSystem::Spawn(Vec2 position) {
     int type = GetRandomValue(0, 1);
     Entity pickup = ECS::CreateEntity();
-    ECS::AddComponent<MTransform>(pickup, MTransform{ .position = position, .scale = Vec2(7.5f, 7.5f) });
+    ECS::AddComponent<MTransform>(pickup, MTransform(position, Vec2(7.5f, 7.5f)));
     ECS::AddComponent<Collider2D>(pickup, Collider2D(true, false, 0));
     switch (type)
     {

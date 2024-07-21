@@ -18,6 +18,10 @@ bool Timer::Check(float dt) {
     return false;
 }
 
+bool Timer::InvCheck(float dt) {
+    return Check(dt) == false && started;
+}
+
 void Timer::Start() {
     if (time <= 0) {
         return;

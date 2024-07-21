@@ -19,3 +19,4 @@ public:
 };
 
 Entity SpawnBullet(Vec2 position, Vec2 direction);
+Entity SpawnBulletWithOrbit(Vec2 position, Vec2 direction);

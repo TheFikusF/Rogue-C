@@ -19,4 +19,4 @@ public:
     void OnTrigger(const Collision2D& collision) override;
 };
 
-void SpawnSphere(const Entity& parent);
+void SpawnSphere(const Entity& parent, float size = 5, float speed = 20, float radius = 30);

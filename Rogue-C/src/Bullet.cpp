@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "ParticleSystem.h"
+#include "SpinningSphere.h"
 
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -39,10 +40,16 @@ void BulletSystem::OnTrigger(const Collision2D& collision) {
 
 Entity SpawnBullet(Vec2 position, Vec2 direction) { 
     Entity entity = ECS::CreateEntity();
-    ECS::AddComponent<MTransform>(entity, MTransform{ .position = position, .scale = Vec2(5,5) });
+    ECS::AddComponent<MTransform>(entity, MTransform( position, Vec2(5,5)));
     ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 100, .timer = 0 });
     ECS::AddComponent<Drawer>(entity, Drawer(1, YELLOW) );
     ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 5));
 
     return entity; 
+}
+
+Entity SpawnBulletWithOrbit(Vec2 position, Vec2 direction) { 
+    Entity bullet = SpawnBullet(position, direction);
+    SpawnSphere(bullet, 2.0f, 30.0f, 8.0f);
+    return bullet;
 }
