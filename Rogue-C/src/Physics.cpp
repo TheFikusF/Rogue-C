@@ -3,9 +3,21 @@
 #include "LOG.h"
 
 PhysicsSystem::PhysicsSystem() {
+	for(std::uint8_t i = 0; i < MAX_LAYERS; i++) {
+		std::fill_n(layers[i], MAX_LAYERS, true);
+	}
 	signature.set(ECS::GetComponentType<MTransform>());
 	signature.set(ECS::GetComponentType<Collider2D>());
 	collisions.reserve(5000);
+}
+
+void PhysicsSystem::SetLayer(Layer a, Layer b, bool flag) {
+	layers[a][b] = flag;
+	layers[b][a] = flag;
+}
+
+bool PhysicsSystem::WillCollide(Layer a, Layer b) {
+	return layers[a][b];
 }
 
 void PhysicsSystem::Update(float dt) {
@@ -72,9 +84,9 @@ void PhysicsSystem::FindCollisions() {
 				break;
 			}
 
-			// if(collider1.layer == collider2.layer) {
-			// 	continue;
-			// }
+			if(WillCollide(collider1.layer, collider2.layer) == false) {
+				continue;
+			}
 
 			if(collider1.isStatic == true && collider2.isStatic == true) {
 				continue;

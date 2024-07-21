@@ -8,12 +8,16 @@
 
 class PhysicsSystem : public System {
 public:
-	uint32_t findTime;
-	uint32_t resolveTime;
-	uint32_t correctTime;
+	static const Layer MAX_LAYERS = 16;
+
+	std::uint32_t findTime;
+	std::uint32_t resolveTime;
+	std::uint32_t correctTime;
 
 public:
 	PhysicsSystem();
+	void SetLayer(Layer a, Layer b, bool flag);
+	bool WillCollide(Layer a, Layer b);
 	void Update(float dt);
 
 private:
@@ -29,6 +33,7 @@ private:
 private:
 	std::vector<Collision2D> collisions;
 	std::mutex physicsMutex;
+	bool layers[MAX_LAYERS][MAX_LAYERS];
 };
 
 Collision2D IsColliding(const Entity& a, const Entity& b, const MTransform& trA, const MTransform& trB);
