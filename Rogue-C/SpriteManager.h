@@ -12,8 +12,11 @@ private:
     
 public:
     static void Init() {
-        Image image = GenImageColor(10, 10, WHITE);
-        textures.emplace_back(LoadTextureFromImage(image));
+        Image image1 = GenImageColor(10, 10, WHITE);
+        Image image2 = GenImageColor(64, 64, Color(0, 0, 0, 0));
+        ImageDrawCircle(&image2, 32, 32, 32, WHITE);
+        textures.emplace_back(LoadTextureFromImage(image1));
+        textures.emplace_back(LoadTextureFromImage(image2));
     }
 
     static Sprite RegisterTexture(const char* path) { 

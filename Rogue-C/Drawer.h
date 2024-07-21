@@ -14,6 +14,11 @@ struct Drawer {
         : sprite(sprite), 
         color(WHITE), 
         sourceRect(Rectangle(0, 0, SpriteManager::GetTexture(sprite).width, SpriteManager::GetTexture(sprite).height)) {}
+
+    Drawer(const Sprite& sprite, const Color& color)
+        : sprite(sprite),
+        color(color),
+        sourceRect(Rectangle(0, 0, SpriteManager::GetTexture(sprite).width, SpriteManager::GetTexture(sprite).height)) {}
 };
 
 class DrawerSystem : public System {
