@@ -15,6 +15,7 @@
 #include "LOG.h"
 #include "SpinningSphere.h"
 #include "ParticleSystem.h"
+#include "AudioManager.h"
 #include "Animation.h"
 #include "PickUp.h"
 #include <thread>
@@ -104,11 +105,13 @@ static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
 
         barrier.arrive_and_wait();
     }
+
 }
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED);
     InitWindow(800, 450, "Rogue-C");
+    InitAudioDevice();
     MaximizeWindow();
     
     OPEN_LOG();
@@ -140,6 +143,8 @@ int main() {
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
     Sprite enemySprite2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
     Sprite enemySprite3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
+
+    SoundClip gospoda = AudioManager::RegisterSound("sounds/gospoda.ogg");
 
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 

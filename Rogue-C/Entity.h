@@ -20,15 +20,15 @@ EntityManager();
 
 	Entity New();
 
-	void Destroy(Entity entity);
+	void Destroy(const Entity&  entity);
 
-	void SetSignature(Entity entity, Signature signature);
+	void SetSignature(const Entity&  entity, Signature signature);
 
-	Signature GetSignature(Entity entity) const;
+	Signature GetSignature(const Entity&  entity) const;
 
-	Entity GetParent(const Entity entity) const;
+	Entity GetParent(const Entity&  entity) const;
 
-	const std::vector<Entity>& GetChildren(const Entity entity) const;
+	const std::vector<Entity>& GetChildren(const Entity&  entity) const;
 	
 	void SetParent(const Entity& child, const Entity& parent);
 

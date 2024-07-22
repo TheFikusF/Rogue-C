@@ -7,6 +7,7 @@
 #include "ECS.h"
 #include "Drawer.h"
 #include "Physics.h"
+#include "AudioManager.h"
 
 PlayerSystem::PlayerSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -35,6 +36,7 @@ void PlayerSystem::Update(float dt) {
         if(pl.abilityDuration.InvCheck(dt) && pl.abilityAmplitude.Check(dt)) {
             pl.abilityAmplitude.Start();
             SpawnBulletWithOrbit(tr.position, Input::GetShootingAxis());
+            AudioManager::Play(0);
             LOG("spawned orbiting bullet");
         }
 
