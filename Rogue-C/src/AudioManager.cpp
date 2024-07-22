@@ -1,11 +1,14 @@
 #include "AudioManager.h"
 
-std::vector<Sound> AudioManager::_sounds;
+std::vector<SoundChanel> AudioManager::_soundChanels{ 0 };
+std::vector<Sound> AudioManager::_sounds[MAX_CHANELS];
 std::vector<Music> AudioManager::_music;
 
 SoundClip AudioManager::RegisterSound(const char* path) {
-    _sounds.emplace_back(LoadSound(path));
-    return _sounds.size() - 1;
+    for(SoundChanel i = 0; i < MAX_CHANELS; i++) {
+        _sounds[i].emplace_back(LoadSound(path));
+    }
+    return _sounds[0].size() - 1;
 }
 
 MusicClip AudioManager::RegisterMusic(const char* path) {
@@ -14,7 +17,18 @@ MusicClip AudioManager::RegisterMusic(const char* path) {
 }
 
 void AudioManager::Play(const SoundClip& sound) {
-    PlaySound(_sounds[sound]);
+    if(_soundChanels[sound] == MAX_CHANELS) {
+        _soundChanels[sound] = 0;
+    }
+    PlaySound(_sounds[_soundChanels[sound]++][sound]);
+}
+
+void AudioManager::StopSoundOnCh(const SoundClip& sound, const SoundChanel& chanel) {
+    if(IsSoundPlaying(_sounds[chanel][sound]) == false) {
+        return;
+    }
+
+    StopSound(_sounds[chanel][sound]);
 }
 
 void AudioManager::PlayMusic(const MusicClip& music) {
@@ -22,8 +36,10 @@ void AudioManager::PlayMusic(const MusicClip& music) {
 }
 
 void AudioManager::UnloadAll() {
-    for(auto const& sound : _sounds) {
-        UnloadSound(sound);
+    for(auto const& chanel : _sounds) {
+        for(auto const& sound : chanel) {
+            UnloadSound(sound);
+        }
     }
 
     for(auto const& music : _music) {

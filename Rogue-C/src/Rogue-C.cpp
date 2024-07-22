@@ -213,6 +213,7 @@ int main() {
     CloseWindow(); 
     
     SpriteManager::UnloadAll();
+    AudioManager::UnloadAll();
     CLOSE_LOG();
     return 0;
 }
