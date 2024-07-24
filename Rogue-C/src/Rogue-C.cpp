@@ -54,14 +54,7 @@ uint32_t physicsTime = 0;
 uint32_t drawerTime = 0;
 uint32_t total = 0;
 
-static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
-    std::shared_ptr<BulletSystem> bulletSystem, 
-    std::shared_ptr<SpinningSphereSystem> spheresSystem,
-    std::shared_ptr<EnemySystem> enemySystem,
-    std::shared_ptr<PhysicsSystem> physicsSystem,
-    std::shared_ptr<DrawerSystem> drawerSystem,
-    std::shared_ptr<AnimationPlayerSystem> animationSystem,
-    std::shared_ptr<ParticleSystemSystem> particleSystem) {
+static void ProcessMain() {
 
     float previousTime = GetTime();
     while (!WindowShouldClose()) {
@@ -70,38 +63,21 @@ static void ProcessMain(std::shared_ptr<PlayerSystem> playerSystem,
         previousTime = currentTime;
         
         Input::Process(ECS::GetComponent<MTransform>(0).position, mainDt);
-
-        playerClock = std::chrono::high_resolution_clock::now();
-        playerSystem->Update(mainDt);
-        bulletClock = std::chrono::high_resolution_clock::now();
-        bulletSystem->Update(mainDt);
-        spheresClock = std::chrono::high_resolution_clock::now();
-        spheresSystem->Update(mainDt);
-        enemyClock = std::chrono::high_resolution_clock::now();
-        enemySystem->Update(mainDt);
-        endClock = std::chrono::high_resolution_clock::now();
-        particleSystem->Update(mainDt);
-        animationSystem->Update(mainDt);
-
-        playerTime = (bulletClock - playerClock).count();
-        bulletTime = (spheresClock - bulletClock).count();
-        spheresTime = (enemyClock - spheresClock).count();
-        enemyTime = (endClock - enemyClock).count();
-        total = playerTime + bulletTime + spheresTime + enemyTime;
+        ECS::Update(mainDt);
         barrier.arrive_and_wait();
     }
 
     gameRunning = false;
 }
 
-static void ProcessPhysics(std::shared_ptr<PhysicsSystem> physicsSystem) {
+static void ProcessPhysics() {
     float previousTime = GetTime();
     while (gameRunning) {
         float currentTime = GetTime();
         physicsDt = currentTime - previousTime;
         previousTime = currentTime;
 
-        physicsSystem->Update(physicsDt);
+        ECS::PhysicsUpdate(physicsDt);
 
         barrier.arrive_and_wait();
     }
@@ -163,15 +139,16 @@ int main() {
     SetRandomSeed(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
     enemySystem->SetUp(player, enemySprite1, enemySprite2, enemySprite3);
 
-    std::thread mainThread(ProcessMain, playerSystem, bulletSystem, spheresSystem, enemySystem, physicsSystem, drawerSystem, animationSystem, particleSystem); 
-    std::thread physicsThread(ProcessPhysics, physicsSystem); 
+    std::thread mainThread(ProcessMain); 
+    std::thread physicsThread(ProcessPhysics); 
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-
-        drawerSystem->Update();
-        particleSystem->Draw();
+        
+        ECS::Draw();
+        //drawerSystem->Update();
+        //particleSystem->Draw();
         
 #ifdef DEBUG_PANEL
         uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;

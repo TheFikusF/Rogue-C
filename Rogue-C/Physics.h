@@ -18,7 +18,7 @@ public:
 	PhysicsSystem();
 	void SetLayer(Layer a, Layer b, bool flag);
 	bool WillCollide(Layer a, Layer b);
-	void Update(float dt);
+	void PhysicsUpdate(float dt) override;
 
 private:
 	void UpdateVelocities(float dt);

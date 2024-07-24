@@ -140,6 +140,18 @@ public:
 		_scheduledForDeletion.clear();
 	}
 
+	static void Update(float dt) {
+		_systemManager->Update(dt);
+	}
+
+	static void PhysicsUpdate(float dt) {
+		_systemManager->PhysicsUpdate(dt);
+	}
+
+	static void Draw() {
+		_systemManager->Draw();
+	}
+
 private:
 	static std::mutex ecsMutex;
 	

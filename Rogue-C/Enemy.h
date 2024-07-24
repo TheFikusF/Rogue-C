@@ -20,7 +20,7 @@ public:
 
     void Spawn(Vec2 position);
     
-    void Update(float dt);
+    void Update(float dt) override;
 
     void SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite);
 

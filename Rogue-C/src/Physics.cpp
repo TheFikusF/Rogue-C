@@ -20,7 +20,7 @@ bool PhysicsSystem::WillCollide(Layer a, Layer b) {
 	return layers[a][b];
 }
 
-void PhysicsSystem::Update(float dt) {
+void PhysicsSystem::PhysicsUpdate(float dt) {
 
 	//LOG(">");
 	collisions.clear();

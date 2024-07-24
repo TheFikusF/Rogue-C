@@ -10,8 +10,13 @@ public:
 	Signature signature;
 	std::set<Entity> Entities;
 
+	virtual void Update(float dt) { }
+	virtual void PhysicsUpdate(float dt) { }
+	virtual void Draw() { }
+
 	virtual void OnEntityAdded(const Entity entity) { }
 	virtual void OnEntityRemoved(const Entity entity) { }
+	
 	virtual void OnCollision(const Collision2D& collision) { }
 	virtual void OnTrigger(const Collision2D& collision) { }
 };
@@ -82,6 +87,24 @@ public:
 			} else {
 				system->OnCollision(collision);
 			}
+		}
+	}
+
+	void Update(float dt) {
+		for (auto const& pair : _systems) {
+			pair.second->Update(dt);
+		}
+	}
+
+	void PhysicsUpdate(float dt) {
+		for (auto const& pair : _systems) {
+			pair.second->PhysicsUpdate(dt);
+		}
+	}
+
+	void Draw() {
+		for (auto const& pair : _systems) {
+			pair.second->Draw();
 		}
 	}
 
