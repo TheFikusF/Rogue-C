@@ -82,6 +82,8 @@ void Game::Run() {
         _barrier.arrive_and_wait();
     }
     
+    _gameRunning = false;
+    
     CloseWindow(); 
 
     mainThread.join();
