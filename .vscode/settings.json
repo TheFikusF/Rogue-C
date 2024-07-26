@@ -66,5 +66,6 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "barrier": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
