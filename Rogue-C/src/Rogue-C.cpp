@@ -20,9 +20,7 @@
 #include "Game.h"
 #include <assert.h>
 
-const uint8_t SCENES_COUNT = 1;
-
-Scene* ConstructScenes() {
+std::vector<Scene> ConstructScenes() {
     Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
     Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
     Sprite enemySprite2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
@@ -30,7 +28,7 @@ Scene* ConstructScenes() {
     SoundClip gospoda = AudioManager::RegisterSound("sounds/gospoda.ogg");
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 
-    Scene scenes[] = {
+    std::vector<Scene> scenes = {
         Scene([animation]() -> void {
             ECS::RegisterComponent<MTransform>();
             ECS::RegisterComponent<Player>();
@@ -71,17 +69,15 @@ Scene* ConstructScenes() {
         //Scene([animation]() -> void {}),
     };
 
-    static_assert(sizeof(scenes) / sizeof(scenes[0]) == SCENES_COUNT);
-
     return scenes;
 }
 
 int main() {
     Game game;
 
-    Scene* scenes = ConstructScenes();
+    std::vector<Scene> scenes = ConstructScenes();
     
-    game.AddScenes(scenes, SCENES_COUNT);
+    game.AddScenes(scenes);
     game.Run();
 
     return 0;

@@ -14,18 +14,18 @@ private:
     float _mainDt = 1;
     float _physicsDt = 1;
     std::atomic<bool> _gameRunning;
-    std::barrier<void(*)()> _barrier;
+    std::barrier<std::function<void()>> _barrier;
 
-    Scene* _scenes;
-    int _scenesCount;
+    std::vector<Scene> _scenes;
     int _currentScene;
+    int _scheduledScene;
 
 public:
     Game();
     ~Game();
 
     void Run();
-    void AddScenes(Scene* scenes, int scenesCount);
+    void AddScenes(std::vector<Scene> scenes);
 
 private:
     static void ProcessMain(Game* instance);

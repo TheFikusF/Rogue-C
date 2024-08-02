@@ -3,9 +3,16 @@
 const int WIDTH = 800;
 const int HEIGHT = 450;
 
-auto barrier_function = []() { ECS::FreeBin(); };
-
-Game::Game() : _gameRunning(true), _currentScene(0), _scenesCount(0), _barrier(3,  barrier_function) {
+Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3,  [this]() { 
+    if(this->_scheduledScene > -1 && this->_scheduledScene < this->_scenes.size()) {
+        this->_scenes[this->_currentScene].Clear();
+        this->_scenes[this->_scheduledScene].Start();
+        this->_currentScene = this->_scheduledScene;
+        this->_scheduledScene = -1;
+        return;
+    }
+    ECS::FreeBin(); 
+}), _scheduledScene(-1) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED);
     InitWindow(WIDTH, HEIGHT, "Rogue-C");
     InitAudioDevice();
@@ -20,17 +27,14 @@ Game::~Game() {
     SpriteManager::UnloadAll();
     AudioManager::UnloadAll();
     CLOSE_LOG();
-
-    delete[] _scenes;
 }
 
-void Game::AddScenes(Scene* scenes, int scenesCount) {
-    _scenesCount = scenesCount;
+void Game::AddScenes(std::vector<Scene> scenes) {
     _scenes = scenes;
 }
 
 void Game::Run() {
-    if(_scenesCount == 0) {
+    if(_scenes.size() == 0) {
         LOG_ERROR("THERE ARE NO SCENES");
         return;
     }

@@ -1,7 +1,6 @@
 #include "Scene.h"
 
-Scene::Scene(std::function<void(void)> onStart) : onStart(onStart) {
-}
+Scene::Scene(std::function<void(void)> onStart) : onStart(onStart), started(false) { }
 
 Scene::~Scene() {
     if(started) {
@@ -11,12 +10,10 @@ Scene::~Scene() {
 
 void Scene::Start() {
     started = true;
-    currentECS = new ECS();
+    ECS::Init();
     onStart();
-
-
 }
 
 void Scene::Clear() {
-    delete currentECS;
+    ECS::Clear();
 }
