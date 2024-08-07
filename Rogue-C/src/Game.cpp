@@ -49,39 +49,9 @@ void Game::Run() {
         ClearBackground(BLACK);
         
         ECS::Draw();
-        //drawerSystem->Update();
-        //particleSystem->Draw();
-        
-#ifdef DEBUG_PANEL
-        uint32_t sum = physicsSystem->findTime + physicsSystem->resolveTime + physicsSystem->correctTime;
-        uint32_t totalT = std::max(std::max(sum, total), drawerSystem->drawTime);
-        totalT = std::max(totalT, 1u);
-        total = std::max(total, 1u);
-        sum = std::max(sum, 1u);
 
-        DrawRectangle(0, 0, 100, 130, Color(0, 0, 0, 80));
-        DrawText(std::format("entityCount: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
-        DrawText(std::format("player: {}%, {}", playerTime * 100 / total, (bulletClock - playerClock).count()).c_str(), 0, 20, 10, WHITE);
-        DrawText(std::format("bullet: {}%, {}", bulletTime * 100 / total, (spheresClock - bulletClock).count()).c_str(), 0, 30, 10, WHITE);
-        DrawText(std::format("spheres: {}%, {}", spheresTime * 100 / total, (enemyClock - spheresClock).count()).c_str(), 0, 40, 10, WHITE);
-        DrawText(std::format("enemy: {}%, {}", enemyTime * 100 / total, (endClock - enemyClock).count()).c_str(), 0, 50, 10, WHITE);
-        DrawText(std::format("total: {}%, {}", total * 100 / totalT, total).c_str(), 0, 60, 10, WHITE);
-        DrawText("----------------", 0, 70, 10, WHITE);
-        DrawText(std::format("drawer: {}%, {}", drawerSystem->drawTime * 100 / totalT, drawerSystem->drawTime).c_str(), 0, 80, 10, WHITE);
-        DrawText("----------------", 0, 90, 10, WHITE);
-        uint32_t a = physicsSystem->findTime * 100 / sum;
-        uint32_t b = physicsSystem->resolveTime * 100 / sum;
-        uint32_t c = physicsSystem->correctTime * 100 / sum;
-        DrawText(std::format("find: {}%, {}", a, physicsSystem->findTime).c_str(), 0, 100, 10, WHITE);
-        DrawText(std::format("resolve: {}%, {}", b, physicsSystem->resolveTime).c_str(), 0, 110, 10, WHITE);
-        DrawText(std::format("correct: {}%, {}", c, physicsSystem->correctTime).c_str(), 0, 120, 10, WHITE);
-        DrawText(std::format("total: {}%, {}", sum * 100 / totalT , sum).c_str(), 0, 130, 10, WHITE);
-        DrawText("----------------", 0, 140, 10, WHITE);
-#endif
-
-        //const Player& playerComp = ECS::GetComponent<Player>(player);
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
-        //DrawText(std::format("H: {}|{}", playerComp.health.current, playerComp.health.max).c_str(), 0, 10, 30, WHITE);
+
         EndDrawing();
         _barrier.arrive_and_wait();
     }
@@ -101,8 +71,8 @@ void Game::ProcessMain(Game* instance) {
         instance->_mainDt = currentTime - previousTime;
         previousTime = currentTime;
         
-        //Input::Process(ECS::GetComponent<MTransform>(0).position, mainDt);
         ECS::Update(instance->_mainDt);
+        
         instance->_barrier.arrive_and_wait();
     }
 

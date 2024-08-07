@@ -41,9 +41,9 @@ void BulletSystem::OnTrigger(const Collision2D& collision) {
 Entity SpawnBullet(Vec2 position, Vec2 direction) { 
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform( position, Vec2(5,5)));
-    ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 100, .timer = 0 });
+    ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 300, .timer = 0 });
     ECS::AddComponent<Drawer>(entity, Drawer(1, YELLOW) );
-    ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 5));
+    ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 0));
 
     return entity; 
 }

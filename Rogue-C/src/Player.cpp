@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Input.h"
+#include "InputSystem.h"
 #include "Bullet.h"
 #include "SpinningSphere.h"
 #include <iostream>
@@ -22,7 +22,7 @@ void PlayerSystem::Update(float dt) {
         Player& pl = ECS::GetComponent<Player>(player);
         Collider2D& col = ECS::GetComponent<Collider2D>(player);
         
-        col.velocity = Input::GetMovementAxis() * pl.speed;
+        col.velocity = InputSystem::GetMovementAxis() * pl.speed;
 
         pl.health.Process(dt);
         if(IsKeyPressed(KEY_Q) && pl.shootCooldown.IsStarted() == false) {
@@ -35,13 +35,13 @@ void PlayerSystem::Update(float dt) {
 
         if(pl.abilityDuration.InvCheck(dt) && pl.abilityAmplitude.Check(dt)) {
             pl.abilityAmplitude.Start();
-            SpawnBulletWithOrbit(tr.position, Input::GetShootingAxis());
+            SpawnBulletWithOrbit(tr.position, InputSystem::GetShootingAxis());
             AudioManager::Play(0);
             LOG("spawned orbiting bullet");
         }
 
-        if(pl.shootCooldown.InvCheck(dt) == false && Input::IsShooting()) {
-            SpawnBullet(tr.position, Input::GetShootingAxis());
+        if(pl.shootCooldown.InvCheck(dt) == false && InputSystem::IsShooting()) {
+            SpawnBullet(tr.position, InputSystem::GetShootingAxis());
             //SpawnSphere(player);
             pl.shootCooldown.Start();
         }

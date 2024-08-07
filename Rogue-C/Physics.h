@@ -20,6 +20,8 @@ public:
 	bool WillCollide(Layer a, Layer b);
 	void PhysicsUpdate(float dt) override;
 
+	static std::shared_ptr<PhysicsSystem> RegisterPhysics();
+
 private:
 	void UpdateVelocities(float dt);
 	void FindCollisions();

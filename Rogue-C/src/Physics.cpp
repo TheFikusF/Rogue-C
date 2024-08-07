@@ -43,6 +43,11 @@ void PhysicsSystem::PhysicsUpdate(float dt) {
 	//LOG("<");
 }
 
+std::shared_ptr<PhysicsSystem> PhysicsSystem::RegisterPhysics() {
+	ECS::RegisterComponent<Collider2D>();
+    return ECS::RegisterSystem<PhysicsSystem>();
+}
+
 void PhysicsSystem::UpdateVelocities(float dt) {
 	static const float gravity = 9.81f;
 

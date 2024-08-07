@@ -1,14 +1,16 @@
 #pragma once
 #include "Entity.h"
 #include <memory>
-#include <set>
+#include <unordered_set>
 #include <unordered_map>
 #include "Collisions.h"
+#include "LOG.h"
+#include "assert.h"
 
 class System {
 public:
 	Signature signature;
-	std::set<Entity> Entities;
+	std::unordered_set<Entity> Entities;
 
 	virtual void Update(float dt) { }
 	virtual void PhysicsUpdate(float dt) { }
@@ -27,11 +29,12 @@ public:
 	std::shared_ptr<T> RegisterSystem() {
 		const char* typeName = typeid(T).name();
 
-		//assert(_systems.find(typeName) == _systems.end() && "Registering system more than once.");
+		assert(_systems.find(typeName) == _systems.end() && "Registering system more than once.");
 
 		auto system = std::make_shared<T>();
-		_systems.insert({ typeName, system });
+		_systems[typeName] = system;
 		SetSignature<T>(system->signature);
+	    //LOG(std::format("amount: {}, {}, {}, {}, {}", system->signature[0], system->signature[1], system->signature[2], system->signature[3], system->signature[4]));
 		return system;
 	}
 
@@ -41,7 +44,7 @@ public:
 
 		//assert(_systems.find(typeName) != _systems.end() && "System used before registered.");
 
-		_signatures.insert({ typeName, signature });
+		_signatures[typeName] = signature;
 	}
 
 	void EntityDestroyed(Entity entity) {

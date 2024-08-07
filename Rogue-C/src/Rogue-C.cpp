@@ -3,7 +3,6 @@
 #include <format>
 #include <vector>
 #include "Vec2.h"
-#include "Input.h"
 #include "Player.h"
 #include "Timer.h"
 #include "Bullet.h"
@@ -18,6 +17,7 @@
 #include "Animation.h"
 #include "PickUp.h"
 #include "Game.h"
+#include "InputSystem.h"
 #include <assert.h>
 
 std::vector<Scene> ConstructScenes() {
@@ -30,34 +30,30 @@ std::vector<Scene> ConstructScenes() {
 
     std::vector<Scene> scenes = {
         Scene([animation]() -> void {
-            ECS::RegisterComponent<MTransform>();
             ECS::RegisterComponent<Player>();
             ECS::RegisterComponent<Enemy>();
             ECS::RegisterComponent<Bullet>();
-            ECS::RegisterComponent<Drawer>();
-            ECS::RegisterComponent<Collider2D>();
             ECS::RegisterComponent<SpinningSphere>();
-            ECS::RegisterComponent<ParticleSystem>();
             ECS::RegisterComponent<PickUp>();
             ECS::RegisterComponent<AnimationPlayer>();
 
             auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
             auto enemySystem = ECS::RegisterSystem<EnemySystem>();
-            auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
             auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
             auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
-            auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
             auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
-            auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
-            auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
+
+            auto physicsSystem = PhysicsSystem::RegisterPhysics();
 
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 
-                .speed = 50, 
+                .speed = 100, 
                 .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), 
                 .shootCooldown = Timer(0.5f), 
                 .abilityDuration = Timer(1.0f), 
                 .abilityAmplitude = Timer(0.2f) });
+
+            InputSystem::SetPlayer(player);
                 
             ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
             ECS::AddComponent<Drawer>(player, Drawer(0));
