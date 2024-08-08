@@ -44,7 +44,7 @@ public:
 	}
 	
 	T& GetData(Entity entity) {
-		//ASSERT(_sparseToDense[entity] != MAX_ENTITIES, "Can't get component. There is no such component on this entity.");
+		ASSERT(_sparseToDense[entity] != MAX_ENTITIES, std::format("Can't get component {}. There is no such component on this {}.", typeid(T).name(), entity));
 		return _components[_sparseToDense[entity]];
 	}
 	

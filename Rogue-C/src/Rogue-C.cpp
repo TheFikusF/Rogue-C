@@ -64,7 +64,9 @@ std::vector<Scene> ConstructScenes() {
             enemySystem->SetUp(player, 2, 3, 4);
         }),
 
-        Scene([]() -> void {}, []() -> void {}),
+        Scene([]() -> void {}, []() -> void {
+            ECS::FinishRegistering();
+        }),
     };
 
     return scenes;
