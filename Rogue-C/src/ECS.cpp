@@ -11,8 +11,16 @@ void ECS::Init() {
 }
 
 void ECS::Clear() {
+    if(_instance->_finishedRegistering == false) {
+        LOG_ERROR("BASICALLY, nothing was working 'caus you forgot to call ECS::FinishRegistering() before starting to write actual Scene initialization code.");
+    }
     delete _instance;
     _instance = nullptr;
+}
+
+void ECS::FinishRegistering() {
+    _instance->_finishedRegistering = true;
+    _instance->_systemManager->FinishRegistering();
 }
 
 void ECS::DestroyEntity(Entity entity) {
@@ -85,12 +93,12 @@ void ECS::Draw() {
     _instance->_systemManager->Draw(); 
 }
 
-ECS::ECS() {
+ECS::ECS() : _finishedRegistering(false), 
+    _entityManager(std::make_unique<EntityManager>()), 
+    _componentManager(std::make_unique<ComponentManager>()),
+    _systemManager(std::make_unique<SystemManager>()) {
     _instance = this;
     _scheduledForDeletion.reserve(MAX_ENTITIES);
-    _entityManager = std::make_unique<EntityManager>();
-    _componentManager = std::make_unique<ComponentManager>();
-    _systemManager = std::make_unique<SystemManager>();
 }
 
 void ECS::DestroyEntityInstantly(Entity entity) {

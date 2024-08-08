@@ -21,14 +21,11 @@ public:
 	}
 
 	template<typename T>
-	static void SetSystemSignature(Signature signature) {
-		_instance->_systemManager->SetSignature<T>(signature);
-	}
-
-	template<typename T>
 	static void RegisterComponent() {
 		_instance->_componentManager->RegisterComponent<T>();
 	}
+
+	static void FinishRegistering();
 
 	static Entity CreateEntity() {
         std::lock_guard<std::mutex> guard(_instance->ecsMutex);
@@ -101,6 +98,8 @@ public:
 
 private:
 	ECS();
+
+	bool _finishedRegistering;
 
 	std::mutex ecsMutex;
 	

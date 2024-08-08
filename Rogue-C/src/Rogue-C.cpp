@@ -45,6 +45,8 @@ std::vector<Scene> ConstructScenes() {
             auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
             auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
 
+            ECS::FinishRegistering();
+
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 
                 .speed = 100, 
