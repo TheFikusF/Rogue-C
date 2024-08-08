@@ -29,21 +29,22 @@ std::vector<Scene> ConstructScenes() {
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 
     std::vector<Scene> scenes = {
-        Scene([animation]() -> void {
+        Scene([]() -> void {
             ECS::RegisterComponent<Player>();
             ECS::RegisterComponent<Enemy>();
             ECS::RegisterComponent<Bullet>();
             ECS::RegisterComponent<SpinningSphere>();
             ECS::RegisterComponent<PickUp>();
-            ECS::RegisterComponent<AnimationPlayer>();
+            ECS::RegisterComponent<Collider2D>();
 
+        }, [animation]() -> void {
+            auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
             auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
             auto enemySystem = ECS::RegisterSystem<EnemySystem>();
             auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
             auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
             auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
 
-            auto physicsSystem = PhysicsSystem::RegisterPhysics();
 
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 

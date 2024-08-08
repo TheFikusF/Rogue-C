@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include "Collisions.h"
 #include "LOG.h"
-#include "assert.h"
+//#include "assert.h"
 
 class System {
 public:
@@ -29,7 +29,7 @@ public:
 	std::shared_ptr<T> RegisterSystem() {
 		const char* typeName = typeid(T).name();
 
-		assert(_systems.find(typeName) == _systems.end() && "Registering system more than once.");
+		//assert(_systems.find(typeName) == _systems.end() && "Registering system more than once.");
 
 		auto system = std::make_shared<T>();
 		_systems[typeName] = system;
@@ -95,6 +95,7 @@ public:
 
 	void Update(float dt) {
 		for (auto const& pair : _systems) {
+			LOG(std::format("{} {}", pair.first, pair.second->Entities.size()));
 			pair.second->Update(dt);
 		}
 	}
