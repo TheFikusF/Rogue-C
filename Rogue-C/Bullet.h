@@ -14,7 +14,7 @@ class BulletSystem : public System {
 public:
     BulletSystem();
 
-    void Update(float dt);
+    void Update(float dt) override;
     void OnTrigger(const Collision2D& collision) override;
 };
 

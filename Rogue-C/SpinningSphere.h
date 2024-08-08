@@ -15,7 +15,7 @@ struct SpinningSphere {
 class SpinningSphereSystem : public System {
 public:
     SpinningSphereSystem();
-    void Update(float dt);
+    void Update(float dt) override;
     void OnTrigger(const Collision2D& collision) override;
 };
 

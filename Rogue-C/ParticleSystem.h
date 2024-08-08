@@ -33,8 +33,8 @@ private:
 public:
 	ParticleSystemSystem();
 	
-	void Update(float dt);
-	void Draw();
+	void Update(float dt) override;
+	void Draw() override;
 
 	static void Spawn(Vec2 position, bool loop);
 };

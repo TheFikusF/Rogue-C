@@ -11,65 +11,57 @@
 class ECS
 {
 public:
-	static void Init() {
-		_scheduledForDeletion.reserve(MAX_ENTITIES);
-		_entityManager = std::make_unique<EntityManager>();
-		_componentManager = std::make_unique<ComponentManager>();
-		_systemManager = std::make_unique<SystemManager>();
-	}
+	static void Init();
+	
+	static void Clear();
 
 	template<typename T>
 	static std::shared_ptr<T> RegisterSystem() {
-		return _systemManager->RegisterSystem<T>();
-	}
-
-	template<typename T>
-	static void SetSystemSignature(Signature signature) {
-		_systemManager->SetSignature<T>(signature);
+		return _instance->_systemManager->RegisterSystem<T>();
 	}
 
 	template<typename T>
 	static void RegisterComponent() {
-		_componentManager->RegisterComponent<T>();
+		_instance->_componentManager->RegisterComponent<T>();
 	}
 
+	static void FinishRegistering();
+
 	static Entity CreateEntity() {
-        std::lock_guard<std::mutex> guard(ecsMutex);
-		return _entityManager->New();
+        std::lock_guard<std::mutex> guard(_instance->ecsMutex);
+		return _instance->_entityManager->New();
 	}
 
 	template<typename T>
 	static ComponentType GetComponentType() {
-		return _componentManager->GetComponentType<T>();
+		return _instance->_componentManager->GetComponentType<T>();
 	}
 
-	static void DestroyEntity(Entity entity) {
-		_scheduledForDeletion.emplace_back(entity);
-	}
+	static void DestroyEntity(Entity entity);
 
 	template<typename T>
 	static void AddComponent(Entity entity, T component) {
-        std::lock_guard<std::mutex> guard(ecsMutex);
-		if(_scheduledSignatures.contains(entity) == false) {
-			_scheduledSignatures[entity] = _entityManager->GetSignature(entity);
+        std::lock_guard<std::mutex> guard(_instance->ecsMutex);
+		if(_instance->_scheduledSignatures.contains(entity) == false) {
+			_instance->_scheduledSignatures[entity] = _instance->_entityManager->GetSignature(entity);
 		}
-		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), true);
-		_componentManager->AddComponent<T>(entity, component);
+		_instance->_scheduledSignatures[entity].set(_instance->_componentManager->GetComponentType<T>(), true);
+		_instance->_componentManager->AddComponent<T>(entity, component);
 	}
 
 	template<typename T>
 	static void RemoveComponent(Entity entity) {
-        std::lock_guard<std::mutex> guard(ecsMutex);
-		if(_scheduledSignatures.contains(entity) == false) {
-			_scheduledSignatures[entity] = _entityManager->GetSignature(entity);
+        std::lock_guard<std::mutex> guard(_instance->ecsMutex);
+		if(_instance->_scheduledSignatures.contains(entity) == false) {
+			_instance->_scheduledSignatures[entity] = _instance->_entityManager->GetSignature(entity);
 		}
-		_scheduledSignatures[entity].set(_componentManager->GetComponentType<T>(), false);
-		_componentManager->RemoveComponent<T>(entity);
+		_instance->_scheduledSignatures[entity].set(_instance->_componentManager->GetComponentType<T>(), false);
+		_instance->_componentManager->RemoveComponent<T>(entity);
 	}
 
 	template<typename T>
 	static T& GetComponent(Entity entity) {
-		return _componentManager->GetComponent<T>(entity);
+		return _instance->_componentManager->GetComponent<T>(entity);
 	}
 
 	template<typename T>
@@ -83,82 +75,44 @@ public:
 
 	template<typename T>
 	static bool HasComponent(Entity entity) {
-		return _entityManager->GetSignature(entity).test(_componentManager->GetComponentType<T>());
+		return _instance->_entityManager->GetSignature(entity).test(_instance->_componentManager->GetComponentType<T>());
 	}
 
-	static Entity GetEntityCount() {
-		return _entityManager->_entityCount;
-	}
+	static Entity GetEntityCount();
 
-	static void HandleCollisions(const std::vector<Collision2D>& collision) {
-		_collisions.assign(collision.begin(), collision.end());
-	}
+	static void HandleCollisions(const std::vector<Collision2D>& collision);
 
-	static Signature GetEntitySignature(const Entity entity) {
-		return _entityManager->GetSignature(entity);
-	}
+	static Signature GetEntitySignature(const Entity entity);
 
-	static Entity GetParent(const Entity entity) {
-		return _entityManager->GetParent(entity);
-	}
+	static Entity GetParent(const Entity entity);
 
-	static void SetParent(const Entity& child, const Entity& parent) {
-		_scheduledParents[child] = parent;
-	}
+	static void SetParent(const Entity& child, const Entity& parent);
 
-	static void FreeBin() {
-		for(auto const& collision : _collisions) {
-			_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
-			_systemManager->HandleCollision(Collision2D{
-				.isTrigger = collision.isTrigger,
-				.hasCollision = collision.hasCollision,
-				.a = collision.b,
-				.b = collision.a,
-				.pointA = collision.pointB,
-				.pointB = collision.pointA,
-				.normal = collision.normal,
-				.depth = collision.depth,
+	static void FreeBin();
 
-			}, ECS::GetEntitySignature(collision.b));
-		}
+	static void Update(float dt);
 
-        std::lock_guard<std::mutex> guard(ecsMutex);
-		for(auto const& pair : _scheduledParents) {
-			_entityManager->SetParent(pair.first, pair.second);
-		}
-		_scheduledParents.clear();
+	static void PhysicsUpdate(float dt);
 
-		for(auto const& pair : _scheduledSignatures) {
-			_entityManager->SetSignature(pair.first, pair.second);
-			_systemManager->EntitySignatureChanged(pair.first, pair.second);
-		}
-		_scheduledSignatures.clear();
-
-		for(int i = _scheduledForDeletion.size() - 1; i >= 0; i--) {
-			DestroyEntityInstantly(_scheduledForDeletion[i]);
-		}
-		_scheduledForDeletion.clear();
-	}
+	static void Draw();
 
 private:
-	static std::mutex ecsMutex;
+	ECS();
+
+	bool _finishedRegistering;
+
+	std::mutex ecsMutex;
 	
-	static std::unique_ptr<EntityManager> _entityManager;
-	static std::unique_ptr<SystemManager> _systemManager;
-	static std::unique_ptr<ComponentManager> _componentManager;
+	std::unique_ptr<EntityManager> _entityManager;
+	std::unique_ptr<SystemManager> _systemManager;
+	std::unique_ptr<ComponentManager> _componentManager;
 
-	static std::vector<Entity> _scheduledForDeletion;
-	static std::unordered_map<Entity, Signature> _scheduledSignatures;
-	static std::unordered_map<Entity, Entity> _scheduledParents;
-	static std::vector<Collision2D> _collisions;
+	std::vector<Entity> _scheduledForDeletion;
+	std::unordered_map<Entity, Signature> _scheduledSignatures;
+	std::unordered_map<Entity, Entity> _scheduledParents;
+	std::vector<Collision2D> _collisions;
 
-	static void DestroyEntityInstantly(Entity entity) {
-		for(auto const& child : _entityManager->GetChildren(entity)) {
-			DestroyEntityInstantly(child);
-		}
+	static ECS* _instance;
 
-		_systemManager->EntityDestroyed(entity);
-		_componentManager->EntityDestroyed(entity);
-		_entityManager->Destroy(entity);
-	}
+	static void DestroyEntityInstantly(Entity entity);
 };

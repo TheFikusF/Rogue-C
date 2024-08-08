@@ -20,7 +20,7 @@ bool PhysicsSystem::WillCollide(Layer a, Layer b) {
 	return layers[a][b];
 }
 
-void PhysicsSystem::Update(float dt) {
+void PhysicsSystem::PhysicsUpdate(float dt) {
 
 	//LOG(">");
 	collisions.clear();
@@ -41,6 +41,11 @@ void PhysicsSystem::Update(float dt) {
 	resolveTime = (updateClock - resolveClock).count();
 	correctTime = (endClock - updateClock).count();
 	//LOG("<");
+}
+
+std::shared_ptr<PhysicsSystem> PhysicsSystem::RegisterPhysics() {
+	ECS::RegisterComponent<Collider2D>();
+    return ECS::RegisterSystem<PhysicsSystem>();
 }
 
 void PhysicsSystem::UpdateVelocities(float dt) {

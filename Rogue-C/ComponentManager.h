@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "Entity.h"
 #include <memory>
-#include "LOG.h"
+#include "ASSERT.h"
 
 class ComponentManager {
 public:
@@ -11,7 +11,7 @@ public:
 	void RegisterComponent() {
 		const char* typeName = typeid(T).name();
 
-		//assert(_componentTypes.find(typeName) == _componentTypes.end() && "Registering component type more than once.");
+		ASSERT(_componentTypes.find(typeName) == _componentTypes.end(), "Registering component type more than once.");
 
 		_componentTypes.insert({ typeName, _nextComponentType });
 
@@ -29,13 +29,12 @@ public:
 
 	template<typename T>
 	void AddComponent(Entity entity, T component) {
-		//LOG(std::format("adding component {}", typeid(T).name()));
 		GetComponentArray<T>()->AddComponent(entity, component);
 	}
 
 	template<typename T>
 	void RemoveComponent(Entity entity) {
-		//GetComponentArray<T>()->RemoveComponent(entity);
+		GetComponentArray<T>()->RemoveComponent(entity);
 	}
 
 	template<typename T>
@@ -44,12 +43,11 @@ public:
 	}
 
 	void EntityDestroyed(Entity entity) {
-		// for (auto const& pair : _componentArrays)
-		// {
-		// 	auto const& component = pair.second;
-
-		// 	component->EntityDestroyed(entity);
-		// }
+		for (auto const& pair : _componentArrays)
+		{
+			auto const& component = pair.second;
+			component->EntityDestroyed(entity);
+		}
 	}
 
 private:
@@ -63,7 +61,7 @@ private:
 	std::shared_ptr<ComponentArray<T>> GetComponentArray() {
 		const char* typeName = typeid(T).name();
 
-		//assert(_componentTypes.find(typeName) != _componentTypes.end() && "Component not registered before use.");
+		ASSERT(_componentTypes.find(typeName) != _componentTypes.end(), "Component not registered before use.");
 
 		return std::static_pointer_cast<ComponentArray<T>>(_componentArrays[typeName]);
 	}

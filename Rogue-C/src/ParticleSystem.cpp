@@ -11,7 +11,7 @@ ParticleSystemSystem::ParticleSystemSystem() {
 
 void ParticleSystemSystem::Update(float dt) {
 	for (Entity const& entity : Entities) {
-		MTransform& tr = ECS::GetComponent<MTransform>(entity);
+		const MTransform& tr = ECS::GetComponent<MTransform>(entity);
 		ParticleSystem& ps = ECS::GetComponent<ParticleSystem>(entity);
 
 		if (ps.spawnrate.Check(dt)) {
@@ -44,6 +44,11 @@ void ParticleSystemSystem::Update(float dt) {
 
 	for (uint32_t i = 0; i < MAX_ENTITIES * 4; i++) {
 		if (particles[i].lifetime.IsStarted() == false) {
+			continue;
+		}
+
+		if(ECS::HasComponent<ParticleSystem>(particles[i].attachedSystem) == false) {
+			particles[i].lifetime.Stop();
 			continue;
 		}
 		

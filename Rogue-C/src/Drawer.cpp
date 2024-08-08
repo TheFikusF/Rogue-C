@@ -7,7 +7,7 @@ DrawerSystem::DrawerSystem() : drawTime(0) {
     signature.set(ECS::GetComponentType<Drawer>());
 }
 
-void DrawerSystem::Update() {
+void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
