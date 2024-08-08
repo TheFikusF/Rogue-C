@@ -95,7 +95,6 @@ public:
 
 	void Update(float dt) {
 		for (auto const& pair : _systems) {
-			LOG(std::format("{} {}", pair.first, pair.second->Entities.size()));
 			pair.second->Update(dt);
 		}
 	}

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "SceneManager.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 450;
@@ -20,6 +21,7 @@ Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3,  [this]() {
     OPEN_LOG();
 
     SetRandomSeed(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+    SceneManager(this);
     SpriteManager::Init();
 }
 
@@ -27,6 +29,10 @@ Game::~Game() {
     SpriteManager::UnloadAll();
     AudioManager::UnloadAll();
     CLOSE_LOG();
+}
+
+void Game::SetScene(std::uint8_t index) {
+    _scheduledScene = index;
 }
 
 void Game::AddScenes(std::vector<Scene> scenes) {
@@ -90,5 +96,4 @@ void Game::ProcessPhysics(Game* instance) {
 
         instance->_barrier.arrive_and_wait();
     }
-
 }

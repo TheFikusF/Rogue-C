@@ -1,5 +1,6 @@
 #include "InputSystem.h"
 #include "./include/raylib/raylib.h"
+#include "SceneManager.h"
 
 InputSystem* InputSystem::_instance;
 
@@ -23,6 +24,14 @@ void InputSystem::Update(float ds) {
 
     if(IsKeyDown(KEY_S)) {
         _movementAxis.y = 1;
+    }
+
+    if(IsKeyDown(KEY_ONE)) {
+        SceneManager::SetScene(1);
+    }
+
+    if(IsKeyDown(KEY_ZERO)) {
+        SceneManager::SetScene(0);
     }
 
     const MTransform& tr = ECS::GetComponent<MTransform>(_player);

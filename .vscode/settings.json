@@ -65,7 +65,8 @@
         "thread": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "barrier": "cpp"
+        "barrier": "cpp",
+        "unordered_set": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

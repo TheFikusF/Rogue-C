@@ -26,6 +26,7 @@ public:
 
     void Run();
     void AddScenes(std::vector<Scene> scenes);
+    void SetScene(std::uint8_t index);
 
 private:
     static void ProcessMain(Game* instance);
