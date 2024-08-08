@@ -6,12 +6,12 @@
 #include "./include/raylib/raylib.h"
 #include "Timer.h"
 #include "Transform.h"
+#include "Gradient.h"
 
 struct Particle
 {
 	Entity attachedSystem;
 	Timer lifetime;
-	Color color;
 	Vec2 position;
 	Vec2 velocity;
 	float scale;
@@ -20,6 +20,8 @@ struct Particle
 struct ParticleSystem {
 	bool loop;
 	bool destroyOnStop;
+	float speed;
+	Gradient gradient;
 	Timer lifetime;
 	Timer spawnrate;
 	Vec2 scaleToTime;
