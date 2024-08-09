@@ -2,6 +2,10 @@
 #include "./include/raylib/raymath.h"
 #include "LOG.h"
 
+GradientKey::GradientKey(Color color, float time) : color(color), time(time) { }
+
+Gradient::Gradient(std::vector<GradientKey> keyFrames) : keyFrames(keyFrames) { }
+
 Color Gradient::Evaluate(float t) const {
     t = std::max(0.0f, std::min(1.0f, t));
 

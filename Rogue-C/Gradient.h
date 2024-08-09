@@ -8,14 +8,17 @@ struct GradientKey
     Color color;
     float time;
 
-    GradientKey() : color(BLACK), time(0) {}
-    GradientKey(Color color, float time) : color(color), time(time) {}
+    GradientKey() = default;
+    GradientKey(Color color, float time);
 };
 
 
 struct Gradient
 {
     std::vector<GradientKey> keyFrames;
+
+    Gradient() = default;
+    Gradient(std::vector<GradientKey> keyFrames);
 
     Color Evaluate(float t) const;
 };
