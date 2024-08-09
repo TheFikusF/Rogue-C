@@ -18,6 +18,7 @@
 #include "PickUp.h"
 #include "Game.h"
 #include "InputSystem.h"
+#include "Button.h"
 #include <assert.h>
 
 std::vector<Scene> ConstructScenes() {
@@ -62,6 +63,11 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
             enemySystem->SetUp(player, 2, 3, 4);
+
+            Entity button = ECS::CreateEntity();
+            ECS::AddComponent<MTransform>(button, MTransform(Vec2(100, 100), Vec2(100, 100)));
+            ECS::AddComponent<UIDrawer>(button, UIDrawer(WHITE));
+            ECS::AddComponent<Button>(button, Button());
         }),
 
         Scene([]() -> void {}, []() -> void {

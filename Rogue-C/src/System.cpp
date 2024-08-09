@@ -25,8 +25,10 @@ void SystemManager::EntitySignatureChanged(Entity entity, Signature entitySignat
             system->Entities.insert(entity);
             system->OnEntityAdded(entity);
         } else {
-            system->OnEntityRemoved(entity);
-            system->Entities.erase(entity);
+            if(system->Entities.contains(entity)) {
+                system->OnEntityRemoved(entity);
+                system->Entities.erase(entity);
+            }
         }
     }
 }

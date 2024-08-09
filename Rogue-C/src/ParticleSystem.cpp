@@ -88,7 +88,7 @@ void ParticleSystemSystem::Spawn(Vec2 position, bool loop) {
 		.loop = loop, 
 		.destroyOnStop = !loop, 
 		.speed = 200,
-		.gradient = { .keyFrames = { GradientKey(RED, 0), GradientKey(BLACK, 1) }},
+		.gradient = Gradient({ GradientKey(RED, 0), GradientKey(BLACK, 1) }),
 		.lifetime = lifetime, 
 		.spawnrate = spawnrate, 
 		.scaleToTime = Vec2(5, 0),
