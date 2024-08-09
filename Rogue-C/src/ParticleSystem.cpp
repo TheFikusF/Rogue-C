@@ -73,25 +73,24 @@ void ParticleSystemSystem::Draw() {
 
 		const ParticleSystem& ps = ECS::GetComponent<ParticleSystem>(particle.attachedSystem);
 		Color color = ps.gradient.Evaluate(particle.lifetime.GetProgress());
-		LOG(std::format("c: r{} g{} b{}", color.r, color.g, color.b));
-		DrawCircle(particle.position.x, particle.position.y, particle.scale, ColorLerp(RED, YELLOW, 0.5f));
+		DrawCircle(particle.position.x, particle.position.y, particle.scale, color);
 	}
 }
 
 void ParticleSystemSystem::Spawn(Vec2 position, bool loop) {
 	Entity ps = ECS::CreateEntity();
 	ECS::AddComponent<MTransform>(ps, MTransform(position));
-	Timer lifetime = 5;
+	Timer lifetime = 1;
 	Timer spawnrate = 0.1f;
 	lifetime.Start();
 	spawnrate.Start();
 	ECS::AddComponent<ParticleSystem>(ps, ParticleSystem{ 
 		.loop = loop, 
 		.destroyOnStop = !loop, 
-		.speed = 20,
-		.gradient = { .keyFrames = { GradientKey(RED, 0), GradientKey(YELLOW, 0.8f) }},
+		.speed = 200,
+		.gradient = { .keyFrames = { GradientKey(RED, 0), GradientKey(BLACK, 1) }},
 		.lifetime = lifetime, 
 		.spawnrate = spawnrate, 
-		.scaleToTime = Vec2(5, 20),
+		.scaleToTime = Vec2(5, 0),
 	});
 }
