@@ -48,7 +48,11 @@ const Vec2 &Vec2::operator/=(const float other) {
 }
 
 const float Vec2::GetMagnitude() const {
-    return sqrt(x * x + y * y);
+    return sqrt(GetMagnitudeSquared());
+}
+
+const float Vec2::GetMagnitudeSquared() const { 
+    return x * x + y * y; 
 }
 
 const Vec2 Vec2::GetNormalized() const {
@@ -62,6 +66,10 @@ const Vec2 Vec2::GetNormalized() const {
 
 const float Vec2::Distance(const Vec2 a, const Vec2 b) {
     return (a - b).GetMagnitude();
+}
+
+const float Vec2::DistanceSquared(const Vec2 a, const Vec2 b) { 
+    return (a - b).GetMagnitudeSquared(); 
 }
 
 const float Vec2::Dot(const Vec2 a, const Vec2 b) {

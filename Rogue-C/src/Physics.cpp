@@ -113,21 +113,6 @@ void PhysicsSystem::ResolveCollisions() {
 		Collider2D& collider1 = ECS::GetComponent<Collider2D>(collision.a);
 		Collider2D& collider2 = ECS::GetComponent<Collider2D>(collision.b);
 
-		{
-			//std::lock_guard<std::mutex> guard(physicsMutex);
-			// ECS::HandleCollision(collision);
-			// ECS::HandleCollision(Collision2D{
-			// 	.isTrigger = collision.isTrigger,
-			// 	.hasCollision = true,
-			// 	.a = collision.b,
-			// 	.b = collision.a,
-			// 	.pointA = collision.pointB,
-			// 	.pointB = collision.pointA,
-			// 	.normal = collision.normal,
-			// 	.depth = collision.depth,
-			// 	});
-		}
-
 		if(collider1.isTrigger == true || collider2.isTrigger == true) {
 			continue;
 		}
@@ -138,8 +123,6 @@ void PhysicsSystem::ResolveCollisions() {
         CorrectPositions(collider1, collider2, collision, tr1, tr2);
 
         CorrectVelocities(collider1, collider2, collision);
-
-		//continue;
 	}
 }
 
@@ -174,7 +157,7 @@ Collision2D IsColliding(const Entity& a, const Entity& b, const MTransform& trA,
 	Vec2 pointB = posB + posA - posB;
 	
 	return Collision2D{
-		.hasCollision = Vec2::Distance(posA, posB) <= trA.scale.x + trB.scale.x,
+		.hasCollision = Vec2::DistanceSquared(posA, posB) <= trA.scale.x * trA.scale.x + trB.scale.x * trB.scale.x,
 		.a = a,
 		.b = b,
 		.pointA = pointA,

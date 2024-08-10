@@ -14,7 +14,7 @@ void UIDrawerSystem::Update(float dt) {
         const UIDrawer& dr = ECS::GetComponent<UIDrawer>(entity);
         
         if (PointInRectangle(mousePos, tr.position, tr.scale) == false) {
-            return;
+            continue;
         }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
