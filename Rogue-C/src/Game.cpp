@@ -4,6 +4,10 @@
 const int WIDTH = 800;
 const int HEIGHT = 450;
 
+extern std::uint32_t updateGridTime;
+extern std::uint32_t findCollisionsTime;
+extern std::uint32_t correctTime;
+
 Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3,  [this]() { 
     if(this->_scheduledScene > -1 && this->_scheduledScene < this->_scenes.size()) {
         this->_scenes[this->_currentScene].Clear();
@@ -56,7 +60,11 @@ void Game::Run() {
         
         ECS::Draw();
 
+        DrawRectangle(0, 0, 200, 42, Color(0, 0, 0, 180));
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
+        DrawText(std::format("upd_grid: {}", updateGridTime/1000).c_str(), 0, 10, 10, WHITE);
+        DrawText(std::format("find: {}", findCollisionsTime/1000).c_str(), 0, 20, 10, WHITE);
+        DrawText(std::format("other: {}", correctTime/1000).c_str(), 0, 30, 10, WHITE);
 
         EndDrawing();
         _barrier.arrive_and_wait();
