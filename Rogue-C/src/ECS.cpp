@@ -24,7 +24,7 @@ void ECS::FinishRegistering() {
 }
 
 void ECS::DestroyEntity(Entity entity) {
-    _instance->_scheduledForDeletion.emplace_back(entity);
+    _instance->_scheduledForDeletion.insert(entity);
 }
 
 Entity ECS::GetEntityCount() { return _instance->_entityManager->_entityCount; }
@@ -75,8 +75,8 @@ void ECS::FreeBin() {
     }
     _instance->_scheduledSignatures.clear();
 
-    for (int i = _instance->_scheduledForDeletion.size() - 1; i >= 0; i--) {
-        DestroyEntityInstantly(_instance->_scheduledForDeletion[i]);
+    for (Entity const entity : _instance->_scheduledForDeletion) {
+        DestroyEntityInstantly(entity);
     }
     _instance->_scheduledForDeletion.clear();
 }

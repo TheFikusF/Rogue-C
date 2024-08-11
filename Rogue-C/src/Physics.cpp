@@ -1,12 +1,14 @@
 #include "Physics.h"
 
 #include <omp.h>
-
 #include "LOG.h"
 
-std::uint32_t updateGridTime;
-std::uint32_t findCollisionsTime;
-std::uint32_t correctTime;
+std::uint32_t updateGridTime = 0;
+std::uint32_t findCollisionsTime = 0;
+std::uint32_t correctTime = 0;
+std::uint32_t lastIterationsCount = 0;
+
+std::uint32_t iterationsCount = 0;
 
 PhysicsSystem::PhysicsSystem() {
     for (std::uint8_t i = 0; i < MAX_LAYERS; i++) {
@@ -80,18 +82,14 @@ void PhysicsSystem::FindCollisions() {
     // std::vector<Entity> EntitiesVector(Entities.begin(), Entities.end());
 
     // #pragma omp parallel for
+	// lastIterationsCount = iterationsCount;
+	// iterationsCount = 0;
+	
     for (auto const& entity1 : Entities) {
-        // const Entity entity1 = Entities[i];
-        // LOG(std::format("thread: {} entity: {}", omp_get_thread_num(),
-        // entity1));
         const MTransform& tr1 = ECS::GetComponent<MTransform>(entity1);
         const Collider2D& collider1 = ECS::GetComponent<Collider2D>(entity1);
 
         GetNeighbors(entity1, tr1.position, collider1, tr1);
-
-        // for (auto const& entity2 : _neighborsTemp) {
-        //     CheckEntity(entity2, entity1, collider1, tr1);
-        // }
     }
 }
 
@@ -184,12 +182,12 @@ void PhysicsSystem::UpdateGrid() {
     }
 }
 
-std::uint32_t PhysicsSystem::GetHash(Vec2 position) {
+std::int32_t PhysicsSystem::GetHash(Vec2 position) {
     return std::floor(position.x / GRID_SIZE) +
            std::floor(position.y / GRID_SIZE);
 }
 
-void PhysicsSystem::GetNeighbors(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform) {
+inline void PhysicsSystem::GetNeighbors(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform) {
 	GetCell(entityToCheck, position + Vec2(-GRID_SIZE, -GRID_SIZE), collision, transform);
 	GetCell(entityToCheck, position + Vec2(-GRID_SIZE, 0), collision, transform);
 	GetCell(entityToCheck, position + Vec2(-GRID_SIZE, GRID_SIZE), collision, transform);
@@ -202,9 +200,13 @@ void PhysicsSystem::GetNeighbors(Entity entityToCheck, Vec2 position, const Coll
 }
 
 inline void PhysicsSystem::GetCell(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform) {
-    std::int32_t hash = GetHash(position);
+	lastIterationsCount = iterationsCount;
+	iterationsCount = 0;
+	
+	std::int32_t hash = GetHash(position);
     if (_grid.contains(hash)) {
         for (Entity const entity : _grid[hash]) {
+			iterationsCount++;
 			CheckEntity(entity, entityToCheck, collision, transform);
         }
     }

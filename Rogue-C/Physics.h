@@ -10,6 +10,7 @@
 extern std::uint32_t updateGridTime;
 extern std::uint32_t findCollisionsTime;
 extern std::uint32_t correctTime;
+extern std::uint32_t lastIterationsCount;
 
 class PhysicsSystem : public System {
 public:
@@ -37,13 +38,13 @@ private:
 	
 	void UpdateGrid();
 
-	std::uint32_t GetHash(Vec2 position);
+	std::int32_t GetHash(Vec2 position);
 
 	void GetNeighbors(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
 	void GetCell(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
 
 private:
-	std::unordered_map<std::uint32_t, std::set<Entity>> _grid;
+	std::unordered_map<std::int32_t, std::unordered_set<Entity>> _grid;
 
 	std::vector<Collision2D> collisions;
 	std::mutex physicsMutex;

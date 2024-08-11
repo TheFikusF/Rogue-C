@@ -9,7 +9,7 @@ EntityManager::EntityManager() : _entityCount(0) {
 }
 
 Entity EntityManager::New() {
-    std::unique_lock<std::mutex> lock(entityMutex);
+    std::unique_lock<std::mutex> lock(_entityMutex);
 
     Entity id = _availableEntities.front();
     _availableEntities.pop();
@@ -21,7 +21,7 @@ Entity EntityManager::New() {
     return id;
 }
 
-void EntityManager::Destroy(const Entity&  entity) {
+void EntityManager::Destroy(const Entity entity) {
     _signatures[entity].reset();
     _availableEntities.push(entity);
     --_entityCount;
@@ -30,19 +30,23 @@ void EntityManager::Destroy(const Entity&  entity) {
     _parentToChildren[entity].clear();
 }
 
-void EntityManager::SetSignature(const Entity&  entity, Signature signature) {
+void EntityManager::SetSignature(const Entity  entity, Signature signature) {
     _signatures[entity] = signature;
 }
 
-Entity EntityManager::GetParent(const Entity&  entity) const {
+Entity EntityManager::GetParent(const Entity  entity) const {
     return _childToParent[entity];
 }
 
-const std::vector<Entity>& EntityManager::GetChildren(const Entity&  entity) const {
+const std::vector<Entity>& EntityManager::GetChildren(const Entity  entity) const {
     return _parentToChildren[entity];
 }
 
-void EntityManager::SetParent(const Entity& child, const Entity& parent) {
+void EntityManager::SetParent(const Entity child, const Entity parent) {
+    if(child == parent) {
+        return;
+    }
+
     if(_childToParent[child] != MAX_ENTITIES + 1) {
         for (auto it = _parentToChildren[_childToParent[child]].begin(); it != _parentToChildren[_childToParent[child]].end(); ++it) {
             if (*it == child) {
@@ -56,6 +60,6 @@ void EntityManager::SetParent(const Entity& child, const Entity& parent) {
     _parentToChildren[parent].push_back(child);
 }
 
-Signature EntityManager::GetSignature(const Entity&  entity) const {
+Signature EntityManager::GetSignature(const Entity  entity) const {
 	return _signatures[entity];
 }

@@ -107,7 +107,7 @@ private:
 	std::unique_ptr<SystemManager> _systemManager;
 	std::unique_ptr<ComponentManager> _componentManager;
 
-	std::vector<Entity> _scheduledForDeletion;
+	std::unordered_set<Entity> _scheduledForDeletion;
 	std::unordered_map<Entity, Signature> _scheduledSignatures;
 	std::unordered_map<Entity, Entity> _scheduledParents;
 	std::vector<Collision2D> _collisions;
