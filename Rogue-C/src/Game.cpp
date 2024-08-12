@@ -61,13 +61,14 @@ void Game::Run() {
         
         ECS::Draw();
 
-        DrawRectangle(0, 0, 100, 62, Color(0, 0, 0, 180));
+        DrawRectangle(0, 0, 100, 72, Color(0, 0, 0, 180));
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
         DrawText(std::format("entities: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
-        DrawText(std::format("upd_grid: {}", updateGridTime/1000).c_str(), 0, 20, 10, WHITE);
-        DrawText(std::format("find: {}", findCollisionsTime/1000).c_str(), 0, 30, 10, WHITE);
-        DrawText(std::format("other: {}", correctTime/1000).c_str(), 0, 40, 10, WHITE);
-        DrawText(std::format("iterations: {}", lastIterationsCount).c_str(), 0, 50, 10, WHITE);
+        DrawText(std::format("upd_grid: {}", Physics::updateGridTime/1000).c_str(), 0, 20, 10, WHITE);
+        DrawText(std::format("find: {}", Physics::findCollisionsTime/1000).c_str(), 0, 30, 10, WHITE);
+        DrawText(std::format("raw_find: {}", Physics::lastRawDetectionTime/1000).c_str(), 0, 40, 10, WHITE);
+        DrawText(std::format("other: {}", Physics::correctTime/1000).c_str(), 0, 50, 10, WHITE);
+        DrawText(std::format("iterations: {}", Physics::lastIterationsCount).c_str(), 0, 60, 10, WHITE);
 
         EndDrawing();
         _barrier.arrive_and_wait();

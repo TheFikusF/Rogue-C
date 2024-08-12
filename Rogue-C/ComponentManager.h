@@ -9,21 +9,19 @@ class ComponentManager {
 public:
 	template<typename T>
 	void RegisterComponent() {
-		const char* typeName = typeid(T).name();
+		std::size_t hash = typeid(T).hash_code();
+		LOG(std::format("registering type: {}, {}", std::string(typeid(T).name()), hash));
+		ASSERT(_componentTypes.find(hash) == _componentTypes.end(), "Registering component type more than once.");
 
-		ASSERT(_componentTypes.find(typeName) == _componentTypes.end(), "Registering component type more than once.");
+		_componentTypes[hash] = _nextComponentType;
 
-		_componentTypes.insert({ typeName, _nextComponentType });
-
-		_componentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
-
+		_componentArrays[hash] = GetComponentArray<T>();
 		++_nextComponentType;
 	}
 
 	template<typename T>
-	ComponentType GetComponentType() {
-		const char* typeName = typeid(T).name();
-		return _componentTypes[typeName];
+	constexpr ComponentType GetComponentType() {
+		return _componentTypes[typeid(T).hash_code()];
 	}
 
 
@@ -38,7 +36,8 @@ public:
 	}
 
 	template<typename T>
-	T& GetComponent(Entity entity) {
+	constexpr T& GetComponent(Entity entity) {
+		//ASSERT(_componentArrays.find(typeid(T).hash_code()) != _componentArrays.end(), "Component not registered before use.");
 		return GetComponentArray<T>()->GetData(entity);
 	}
 
@@ -51,18 +50,15 @@ public:
 	}
 
 private:
-	std::unordered_map<const char*, ComponentType> _componentTypes{};
+	std::unordered_map<std::size_t, ComponentType> _componentTypes{};
 
-	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> _componentArrays{};
+	std::unordered_map<std::size_t, std::shared_ptr<IComponentArray>> _componentArrays{};
 
 	ComponentType _nextComponentType{};
 
 	template<typename T>
 	std::shared_ptr<ComponentArray<T>> GetComponentArray() {
-		const char* typeName = typeid(T).name();
-
-		ASSERT(_componentTypes.find(typeName) != _componentTypes.end(), "Component not registered before use.");
-
-		return std::static_pointer_cast<ComponentArray<T>>(_componentArrays[typeName]);
+		static std::shared_ptr<ComponentArray<T>> _array = std::make_shared<ComponentArray<T>>();
+		return _array;
 	}
 };

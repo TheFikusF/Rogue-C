@@ -55,7 +55,7 @@ public:
 	}
 	
 	T& GetData(Entity entity) {
-		ASSERT(_sparseToDense.contains(entity), std::format("Can't get component {}. There is no such component on this {}.", typeid(T).name(), entity));
+		//ASSERT(_sparseToDense.find(entity) != _sparseToDense.end(), std::format("Can't get component {}. There is no such component on this {}.", typeid(T).name(), entity));
 		return _components[_sparseToDense[entity]];
 	}
 	

@@ -7,48 +7,63 @@
 #include <mutex>
 #include <set>
 
-extern std::uint32_t updateGridTime;
-extern std::uint32_t findCollisionsTime;
-extern std::uint32_t correctTime;
-extern std::uint32_t lastIterationsCount;
+namespace Physics {
+	extern std::uint32_t updateGridTime;
+	extern std::uint32_t findCollisionsTime;
+	extern std::uint32_t lastRawDetectionTime;
+	extern std::uint32_t correctTime;
+	extern std::uint32_t lastIterationsCount;
 
-class PhysicsSystem : public System {
-public:
-	static const Layer MAX_LAYERS = 16;
-	static const std::uint32_t GRID_SIZE = 100;
+	const Layer MAX_LAYERS = 16;
+	const std::uint32_t GRID_SIZE = 100;
 
-public:
-	PhysicsSystem();
-	void SetLayer(Layer a, Layer b, bool flag);
-	bool WillCollide(Layer a, Layer b);
-	void PhysicsUpdate(float dt) override;
+	struct Cell {
+		std::size_t hash;
+		Cell(Vec2 vec);
 
-	static std::shared_ptr<PhysicsSystem> RegisterPhysics();
+		bool operator==(const Cell other) const;
+	};
 
-private:
-	void UpdateVelocities(float dt);
-    void FindCollisions();
-    void CheckEntity(const Entity entity2, const Entity entity1, const Collider2D& collider1, const MTransform& tr1);
+	struct CellHasher {
+		std::size_t operator()(const Cell& k) const;
+	};
 
-    void ResolveCollisions();
+	class PhysicsSystem : public System {
+	public:
 
-    void CorrectPositions(const Collider2D& a, const Collider2D& b, const Collision2D& collision, MTransform& tr1, MTransform& tr2);
+	public:
+		PhysicsSystem();
+		void SetLayer(Layer a, Layer b, bool flag);
+		bool WillCollide(Layer a, Layer b);
+		void PhysicsUpdate(float dt) override;
 
-    void CorrectVelocities(Collider2D& a, Collider2D& b, const Collision2D& collision);
-	
-	void UpdateGrid();
+		static std::shared_ptr<PhysicsSystem> RegisterPhysics();
 
-	std::int32_t GetHash(Vec2 position);
+	private:
+		void UpdateVelocities(float dt);
+		void FindCollisions();
+		void CheckEntity(const Entity entity2, const Entity entity1, const Collider2D& collider1, const MTransform& tr1);
 
-	void GetNeighbors(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
-	void GetCell(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
+		void ResolveCollisions();
 
-private:
-	std::unordered_map<std::int32_t, std::unordered_set<Entity>> _grid;
+		void CorrectPositions(const Collider2D& a, const Collider2D& b, const Collision2D& collision, MTransform& tr1, MTransform& tr2);
 
-	std::vector<Collision2D> collisions;
-	std::mutex physicsMutex;
-	bool layers[MAX_LAYERS][MAX_LAYERS];
-};
+		void CorrectVelocities(Collider2D& a, Collider2D& b, const Collision2D& collision);
+		
+		void UpdateGrid();
 
-Collision2D IsColliding(Vec2 posA, Vec2 posB, Vec2 scaleA, Vec2 scaleB);
+		void GetNeighbors(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
+		void GetCell(Entity entityToCheck, Vec2 position, const Collider2D& collision, const MTransform& transform);
+
+	private:
+		std::unordered_map<Cell, std::unordered_set<Entity>, CellHasher> _grid;
+
+		std::array<Vec2, MAX_ENTITIES> _positions;
+		std::vector<Collision2D> collisions;
+		std::mutex physicsMutex;
+		bool layers[MAX_LAYERS][MAX_LAYERS];
+	};
+
+	Collision2D IsColliding(Vec2 posA, Vec2 posB, Vec2 scaleA, Vec2 scaleB);
+}
+

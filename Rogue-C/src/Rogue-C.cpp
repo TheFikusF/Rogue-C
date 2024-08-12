@@ -39,7 +39,7 @@ std::vector<Scene> ConstructScenes() {
             ECS::RegisterComponent<Collider2D>();
 
         }, [animation]() -> void {
-            auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
+            auto physicsSystem = ECS::RegisterSystem<Physics::PhysicsSystem>();
             auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
             auto enemySystem = ECS::RegisterSystem<EnemySystem>();
             auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
