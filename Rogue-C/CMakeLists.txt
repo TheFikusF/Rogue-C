@@ -8,6 +8,8 @@ endif()
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_definitions(-DLOG_LEVEL_ALL)
+#add_definitions(-DARRAY_COMPONENT_ARRAYS)
+add_definitions(-DMAP_COMPONENT_ARRAYS)
 #add_definitions(-DLOG_TO_FILE)
 #add_definitions(-DDEBUG_PANEL)
 add_compile_options(-fopenmp)
