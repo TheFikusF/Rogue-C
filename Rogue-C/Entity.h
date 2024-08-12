@@ -16,26 +16,27 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 class EntityManager {
 public:
-EntityManager();
+	std::uint32_t _entityCount;
+
+public:
+	EntityManager();
 
 	Entity New();
 
-	void Destroy(const Entity&  entity);
+	void Destroy(const Entity  entity);
 
-	void SetSignature(const Entity&  entity, Signature signature);
+	void SetSignature(const Entity  entity, Signature signature);
 
-	Signature GetSignature(const Entity&  entity) const;
+	Signature GetSignature(const Entity  entity) const;
 
-	Entity GetParent(const Entity&  entity) const;
+	Entity GetParent(const Entity  entity) const;
 
-	const std::vector<Entity>& GetChildren(const Entity&  entity) const;
+	const std::vector<Entity>& GetChildren(const Entity  entity) const;
 	
-	void SetParent(const Entity& child, const Entity& parent);
-
-	std::uint32_t _entityCount;
+	void SetParent(const Entity child, const Entity parent);
 
 private:
-	std::mutex entityMutex;
+	std::mutex _entityMutex;
 	
 	std::queue<Entity> _availableEntities{};
 	std::array<Signature, MAX_ENTITIES> _signatures{};

@@ -18,6 +18,7 @@
 #include "PickUp.h"
 #include "Game.h"
 #include "InputSystem.h"
+#include "Button.h"
 #include <assert.h>
 
 std::vector<Scene> ConstructScenes() {
@@ -38,7 +39,7 @@ std::vector<Scene> ConstructScenes() {
             ECS::RegisterComponent<Collider2D>();
 
         }, [animation]() -> void {
-            auto physicsSystem = ECS::RegisterSystem<PhysicsSystem>();
+            auto physicsSystem = ECS::RegisterSystem<Physics::PhysicsSystem>();
             auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
             auto enemySystem = ECS::RegisterSystem<EnemySystem>();
             auto bulletSystem = ECS::RegisterSystem<BulletSystem>();
@@ -51,7 +52,7 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<Player>(player, Player{ 
                 .speed = 100, 
                 .health = Health(10, 0.2f, []() -> void { LOG_WARNING("PLAYER DIED"); }), 
-                .shootCooldown = Timer(0.5f), 
+                .shootCooldown = Timer(0.1f), 
                 .abilityDuration = Timer(1.0f), 
                 .abilityAmplitude = Timer(0.2f) });
 
@@ -62,6 +63,16 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
             enemySystem->SetUp(player, 2, 3, 4);
+
+            Entity button = ECS::CreateEntity();
+            ECS::AddComponent<MTransform>(button, MTransform(Vec2(100, 100), Vec2(100, 100)));
+            ECS::AddComponent<UIDrawer>(button, UIDrawer(WHITE));
+            ECS::AddComponent<Button>(button, Button());
+
+            Entity button1 = ECS::CreateEntity();
+            ECS::AddComponent<MTransform>(button1, MTransform(Vec2(200, 50), Vec2(100, 50)));
+            ECS::AddComponent<UIDrawer>(button1, UIDrawer(WHITE));
+            ECS::AddComponent<Button>(button1, Button());
         }),
 
         Scene([]() -> void {}, []() -> void {

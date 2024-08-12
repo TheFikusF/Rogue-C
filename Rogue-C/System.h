@@ -52,5 +52,9 @@ public:
 private:
 	std::unordered_map<const char*, Signature> _signatures;
 
+	std::unordered_map<const char*, std::uint32_t> _updateTimings;
+	std::unordered_map<const char*, std::uint32_t> _physUpdateTimings;
+	std::unordered_map<const char*, std::uint32_t> _drawTimings;
+
 	std::unordered_map<const char*, std::shared_ptr<System>> _systems;
 };

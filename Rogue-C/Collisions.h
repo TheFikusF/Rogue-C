@@ -29,3 +29,5 @@ struct Collision2D {
 	Vec2 normal;
 	float depth;
 };
+
+bool PointInRectangle(Vec2 point, Vec2 position, Vec2 scale);
