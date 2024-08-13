@@ -14,9 +14,10 @@ namespace Physics {
 	extern std::uint32_t correctTime;
 	extern std::uint32_t lastIterationsCount;
 
-	const Layer MAX_LAYERS = 16;
-	const std::uint32_t GRID_SIZE = 100;
-
+	constexpr Layer MAX_LAYERS = 16;
+	constexpr std::uint32_t GRID_SIZE = 100;
+    constexpr float GRAVITY = 9.81f;
+	
 	struct Cell {
 		std::size_t hash;
 		Cell(Vec2 vec);
@@ -62,6 +63,7 @@ namespace Physics {
 		std::vector<Collision2D> collisions;
 		std::mutex physicsMutex;
 		bool layers[MAX_LAYERS][MAX_LAYERS];
+
 	};
 
 	Collision2D IsColliding(Vec2 posA, Vec2 posB, Vec2 scaleA, Vec2 scaleB);

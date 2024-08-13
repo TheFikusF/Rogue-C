@@ -5,6 +5,7 @@
 #include "ParticleSystem.h"
 #include "UIDrawer.h"
 #include "Button.h"
+#include "Tween.h"
 
 Scene::Scene(std::function<void(void)> registerComponents, std::function<void(void)> onStart) 
     : registerComponents(registerComponents), onStart(onStart), started(false) { }
@@ -34,6 +35,7 @@ void Scene::Start() {
     auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
     auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
     auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
+    auto tweenSystem = ECS::RegisterSystem<TweenSystem>();
 
     onStart();
 }
