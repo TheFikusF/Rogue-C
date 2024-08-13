@@ -15,6 +15,8 @@ public:
 	virtual void PhysicsUpdate(float dt) { }
 	virtual void Draw() { }
 
+	virtual void Sync() { }
+
 	virtual void OnEntityAdded(const Entity entity) { }
 	virtual void OnEntityRemoved(const Entity entity) { }
 	
@@ -48,6 +50,8 @@ public:
 	void PhysicsUpdate(float dt);
 
 	void Draw();
+	
+	void Sync();
 
 private:
 	std::unordered_map<const char*, Signature> _signatures;
@@ -55,6 +59,7 @@ private:
 	std::unordered_map<const char*, std::uint32_t> _updateTimings;
 	std::unordered_map<const char*, std::uint32_t> _physUpdateTimings;
 	std::unordered_map<const char*, std::uint32_t> _drawTimings;
+	std::unordered_map<const char*, std::uint32_t> _syncTimings;
 
 	std::unordered_map<const char*, std::shared_ptr<System>> _systems;
 };

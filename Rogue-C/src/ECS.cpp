@@ -46,6 +46,8 @@ void ECS::SetParent(const Entity& child, const Entity& parent) {
 }
 
 void ECS::FreeBin() {
+    _instance->_systemManager->Sync();
+
     for (auto const& collision : _instance->_collisions) {
         _instance->_systemManager->HandleCollision(collision, ECS::GetEntitySignature(collision.a));
         _instance->_systemManager->HandleCollision(

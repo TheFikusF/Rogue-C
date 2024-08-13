@@ -67,12 +67,12 @@ std::vector<Scene> ConstructScenes() {
             Entity button = ECS::CreateEntity();
             ECS::AddComponent<MTransform>(button, MTransform(Vec2(100, 100), Vec2(100, 100)));
             ECS::AddComponent<UIDrawer>(button, UIDrawer(WHITE));
-            ECS::AddComponent<Button>(button, Button());
+            ECS::AddComponent<Button>(button, Button(Vec2(100, 100), []() -> void { LOG("HENLOOO"); }));
 
             Entity button1 = ECS::CreateEntity();
             ECS::AddComponent<MTransform>(button1, MTransform(Vec2(200, 50), Vec2(100, 50)));
             ECS::AddComponent<UIDrawer>(button1, UIDrawer(WHITE));
-            ECS::AddComponent<Button>(button1, Button());
+            ECS::AddComponent<Button>(button1, Button(Vec2(100, 50), []() -> void { LOG("HENLOOO AS WELL!!"); }));
         }),
 
         Scene([]() -> void {}, []() -> void {

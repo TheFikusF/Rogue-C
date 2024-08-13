@@ -5,7 +5,7 @@
 
 struct Button : public IPointerDown, public IPointerUp {
     Vec2 scale;
-    Tween<Vec2>* _tween;
+    TweenID _tween;
     std::function<void (void)> onClick;
     std::function<void (void)> onUp;
 

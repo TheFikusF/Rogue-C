@@ -74,3 +74,11 @@ void SystemManager::Draw() {
         _drawTimings[pair.first] = (std::chrono::high_resolution_clock::now() - updateClock).count();
     }
 }
+
+void SystemManager::Sync() {
+    for (auto const& pair : _systems) {
+        auto updateClock = std::chrono::high_resolution_clock::now();
+        pair.second->Sync();
+        _syncTimings[pair.first] = (std::chrono::high_resolution_clock::now() - updateClock).count();
+    }
+}

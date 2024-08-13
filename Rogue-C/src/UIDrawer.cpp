@@ -23,7 +23,7 @@ void UIDrawerSystem::Update(float dt) {
             }
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             for(auto pointerDown : dr.pointerUps) {
                 pointerDown->PointerUp(entity);
             }
