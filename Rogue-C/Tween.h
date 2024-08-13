@@ -61,7 +61,6 @@ public:
         std::unique_lock<std::mutex> lock(_instance->_mutex);
         Tween<T>* tween = new Tween<T>(what, where, lerp, duration);
         tween->id = _instance->_availableIDs.front();
-        LOG(std::format("started tween ID {}", tween->id));
         tween->m_timer.Start();
 
         _instance->_availableIDs.pop();

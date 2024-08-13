@@ -18,7 +18,6 @@ void TweenSystem::Complete(ITween* tween) {
 
     tween->onComplete();
     tween->onComplete = []() -> void {};
-    LOG(std::format("completing tween ID {}", tween->id));
     Stop(tween);
 }
 
@@ -28,7 +27,6 @@ void TweenSystem::Kill(TweenID tween) {
     }
 
     _instance->_tweeners[tween]->onKill();
-    LOG(std::format("killing tween ID {}", tween));
     Stop(_instance->_tweeners[tween]);
 }
 
@@ -49,18 +47,14 @@ void TweenSystem::Update(float dt) {
 
 void TweenSystem::Sync() {
     for(TweenID id : _scheduledToStop) {
-        LOG(std::format("killing tween ID {}", id));
         _instance->_availableIDs.push(id);
         delete _instance->_tweeners[id];
         _instance->_tweeners[id] = nullptr;
     }
+
     _scheduledToStop.clear();
 }
 
 void TweenSystem::Stop(ITween* tween) {
-    // LOG(std::format("killing tween ID {}", tween->id));
-    // _instance->_availableIDs.push(tween->id);
-    // _instance->_tweeners[tween->id] = nullptr;
-    // delete tween;
     _instance->_scheduledToStop.insert(tween->id);
 }

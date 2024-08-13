@@ -11,7 +11,6 @@ void Button::PointerDown(Entity entity) {
     TweenSystem::Kill(_tween);
     _tween = TweenSystem::To(tr.scale, Vec2(scale.x * 0.9f, scale.y * 1.1f), Vec2::Lerp, 0.1f);
     onClick();
-    LOG("DOWN");
 }
 
 void Button::PointerUp(Entity entity) {
@@ -19,5 +18,4 @@ void Button::PointerUp(Entity entity) {
     TweenSystem::Kill(_tween);
     _tween = TweenSystem::To(tr.scale, scale, Vec2::Lerp, 0.1f);
     onUp();
-    LOG("UP");
 }
