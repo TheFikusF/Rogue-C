@@ -1,9 +1,10 @@
 #include "Health.h"
 #include "math.h"
 
-Health::Health(int max) : max(max), current(max), onDeath([]() -> void {}), invincibilityTime(0.2f), invincible(false) {}
+Health::Health(int max) : max(max), current(max), onDeath([]() -> void {}), invincibilityTime(0.2f), invincible(false), onTakeDamage([](int i) -> void {}) {}
 
-Health::Health(int max, float invincibilityTime, std::function<void(void)> onDeath) : max(max), current(max), onDeath(onDeath), invincibilityTime(invincibilityTime), invincible(false) {}
+Health::Health(int max, float invincibilityTime, std::function<void(void)> onDeath) 
+    : max(max), current(max), onDeath(onDeath), invincibilityTime(invincibilityTime), invincible(false), onTakeDamage([](int i) -> void {})  {}
 
 void Health::TakeDamage(int amount) {
     if(invincible == true) {
@@ -11,6 +12,7 @@ void Health::TakeDamage(int amount) {
     }
 
     current = std::max(0, current - amount);
+    onTakeDamage(current);
     invincible = true;
     invincibilityTime.Start();
 

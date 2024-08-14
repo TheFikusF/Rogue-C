@@ -8,10 +8,15 @@
 #include "SpriteManager.h"
 #include <vector>
 #include <memory>
+#include "Tween.h"
 
 struct Enemy {
+    TweenID sequence;
     float speed;
-    Health health{};
+    Health health;
+
+    Enemy();
+    Enemy(Entity entity, float size, float speed, int health);
 };
 
 class EnemySystem : public System {

@@ -5,6 +5,30 @@
 #include "Player.h"
 #include "PickUp.h"
 
+Enemy::Enemy() : sequence(DEFAULT_TWEENID) {}
+
+Enemy::Enemy(Entity entity, float size, float speed, int health) : sequence(DEFAULT_TWEENID), speed(speed), health(health, 0.05f, [entity]() -> void { 
+        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        const Enemy& en = ECS::GetComponent<Enemy>(entity);
+        TweenSystem::Kill(en.sequence);
+        ECS::DestroyEntity(entity); 
+        PickUpSystem::Spawn(tr.position);
+    }) {
+
+    this->health.onTakeDamage = [entity, size](int current) -> void {
+        LOG("damaged");
+        MTransform& tr = ECS::GetComponent<MTransform>(entity);
+        Enemy& en = ECS::GetComponent<Enemy>(entity);
+
+        TweenSystem::Kill(en.sequence);
+        Sequence* seq = TweenSystem::MakeSequence();
+        seq->Append(tr.scale, Vec2(size * 1.1f, size * 0.9f), Vec2::Lerp, 0.1f);
+        seq->Append(tr.scale, Vec2(size, size), Vec2::Lerp, 0.1f);
+        seq->Append(tr.scale, Vec2(size * 1.1f, size * 0.9f), Vec2::Lerp, 0.1f);
+        seq->Append(tr.scale, Vec2(size, size), Vec2::Lerp, 0.1f);
+    };
+}
+
 EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Enemy>());
@@ -24,15 +48,10 @@ void EnemySystem::Spawn(Vec2 position) {
     }
 }
 
-
 void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform(position, Vec2(size, size)));
-    ECS::AddComponent<Enemy>(entity, Enemy{ .speed = speed, .health = Health(health, 0.05f, [entity]() -> void { 
-        const MTransform& tr = ECS::GetComponent<MTransform>(entity);
-        ECS::DestroyEntity(entity); 
-        PickUpSystem::Spawn(tr.position);
-    }) } );
+    ECS::AddComponent<Enemy>(entity, Enemy(entity, size, speed, health) );
     ECS::AddComponent<Drawer>(entity, Drawer(sprite));
     ECS::AddComponent<Collider2D>(entity, Collider2D(false, false, 5));
 }
@@ -58,7 +77,6 @@ void EnemySystem::Update(float dt) {
         collider.velocity = (playerPosition - tr.position).GetNormalized() * enemy.speed;
         
         enemy.health.Process(dt);
-        //tr.position += (playerPosition - tr.position).GetNormalized() * enemy.speed * dt;
     }
 }
 

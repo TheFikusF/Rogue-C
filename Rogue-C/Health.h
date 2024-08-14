@@ -9,6 +9,7 @@ struct Health {
     bool invincible;
     Timer invincibilityTime;
     std::function<void (void)> onDeath;
+    std::function<void (int)> onTakeDamage;
 
     Health() = default;
     Health(int max);

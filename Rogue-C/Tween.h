@@ -17,6 +17,8 @@ struct ITween {
     std::function<void(void)> onComplete;
     std::function<void(void)> onKill;
 
+    virtual void Start() = 0;
+
     virtual void Update() = 0;
 };
 
@@ -38,9 +40,42 @@ struct Tween : public ITween {
         onStart = []() -> void {};
     }
 
-    void Update() override {
-        *source = lerp(start, target, m_timer.GetProgress());
+    void Start() override {
+        m_timer.Start();
+        start = *source;
+        onStart();
     }
+
+    void Update() override {
+        *source = lerp(start, target, std::max(std::min(m_timer.GetProgress(), 1.0f), 0.0f));
+    }
+};
+
+struct Sequence : public ITween {
+    Sequence();
+    ~Sequence();
+
+    template <typename T>
+    Tween<T>* Append(T& what, T where, T (*lerpFunc)(T, T, float), float duration) {
+        m_timer.time += duration;
+        m_timer.Start();
+        Tween<T>* tween = new Tween<T>(what, where, lerpFunc, duration);
+        tween->m_timer.Start();
+        tweeners.push_back(tween);
+        return tween;
+    }
+
+
+    void AppendInterval(float duration);
+    void AppendCallback(void (*callback)(void));
+    void Start() override;
+    void Update() override;
+    
+private:
+    std::vector<ITween*> tweeners;
+    float timeSum;
+    std::uint16_t currentTween;
+    float intervalTemp;
 };
 
 class TweenSystem : public System {
@@ -61,12 +96,14 @@ public:
         std::unique_lock<std::mutex> lock(_instance->_mutex);
         Tween<T>* tween = new Tween<T>(what, where, lerp, duration);
         tween->id = _instance->_availableIDs.front();
-        tween->m_timer.Start();
+        tween->Start();
 
         _instance->_availableIDs.pop();
         _instance->_tweeners[tween->id] = tween;
         return tween->id;
     };
+
+    static Sequence* MakeSequence();
 
     static void Kill(TweenID tween);
 

@@ -6,10 +6,9 @@ class Timer {
 private:
     bool started;
 
+public:
     float time;
     float currentTime;
-
-public:
 
     Timer() : started(false) { }
     Timer(float time);
