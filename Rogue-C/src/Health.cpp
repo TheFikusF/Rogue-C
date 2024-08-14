@@ -7,7 +7,7 @@ Health::Health(int max, float invincibilityTime, std::function<void(void)> onDea
     : max(max), current(max), onDeath(onDeath), invincibilityTime(invincibilityTime), invincible(false), onTakeDamage([](int i) -> void {})  {}
 
 void Health::TakeDamage(int amount) {
-    if(invincible == true) {
+    if(invincible == true || current <= 0) {
         return;
     }
 
