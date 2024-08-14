@@ -1,4 +1,5 @@
 #include "Tween.h"
+#include "ASSERT.h"
 
 TweenSystem* TweenSystem::_instance;
 
@@ -33,12 +34,21 @@ Sequence* TweenSystem::MakeSequence() {
 }
 
 void TweenSystem::Kill(TweenID tween) {
-    if (tween == DEFAULT_TWEENID || _instance->_tweeners[tween] == nullptr) {
+    if (tween >= DEFAULT_TWEENID || _instance->_tweeners[tween] == nullptr) {
         return;
     }
 
     _instance->_tweeners[tween]->onKill();
     Stop(_instance->_tweeners[tween]);
+}
+
+bool TweenSystem::IsPlaying(TweenID tween) { 
+    return tween < DEFAULT_TWEENID && _instance->_tweeners[tween] != nullptr;
+}
+
+ITween* TweenSystem::GetTween(TweenID tween) { 
+    ASSERT(tween < DEFAULT_TWEENID, "wrong tween id");
+    return _instance->_tweeners[tween];
 }
 
 void TweenSystem::Update(float dt) {
@@ -73,6 +83,7 @@ void TweenSystem::Stop(ITween* tween) {
 
 Sequence::Sequence() : currentTween(0), timeSum(0), intervalTemp(666) {
     m_timer = Timer(0);
+    ease = Ease::Linear;
     onStart = []() -> void {};
     onComplete = []() -> void {};
     onKill = []() -> void {};

@@ -76,4 +76,14 @@ struct Vec2 {
     static constexpr Vec2 Lerp(const Vec2 a, const Vec2 b, const float t) {
         return Vec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
     }
+
+    static constexpr Vec2 CubicBezier(const Vec2 p1, const Vec2 p2, const float t) {
+        float u = 1 - t;
+        float t2 = t * t;
+        float u2 = u * u;
+        float u3 = u2 * u;
+        float t3 = t2 * t;
+
+        return (p1 * 3 * u2 * t) + (p2 * 3 * u * t2) + (Vec2(1, 1) * t3);
+    }
 };
