@@ -22,6 +22,7 @@ Enemy::Enemy(Entity entity, float size, float speed, int health) : sequence(DEFA
 
         TweenSystem::Kill(en.sequence);
         Sequence* seq = TweenSystem::MakeSequence();
+        en.sequence = seq->id;
         seq->Append(tr.scale, Vec2(size * 1.1f, size * 0.9f), Vec2::Lerp, 0.1f);
         seq->Append(tr.scale, Vec2(size, size), Vec2::Lerp, 0.1f);
         seq->Append(tr.scale, Vec2(size * 1.1f, size * 0.9f), Vec2::Lerp, 0.1f);
