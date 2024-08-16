@@ -145,7 +145,7 @@ namespace Core {
     }
 
     void Debug::DrawBlock(const char* name, std::unordered_map<const char *, uint32_t>::iterator begin, std::unordered_map<const char *, uint32_t>::iterator end, std::uint32_t totalTime, std::uint16_t& y) {
-        DrawText(std::format(name).c_str(), 0, y, 10, WHITE);
+        DrawText(name, 0, y, 10, WHITE);
         y += 10;
         std::unordered_map<const char *, uint32_t> arr(begin, end);
         for(auto const pair : arr) {
