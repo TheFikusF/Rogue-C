@@ -159,13 +159,13 @@ namespace Core {
             return;
         }
 
-        std::uint16_t size = 80;
+        std::uint16_t size = 60;
         switch (Debug::benchmarkMode)
         {
-        case 2: size += Debug::updateTimings.size() * 10; break;
-        case 3: size += Debug::updateTimings.size() * 10; break;
-        case 4: size += Debug::updateTimings.size() * 10; break;
-        case 5: size += Debug::updateTimings.size() * 10 * 3 + 50; break;
+        case 2: size += Debug::updateTimings.size() * 10 + 20; break;
+        case 3: size += Debug::updateTimings.size() * 10 + 20; break;
+        case 4: size += Debug::updateTimings.size() * 10 + 20; break;
+        case 5: size += Debug::updateTimings.size() * 10 * 3 + 60; break;
         default: break;
         }
 
@@ -177,26 +177,19 @@ namespace Core {
         curHeight = 20;
         switch (Debug::benchmarkMode)
         {
-        case 2: Debug::DrawBlock("UPDATE:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight); break;
-        case 3: Debug::DrawBlock("PHYSICS:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight); break;
-        case 4: Debug::DrawBlock("DRAW:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight); break;
+        case 2: Debug::DrawBlock("UPDATE THREAD:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight); break;
+        case 3: Debug::DrawBlock("PHYSICS THREAD:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight); break;
+        case 4: Debug::DrawBlock("DRAW THREAD:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight); break;
         case 5: 
-            Debug::DrawBlock("UPDATE:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight);
-            curHeight += 10;
-            Debug::DrawBlock("PHYSICS:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight);
-            curHeight += 10;
-            Debug::DrawBlock("DRAW:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight);
+            Debug::DrawBlock("UPDATE THREAD:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight);
+            Debug::DrawBlock("PHYSICS: THREAD", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight += 10);
+            Debug::DrawBlock("DRAW THREAD:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight += 10);
             break;
         default: curHeight -= 10; break;
         }
 
-        curHeight += 10;
-        Debug::DrawBar("Update", curHeight, totalUpdateTime, Debug::totalFrameTime, GREEN);
-
-        curHeight += 10;
-        Debug::DrawBar("Physics", curHeight, totalPhysicsTime, Debug::totalFrameTime, YELLOW);
-
-        curHeight += 10;
-        Debug::DrawBar("Draw", curHeight, totalDrawTime, Debug::totalFrameTime, MAGENTA);
+        Debug::DrawBar("Update", curHeight += 10, totalUpdateTime, Debug::totalFrameTime, GREEN);
+        Debug::DrawBar("Physics", curHeight += 10, totalPhysicsTime, Debug::totalFrameTime, YELLOW);
+        Debug::DrawBar("Draw", curHeight += 10, totalDrawTime, Debug::totalFrameTime, MAGENTA);
     }
 }
