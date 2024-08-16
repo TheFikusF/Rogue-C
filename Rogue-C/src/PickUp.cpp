@@ -3,6 +3,8 @@
 #include "Transform.h"
 #include "SpinningSphere.h"
 
+using namespace Core;
+
 PickUpSystem::PickUpSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Collider2D>());

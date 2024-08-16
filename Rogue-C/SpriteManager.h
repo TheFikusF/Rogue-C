@@ -3,35 +3,32 @@
 #include "./include/raylib/raylib.h"
 #include <cstdint>
 
-using Sprite = std::size_t;
+using SpriteID = std::uint32_t;
+using TextureID = std::uint32_t;
+
+struct Sprite {
+    TextureID texture;
+    Rectangle rect;
+
+    Sprite(TextureID texture, Rectangle rect);
+    Sprite(TextureID texture);
+};
 
 class SpriteManager
 {
 private:
-    static std::vector<Texture2D> textures;
+    std::vector<Sprite> sprites;
+    std::vector<Texture2D> textures;
     
 public:
-    static void Init() {
-        Image image1 = GenImageColor(10, 10, WHITE);
-        Image image2 = GenImageColor(64, 64, Color(0, 0, 0, 0));
-        ImageDrawCircle(&image2, 32, 32, 32, WHITE);
-        textures.emplace_back(LoadTextureFromImage(image1));
-        textures.emplace_back(LoadTextureFromImage(image2));
-    }
+    static void Init();
 
-    static Sprite RegisterTexture(const char* path) { 
-        Image image = LoadImage(path);
-        textures.emplace_back(LoadTextureFromImage(image));
-        return textures.size() - 1; 
-    }
+    static TextureID RegisterTexture(const char* path);
+    static SpriteID RegisterSprite(const TextureID texture);
+    static SpriteID RegisterSprite(const TextureID texture, Rectangle rect);
 
-    static Texture2D& GetTexture(const Sprite& sprite) {
-        return textures[sprite];
-    }
+    static Texture2D& GetTexture(const TextureID& sprite);
+    static Sprite& GetSprite(const SpriteID& sprite);
 
-    static void UnloadAll() {
-        for (int i = textures.size() - 1; i >= 0; i--) {
-            UnloadTexture(textures[i]);
-        }
-    }
+    static void UnloadAll();
 };

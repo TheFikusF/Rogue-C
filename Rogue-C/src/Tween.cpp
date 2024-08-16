@@ -1,6 +1,8 @@
 #include "Tween.h"
 #include "ASSERT.h"
 
+using namespace Core;
+
 TweenSystem* TweenSystem::_instance;
 
 TweenSystem::TweenSystem() {

@@ -116,7 +116,7 @@ private:
     float intervalTemp;
 };
 
-class TweenSystem : public System {
+class TweenSystem : public Core::System {
 private:
     std::array<ITween*, MAX_ENTITIES> _tweeners;
     std::queue<TweenID> _availableIDs;

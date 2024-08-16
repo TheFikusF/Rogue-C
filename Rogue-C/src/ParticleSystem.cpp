@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 #include "./include/raylib/raymath.h"
 
+using namespace Core;
+
 ParticleSystemSystem::ParticleSystemSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
 	signature.set(ECS::GetComponentType<ParticleSystem>());

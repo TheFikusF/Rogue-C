@@ -2,17 +2,19 @@
 #include <functional>
 #include "ECS.h"
 
-class Scene
-{
-private:
-    bool started;
-    std::function<void (void)> registerComponents;
-    std::function<void (void)> onStart;
+namespace Core {
+    class Scene
+    {
+    private:
+        bool started;
+        std::function<void (void)> registerComponents;
+        std::function<void (void)> onStart;
 
-public:
-    Scene(std::function<void (void)> registerComponents, std::function<void (void)> onStart);
-    ~Scene();
+    public:
+        Scene(std::function<void (void)> registerComponents, std::function<void (void)> onStart);
+        ~Scene();
 
-    void Start();
-    void Clear();
-};
+        void Start();
+        void Clear();
+    };
+}

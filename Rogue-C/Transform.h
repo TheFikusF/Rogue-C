@@ -16,7 +16,7 @@ struct MTransform {
 	MTransform(Vec2 position, Vec2 scale, float rotation);
 };
 
-class MTransformSystem : public System {
+class MTransformSystem : public Core::System {
 public:
 	static const Vec2 GetRealPosition(const Entity& entity);
 

@@ -26,58 +26,58 @@ struct UIDrawer : public Drawer {
 };
 
 template<typename T>
-class PointerCallbackSystem : public System {
+class PointerCallbackSystem : public Core::System {
 public:
     PointerCallbackSystem() {
-        signature.set(ECS::GetComponentType<T>());
+        signature.set(Core::ECS::GetComponentType<T>());
     }
 
     void OnEntityAdded(Entity entity) override {
-        if(ECS::HasComponent<T>(entity) == false) {
+        if(Core::ECS::HasComponent<T>(entity) == false) {
             return;
         }
 
-        UIDrawer& drawer = ECS::GetComponent<UIDrawer>(entity);
+        UIDrawer& drawer = Core::ECS::GetComponent<UIDrawer>(entity);
         if(std::derived_from<T, IPointerDown>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerDowns.insert((IPointerDown*)&pointerDown);
         }
 
         if(std::derived_from<T, IPointerUp>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerUps.insert((IPointerUp*)&pointerDown);
         }
 
         if(std::derived_from<T, IPointerHover>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerHovers.insert((IPointerHover*)&pointerDown);
         }
     }
     
     void OnEntityRemoved(Entity entity) override {
-        if(ECS::HasComponent<T>(entity) == false) {
+        if(Core::ECS::HasComponent<T>(entity) == false) {
             return;
         }
 
-        UIDrawer& drawer = ECS::GetComponent<UIDrawer>(entity);
+        UIDrawer& drawer = Core::ECS::GetComponent<UIDrawer>(entity);
         if(std::derived_from<T, IPointerDown>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerDowns.erase((IPointerDown*)&pointerDown);
         }
 
         if(std::derived_from<T, IPointerUp>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerUps.erase((IPointerUp*)&pointerDown);
         }
 
         if(std::derived_from<T, IPointerHover>) {
-            T& pointerDown = ECS::GetComponent<T>(entity);
+            T& pointerDown = Core::ECS::GetComponent<T>(entity);
             drawer.pointerHovers.erase((IPointerHover*)&pointerDown);
         }
     }
 };
 
-class UIDrawerSystem : public System {
+class UIDrawerSystem : public Core::System {
 public:
     UIDrawerSystem();
 

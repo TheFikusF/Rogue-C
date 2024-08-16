@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "PickUp.h"
 
+using namespace Core;
+
 Enemy::Enemy() : sequence(DEFAULT_TWEENID) {}
 
 Enemy::Enemy(Entity entity, float size, float speed, int health) : sequence(DEFAULT_TWEENID), speed(speed), health(health, 0.05f, [entity]() -> void { 
@@ -49,7 +51,7 @@ void EnemySystem::Spawn(Vec2 position) {
     }
 }
 
-void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
+void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, SpriteID sprite) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform(position, Vec2(size, size)));
     ECS::AddComponent<Enemy>(entity, Enemy(entity, size, speed, health) );
@@ -81,7 +83,7 @@ void EnemySystem::Update(float dt) {
     }
 }
 
-void EnemySystem::SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite) {
+void EnemySystem::SetUp(Entity player, SpriteID defaultSprite, SpriteID bigSprite, SpriteID smallSprite) {
     _player = player;
     _defaultEnemySprite = defaultSprite;
     _bigEnemySprite = bigSprite;

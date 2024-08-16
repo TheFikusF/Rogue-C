@@ -3,7 +3,7 @@
 #include "System.h"
 #include "Transform.h"
 
-class InputSystem : public System {
+class InputSystem : public Core::System {
 private:
     Vec2 _movementAxis;
     Vec2 _shootingAxis;

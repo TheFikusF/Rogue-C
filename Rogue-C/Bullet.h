@@ -10,7 +10,7 @@ struct Bullet {
     float timer;
 };
 
-class BulletSystem : public System {
+class BulletSystem : public Core::System {
 public:
     BulletSystem();
 

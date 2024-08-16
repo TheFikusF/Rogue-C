@@ -3,6 +3,8 @@
 #include "ParticleSystem.h"
 #include "SpinningSphere.h"
 
+using namespace Core;
+
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Bullet>());

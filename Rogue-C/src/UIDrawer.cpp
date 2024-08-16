@@ -2,6 +2,8 @@
 #include "Collisions.h"
 #include "Transform.h"
 
+using namespace Core;
+
 UIDrawerSystem::UIDrawerSystem() {
     signature.set(ECS::GetComponentType<UIDrawer>());
     signature.set(ECS::GetComponentType<MTransform>());
@@ -41,10 +43,12 @@ void UIDrawerSystem::Draw() {
         const UIDrawer& drawer = ECS::GetComponent<UIDrawer>(entity);
         Vec2 realpos = MTransformSystem::GetRealPosition(entity);
 
-        Texture2D& tex = SpriteManager::GetTexture(drawer.sprite);
+        const Sprite& sprite = SpriteManager::GetSprite(drawer.sprite);
+        const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
+
         Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
         
-        DrawTexturePro(tex, drawer.sourceRect, 
+        DrawTexturePro(tex, sprite.rect, 
             { realpos.x, realpos.y, tr.scale.x * 2.0f, tr.scale.y * 2.0f},
             { tr.scale.x, tr.scale.y }, tr.rotation,  drawer.color);
     }

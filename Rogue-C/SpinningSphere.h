@@ -12,7 +12,7 @@ struct SpinningSphere {
     float timer;
 };
 
-class SpinningSphereSystem : public System {
+class SpinningSphereSystem : public Core::System {
 public:
     SpinningSphereSystem();
     void Update(float dt) override;

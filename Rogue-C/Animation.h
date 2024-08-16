@@ -7,21 +7,15 @@
 #include "Timer.h"
 #include "Drawer.h"
 
-struct Frame {
-    Vec2 size;
-    Vec2 position;
-    Sprite sprite;
-};
-
 struct Animation {
     bool loop;
     float frameTime;
-    std::vector<Frame> frames;
+    std::vector<SpriteID> frames;
 
     Animation() = default;
-    Animation(const Sprite& sprite, const Vec2& size, const Vec2& start, const int framesCount);
-    Animation(const Sprite& sprite, const Vec2& size, const Vec2 start[]);
-    Animation(const Frame start[]);
+    Animation(const TextureID sprite, const Vec2 size, const Vec2 start, const int framesCount);
+    Animation(const TextureID sprite, const Vec2 size, const Vec2 start[]);
+    Animation(const SpriteID start[]);
 };
 
 struct AnimationPlayer {
@@ -35,7 +29,7 @@ struct AnimationPlayer {
     void Play(Animation* animation);
 };
 
-class AnimationPlayerSystem : public System {
+class AnimationPlayerSystem : public Core::System {
 public:
     AnimationPlayerSystem();
 

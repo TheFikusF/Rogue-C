@@ -27,7 +27,7 @@ struct ParticleSystem {
 	Vec2 scaleToTime;
 };
 
-class ParticleSystemSystem : public System {
+class ParticleSystemSystem : public Core::System {
 private:
 	std::queue<uint32_t> particlesQueue;
 	std::array<Particle, MAX_ENTITIES * 4> particles;

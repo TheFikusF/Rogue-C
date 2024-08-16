@@ -29,7 +29,7 @@ namespace Physics {
 		std::size_t operator()(const Cell& k) const;
 	};
 
-	class PhysicsSystem : public System {
+	class PhysicsSystem : public Core::System {
 	public:
 
 	public:

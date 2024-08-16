@@ -1,5 +1,7 @@
 #include "SpinningSphere.h"
 
+using namespace Core;
+
 SpinningSphereSystem::SpinningSphereSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
 	signature.set(ECS::GetComponentType<SpinningSphere>());

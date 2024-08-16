@@ -2,19 +2,23 @@
 #include "LOG.h"
 #include <iterator>
 
-Animation::Animation(const Sprite& sprite, const Vec2& size, const Vec2& start, const int framesCount) : loop(true), frameTime(1.0f / 24.0f) {
+using namespace Core;
+
+Animation::Animation(const TextureID texture, const Vec2 size, const Vec2 start, const int framesCount) : loop(true), frameTime(1.0f / 24.0f) {
     for(int i = 0; i < framesCount; i++) {
-        frames.emplace_back(size, Vec2(start.x + i * size.x, start.y), sprite);
+        SpriteID id = SpriteManager::RegisterSprite(texture, { start.x + i * size.x, start.y, size.x, size.y });
+        frames.push_back(id);
     }
 }
 
-Animation::Animation(const Sprite& sprite, const Vec2& size, const Vec2 start[]) : loop(true), frameTime(1.0f / 24.0f) {
+Animation::Animation(const TextureID texture, const Vec2 size, const Vec2 start[]) : loop(true), frameTime(1.0f / 24.0f) {
     for(int i = 0; i < (sizeof(start)/sizeof(*start)); i++) {
-        frames.emplace_back(size, start[i], sprite);
+        SpriteID id = SpriteManager::RegisterSprite(texture, { start[i].x + i * size.x, start[i].y, size.x, size.y });
+        frames.emplace_back(id);
     }
 }
 
-Animation::Animation(const Frame start[]) : loop(true), frameTime(1.0f / 24.0f)  {
+Animation::Animation(const SpriteID start[]) : loop(true), frameTime(1.0f / 24.0f)  {
     for(int i = 0; i < (sizeof(start)/sizeof(*start)); i++) {
         frames.emplace_back(start[i]);
     }
@@ -45,10 +49,7 @@ void AnimationPlayerSystem::Update(float dt) {
                 }
             }
 
-            const Frame& currentFrame = player.currentAnimation->frames[player.currentFrame];
-            
-            drawer.sourceRect = { currentFrame.position.x, currentFrame.position.y, currentFrame.size.x, currentFrame.size.y };
-            drawer.sprite = currentFrame.sprite;
+            drawer.sprite = player.currentAnimation->frames[player.currentFrame];
             player.time.Start();
         }
     }

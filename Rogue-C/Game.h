@@ -8,27 +8,38 @@
 #include "SpriteManager.h"
 #include "Animation.h"
 
-class Game
-{
-private:
-    float _mainDt = 1;
-    float _physicsDt = 1;
-    std::atomic<bool> _gameRunning;
-    std::barrier<std::function<void()>> _barrier;
+namespace Core{
+    namespace Debug {
+        void DrawBar(const char* name, std::uint16_t y, std::uint32_t time, std::uint32_t totalTime, Color color);
+        void DrawBlock(const char* name, 
+            std::unordered_map<const char *, uint32_t>::iterator begin, std::unordered_map<const char *, uint32_t>::iterator end, 
+            std::uint32_t totalTime, std::uint16_t& y);
+        
+        void DrawInfo();
+    }
 
-    std::vector<Scene> _scenes;
-    int _currentScene;
-    int _scheduledScene;
+    class Game
+    {
+    private:
+        float _mainDt = 1;
+        float _physicsDt = 1;
+        std::atomic<bool> _gameRunning;
+        std::barrier<std::function<void()>> _barrier;
 
-public:
-    Game();
-    ~Game();
+        std::vector<Scene> _scenes;
+        int _currentScene;
+        int _scheduledScene;
 
-    void Run();
-    void AddScenes(std::vector<Scene> scenes);
-    void SetScene(std::uint8_t index);
+    public:
+        Game();
+        ~Game();
 
-private:
-    static void ProcessMain(Game* instance);
-    static void ProcessPhysics(Game* instance);
-};
+        void Run();
+        void AddScenes(std::vector<Scene> scenes);
+        void SetScene(std::uint8_t index);
+
+    private:
+        static void ProcessMain(Game* instance);
+        static void ProcessPhysics(Game* instance);
+    };
+}

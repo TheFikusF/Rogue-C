@@ -19,7 +19,7 @@ struct Enemy {
     Enemy(Entity entity, float size, float speed, int health);
 };
 
-class EnemySystem : public System {
+class EnemySystem : public Core::System {
 public:
     EnemySystem();
 
@@ -27,16 +27,16 @@ public:
     
     void Update(float dt) override;
 
-    void SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite);
+    void SetUp(Entity player, SpriteID defaultSprite, SpriteID bigSprite, SpriteID smallSprite);
 
     void OnCollision(const Collision2D& collision) override;
     
 private:
-    Sprite _defaultEnemySprite;
-    Sprite _bigEnemySprite;
-    Sprite _smallEnemySprite;
+    SpriteID _defaultEnemySprite;
+    SpriteID _bigEnemySprite;
+    SpriteID _smallEnemySprite;
     Entity _player;
     float _spawnTime;
 
-    void SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite);
+    void SpawnType(Vec2 position, int health, float speed, float size, SpriteID sprite);
 };

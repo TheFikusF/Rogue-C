@@ -3,7 +3,7 @@
 #include "System.h"
 #include "Player.h"
 
-enum class PickUpType : uint8_t {
+enum class PickUpType : std::uint8_t {
     Heal,
     DamageBust,
     SpinningSphere,
@@ -13,7 +13,7 @@ struct PickUp {
     PickUpType type;
 };
 
-class PickUpSystem : public System {
+class PickUpSystem : public Core::System {
 public:
     PickUpSystem();
     

@@ -5,25 +5,22 @@
 
 struct Drawer {
     Color color;
-    Sprite sprite;
-    Rectangle sourceRect;
+    SpriteID sprite;
 
     Drawer() : sprite(0), color(WHITE) {}
     Drawer(const Color& color) : sprite(0), color(color) {}
-    Drawer(const Sprite& sprite) 
+    Drawer(const SpriteID& sprite) 
         : sprite(sprite), 
-        color(WHITE), 
-        sourceRect(Rectangle(0, 0, SpriteManager::GetTexture(sprite).width, SpriteManager::GetTexture(sprite).height)) {}
+        color(WHITE) {}
 
-    Drawer(const Sprite& sprite, const Color& color)
+    Drawer(const SpriteID& sprite, const Color& color)
         : sprite(sprite),
-        color(color),
-        sourceRect(Rectangle(0, 0, SpriteManager::GetTexture(sprite).width, SpriteManager::GetTexture(sprite).height)) {}
+        color(color) {}
 };
 
-class DrawerSystem : public System {
+class DrawerSystem : public Core::System {
 public:
-	uint32_t drawTime;
+	std::uint32_t drawTime;
 
 public:
     DrawerSystem();

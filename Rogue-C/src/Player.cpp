@@ -9,6 +9,8 @@
 #include "Physics.h"
 #include "AudioManager.h"
 
+using namespace Core;
+
 PlayerSystem::PlayerSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Player>());

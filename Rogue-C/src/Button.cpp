@@ -2,6 +2,8 @@
 #include "LOG.h"
 #include "Transform.h"
 
+using namespace Core;
+
 Button::Button() : scale() {}
 
 Button::Button(Vec2 scale, void (*onClickFunc)(void)) : scale(scale), onClick(onClickFunc), onUp([]() -> void {}), _tween(DEFAULT_TWEENID) {}

@@ -2,6 +2,8 @@
 #include "./include/raylib/raylib.h"
 #include "SceneManager.h"
 
+using namespace Core;
+
 InputSystem* InputSystem::_instance;
 
 InputSystem::InputSystem() {

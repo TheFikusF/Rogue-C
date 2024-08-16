@@ -12,7 +12,7 @@ struct Player {
     Timer abilityAmplitude;
 };
 
-class PlayerSystem : public System {
+class PlayerSystem : public Core::System {
 public:
     PlayerSystem();
 
