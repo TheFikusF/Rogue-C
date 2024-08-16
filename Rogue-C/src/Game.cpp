@@ -5,6 +5,7 @@
 
 namespace Core {
     namespace Debug {
+        std::uint8_t benchmarkMode = 0;
         std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::_V2::system_clock::duration> updateClock = std::chrono::high_resolution_clock::now();
         std::uint32_t totalFrameTime = 0;
     }
@@ -65,6 +66,31 @@ namespace Core {
         std::thread physicsThread(ProcessPhysics, this); 
         
         while (!WindowShouldClose()) {
+            if(IsKeyPressed(KEY_F1)) {
+                Debug::benchmarkMode = 0;
+            }
+
+            if(IsKeyPressed(KEY_F2)) {
+                Debug::benchmarkMode = 1;
+            }
+
+            if(IsKeyPressed(KEY_F3)) {
+                Debug::benchmarkMode = 2;
+            }
+
+            if(IsKeyPressed(KEY_F4)) {
+                Debug::benchmarkMode = 3;
+            }
+
+            if(IsKeyPressed(KEY_F5)) {
+                Debug::benchmarkMode = 4;
+            }
+
+            if(IsKeyPressed(KEY_F6)) {
+                Debug::benchmarkMode = 5;
+            }
+
+
             BeginDrawing();
             ClearBackground(BLACK);
             
@@ -119,7 +145,7 @@ namespace Core {
     }
 
     void Debug::DrawBlock(const char* name, std::unordered_map<const char *, uint32_t>::iterator begin, std::unordered_map<const char *, uint32_t>::iterator end, std::uint32_t totalTime, std::uint16_t& y) {
-        DrawText(std::format("UPDATE:").c_str(), 0, y, 10, WHITE);
+        DrawText(std::format(name).c_str(), 0, y, 10, WHITE);
         y += 10;
         std::unordered_map<const char *, uint32_t> arr(begin, end);
         for(auto const pair : arr) {
@@ -129,20 +155,40 @@ namespace Core {
     }
 
     void Debug::DrawInfo() {
-        std::uint16_t size = Debug::updateTimings.size() * 10;
+        if(Debug::benchmarkMode == 0) {
+            return;
+        }
+
+        std::uint16_t size = 80;
+        switch (Debug::benchmarkMode)
+        {
+        case 2: size += Debug::updateTimings.size() * 10; break;
+        case 3: size += Debug::updateTimings.size() * 10; break;
+        case 4: size += Debug::updateTimings.size() * 10; break;
+        case 5: size += Debug::updateTimings.size() * 10 * 3 + 50; break;
+        default: break;
+        }
+
         std::uint16_t curHeight = 0;
-        DrawRectangle(0, 0, 250, 30 + 50 + (size + 10) * 3, Color(0, 0, 0, 180));
+        DrawRectangle(0, 0, 250, size, Color(0, 0, 0, 180));
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 0, 0, 10, WHITE);
         DrawText(std::format("entities: {}", ECS::GetEntityCount()).c_str(), 0, 10, 10, WHITE);
 
         curHeight = 20;
-        Debug::DrawBlock("UPDATE", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight);
-
-        curHeight += 10;
-        Debug::DrawBlock("PHYSICS:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight);
-
-        curHeight += 10;
-        Debug::DrawBlock("DRAW:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight);
+        switch (Debug::benchmarkMode)
+        {
+        case 2: Debug::DrawBlock("UPDATE:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight); break;
+        case 3: Debug::DrawBlock("PHYSICS:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight); break;
+        case 4: Debug::DrawBlock("DRAW:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight); break;
+        case 5: 
+            Debug::DrawBlock("UPDATE:", Debug::updateTimings.begin(), Debug::updateTimings.end(), Debug::totalUpdateTime, curHeight);
+            curHeight += 10;
+            Debug::DrawBlock("PHYSICS:", Debug::physUpdateTimings.begin(), Debug::physUpdateTimings.end(), Debug::totalPhysicsTime, curHeight);
+            curHeight += 10;
+            Debug::DrawBlock("DRAW:", Debug::drawTimings.begin(), Debug::drawTimings.end(), Debug::totalDrawTime, curHeight);
+            break;
+        default: curHeight -= 10; break;
+        }
 
         curHeight += 10;
         Debug::DrawBar("Update", curHeight, totalUpdateTime, Debug::totalFrameTime, GREEN);
