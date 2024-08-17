@@ -8,6 +8,8 @@
 namespace Core {
 	class ComponentManager {
 	public:
+		~ComponentManager();
+		
 		template<typename T>
 		void RegisterComponent() {
 			std::size_t hash = typeid(T).hash_code();
@@ -17,6 +19,7 @@ namespace Core {
 			_componentTypes[hash] = _nextComponentType;
 
 			_componentArrays[hash] = GetComponentArray<T>();
+			GetComponentArray<T>()->Init();
 			++_nextComponentType;
 		}
 

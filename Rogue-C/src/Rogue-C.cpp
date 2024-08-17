@@ -20,6 +20,7 @@
 #include "InputSystem.h"
 #include "Button.h"
 #include <assert.h>
+#include "CameraContorl.h"
 
 using namespace Core;
 
@@ -63,13 +64,10 @@ std::vector<Scene> ConstructScenes() {
                 .abilityDuration = Timer(1.0f), 
                 .abilityAmplitude = Timer(0.2f) });
 
-            InputSystem::SetPlayer(player);
-                
             ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
             ECS::AddComponent<Drawer>(player, Drawer(0));
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
-            enemySystem->SetUp(player, 2, 3, 4);
 
             Entity button = ECS::CreateEntity();
             ECS::AddComponent<MTransform>(button, MTransform(Vec2(100, 100), Vec2(100, 100)));
@@ -80,6 +78,11 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<MTransform>(button1, MTransform(Vec2(200, 50), Vec2(100, 50)));
             ECS::AddComponent<UIDrawer>(button1, UIDrawer(WHITE));
             ECS::AddComponent<Button>(button1, Button(Vec2(100, 50), []() -> void { LOG("HENLOOO AS WELL!!"); }));
+
+            enemySystem->SetUp(player, 2, 3, 4);
+            InputSystem::SetPlayer(player);
+            CameraContorl::SetTarget(player);
+            CameraContorl::SetSmooth(0.2f);
         }),
 
         Scene([]() -> void {}, []() -> void {

@@ -97,6 +97,11 @@ namespace Core {
 
 		static void Draw();
 
+		template<typename T>
+		static std::weak_ptr<T> GetSystem() {
+			return _instance->_systemManager->GetSystem<T>();
+		}
+
 	private:
 		ECS();
 

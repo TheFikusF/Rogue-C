@@ -1,14 +1,9 @@
 #include "InputSystem.h"
 #include "./include/raylib/raylib.h"
 #include "SceneManager.h"
+#include "CameraContorl.h"
 
 using namespace Core;
-
-InputSystem* InputSystem::_instance;
-
-InputSystem::InputSystem() {
-    _instance = this;
-}
 
 void InputSystem::Update(float ds) {
     _movementAxis = Vec2(0, 0);
@@ -37,7 +32,7 @@ void InputSystem::Update(float ds) {
     }
 
     const MTransform& tr = ECS::GetComponent<MTransform>(_player);
-    _shootingAxis = Vec2(GetMouseX(), GetMouseY()) - tr.position;
+    _shootingAxis = Vec2(GetMouseX(), GetMouseY()) - CameraContorl::GetWorldToScreen(tr.position);
     _shootPressed = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
     if(GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X) != 0 || GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y) != 0) {
         _shootingAxis = Vec2(GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X), GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y));
@@ -53,17 +48,17 @@ void InputSystem::Update(float ds) {
 }
 
 const Vec2 InputSystem::GetMovementAxis() {
-    return _instance->_movementAxis;
+    return ECS::GetSystem<InputSystem>().lock()->_movementAxis;
 }
 
 const Vec2 InputSystem::GetShootingAxis() {
-    return _instance->_shootingAxis;
+    return ECS::GetSystem<InputSystem>().lock()->_shootingAxis;
 }
 
 const bool InputSystem::IsShooting() {
-    return _instance->_shootPressed;
+    return ECS::GetSystem<InputSystem>().lock()->_shootPressed;
 }
 
 void InputSystem::SetPlayer(Entity player) {
-    _instance->_player = player;
+    ECS::GetSystem<InputSystem>().lock()->_player = player;
 }

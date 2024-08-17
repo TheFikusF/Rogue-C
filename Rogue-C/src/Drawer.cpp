@@ -1,6 +1,7 @@
 #include "Drawer.h"
 #include <ECS.h>
 #include <Transform.h>
+#include "CameraContorl.h"
 
 using namespace Core;
 
@@ -11,6 +12,7 @@ DrawerSystem::DrawerSystem() : drawTime(0) {
 
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
+    BeginMode2D(CameraContorl::GetCurrent());
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
@@ -27,4 +29,5 @@ void DrawerSystem::Draw() {
     }
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();
+    EndMode2D();
 }

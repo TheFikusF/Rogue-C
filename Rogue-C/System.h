@@ -51,6 +51,13 @@ namespace Core {
 			return system;
 		}
 
+		template <typename T>
+		std::weak_ptr<T> GetSystem() {
+			const char* typeName = typeid(T).name();
+			//std::shared_ptr<System> system = _systems[typeName];
+			return std::static_pointer_cast<T>(_systems[typeName]);
+		}
+
 		void FinishRegistering();
 
 		void EntityDestroyed(Entity entity);
