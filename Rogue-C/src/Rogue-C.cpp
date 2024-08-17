@@ -82,7 +82,7 @@ std::vector<Scene> ConstructScenes() {
             enemySystem->SetUp(player, 2, 3, 4);
             InputSystem::SetPlayer(player);
             CameraContorl::SetTarget(player);
-            CameraContorl::SetSmooth(0.2f);
+            CameraContorl::SetSmooth(0.5f);
         }),
 
         Scene([]() -> void {}, []() -> void {

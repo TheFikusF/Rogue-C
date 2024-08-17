@@ -3,6 +3,18 @@
 #include <limits>
 
 namespace MathF {
+    constexpr float Sign(float a) {
+        if(a == 0) {
+            return 0;
+        }
+        
+        if(a > 0) {
+            return 1;
+        }
+
+        return -1;
+    }
+
     constexpr float Lerp(float a, float b, float t) {
         return a + (b - a) * t;
     }
@@ -15,6 +27,15 @@ namespace MathF {
         return Lerp(toMin, toMax, InvLerp(fromMin, fromMax, value));
     }
 
+    constexpr float MoveTowards(float current, float target, float maxDelta) {
+        if (std::abs(target - current) <= maxDelta) {
+            return target;
+        }
+
+        return current + Sign(target - current) * maxDelta;
+    }
+
+    //FIXME: NOT WORKING, NEED TO BE REMADE LATER
     constexpr float SmoothDamp(
         float current, float target, float& currentVelocity, float smoothTime,
         float deltaTime, float maxSpeed = INFINITY) {

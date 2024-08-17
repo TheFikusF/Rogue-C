@@ -7,7 +7,6 @@ struct Vec2 {
 
     constexpr Vec2() : x(0), y(0) {}
     constexpr Vec2(float x, float y) : x(x), y(y) {}
-    //constexpr Vec2(const Vector2& other) : x(other.x), y(other.y) {}
 
     constexpr Vec2 operator+(const Vec2 other) const {
         return Vec2(x + other.x, y + other.y);
@@ -95,6 +94,7 @@ struct Vec2 {
         return Vec2(MathF::Remap(fromMin.x, fromMax.x, toMin.x, toMax.x, value), MathF::Remap(fromMin.y, fromMin.y, toMin.y, toMax.y, value));
     }
 
+    //FIXME: NOT WORKING, NEED TO BE REMADE LATER
     static constexpr Vec2 SmoothDamp(const Vec2 current, const Vec2 target, Vec2& currentVelocity, const float smoothTime, 
         const float deltaTime, float maxSpeed = INFINITY) {
 
@@ -102,6 +102,10 @@ struct Vec2 {
             MathF::SmoothDamp(current.y, target.y, currentVelocity.x, smoothTime, deltaTime, maxSpeed));
     }
 
+    static constexpr Vec2 MoveTowards(const Vec2 current, const Vec2 target, float maxDelta) {
+        return Vec2(MathF::MoveTowards(current.x, target.x, maxDelta), MathF::MoveTowards(current.y, target.y, maxDelta));
+    }
+    
     static constexpr Vec2 CubicBezier(const Vec2 p1, const Vec2 p2, const float t) {
         float u = 1 - t;
         float t2 = t * t;
@@ -111,8 +115,4 @@ struct Vec2 {
 
         return (p1 * 3 * u2 * t) + (p2 * 3 * u * t2) + (Vec2(1, 1) * t3);
     }
-
-    // static constexpr Vector2 ToVector2(const Vec2 a) {
-    //     return { a.x, a.y };
-    // }
 };

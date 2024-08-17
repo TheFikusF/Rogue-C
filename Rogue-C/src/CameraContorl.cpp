@@ -3,13 +3,11 @@
 #include "Transform.h"
 
 float _smoothTime = 0.1f;
-Vec2 _speed;
 Entity _target;
 Camera2D _camera;
 
 void CameraContorl::Init() {
     _smoothTime = 0;
-    _speed = Vec2();
     _target = MAX_ENTITIES;
 
     float width = GetRenderWidth();
@@ -65,9 +63,8 @@ void CameraContorl::CameraSystem::Update(float dt) {
         return;
     }
 
-    LOG(std::format("current target {}", _target));
     MTransform const& tr = Core::ECS::GetComponent<MTransform>(_target);
-    //Vec2 pos = Vec2::SmoothDamp(Vec2(_camera.target.x, _camera.target.y), tr.position, _speed, _smoothTime, dt);
-    //_camera.target = { pos.x, pos.y };
-    _camera.target = { tr.position.x, tr.position.y };
+    Vec2 cameraPos(_camera.target.x, _camera.target.y);
+    Vec2 pos = Vec2::MoveTowards(cameraPos, tr.position, (Vec2::Distance(tr.position, cameraPos) / _smoothTime) * dt);
+    _camera.target = { pos.x, pos.y };
 }

@@ -5,5 +5,3 @@
 
 #include <iostream>
 #include <math.h>
-
-// TODO: Reference additional headers your program requires here.
