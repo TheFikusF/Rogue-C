@@ -6,6 +6,7 @@
 using SpriteID = std::uint32_t;
 using TextureID = std::uint32_t;
 using ShaderID = std::uint32_t;
+constexpr ShaderID DEFAULT_SHADER = 0;
 
 struct Sprite {
     TextureID texture;

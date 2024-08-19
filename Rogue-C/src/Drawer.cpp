@@ -13,7 +13,7 @@ DrawerSystem::DrawerSystem() : drawTime(0) {
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     BeginMode2D(CameraContorl::GetCurrent());
-    BeginShaderMode(SpriteManager::GetShader(0));
+    //BeginShaderMode(SpriteManager::GetShader(0));
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
@@ -30,6 +30,6 @@ void DrawerSystem::Draw() {
     }
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();
-    EndShaderMode();
+    //EndShaderMode();
     EndMode2D();
 }
