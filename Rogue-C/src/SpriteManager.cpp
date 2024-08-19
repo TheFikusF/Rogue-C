@@ -16,12 +16,19 @@ void SpriteManager::Init() {
     instance->textures.emplace_back(LoadTextureFromImage(image2));
     RegisterSprite(0);
     RegisterSprite(1);
+
+    RegisterShader("textures/shaders/default.fs");
 }
 
 SpriteID SpriteManager::RegisterTexture(const char* path) {
     Image image = LoadImage(path);
     instance->textures.emplace_back(LoadTextureFromImage(image));
     return instance->textures.size() - 1;
+}
+
+ShaderID SpriteManager::RegisterShader(const char* path) { 
+    instance->shaders.emplace_back(LoadShader(0, path));
+    return instance->shaders.size() - 1;
 }
 
 SpriteID SpriteManager::RegisterSprite(const TextureID texture) {
@@ -33,16 +40,24 @@ SpriteID SpriteManager::RegisterSprite(const TextureID texture, Rectangle rect) 
     return instance->sprites.size() - 1;
 }
 
-Texture2D& SpriteManager::GetTexture(const TextureID& sprite) {
-    return instance->textures[sprite];
+Texture2D& SpriteManager::GetTexture(const TextureID& texture) {
+    return instance->textures[texture];
 }
 
 Sprite& SpriteManager::GetSprite(const SpriteID& sprite) {
     return instance->sprites[sprite];
 }
 
+Shader& SpriteManager::GetShader(const ShaderID& shader) {
+    return instance->shaders[shader];
+}
+
 void SpriteManager::UnloadAll() {
-    for (int i = instance->textures.size() - 1; i >= 0; i--) {
-        UnloadTexture(instance->textures[i]);
+    for(auto& texture : instance->textures) {
+        UnloadTexture(texture);
+    }
+
+    for(auto& shader : instance->shaders) {
+        UnloadShader(shader);
     }
 }

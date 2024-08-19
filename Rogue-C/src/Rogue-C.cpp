@@ -30,6 +30,8 @@ std::vector<Scene> ConstructScenes() {
     TextureID enemyTexture2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
     TextureID enemyTexture3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
 
+    ShaderID shader0 = SpriteManager::RegisterShader("textures/shaders/posterization.fs");
+
     SpriteID enemySprite1 = SpriteManager::RegisterSprite(enemyTexture1);
     SpriteID enemySprite2 = SpriteManager::RegisterSprite(enemyTexture2);
     SpriteID enemySprite3 = SpriteManager::RegisterSprite(enemyTexture3);
