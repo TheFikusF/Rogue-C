@@ -87,7 +87,7 @@ namespace Core {
 		}
 		
 		T& GetData(Entity entity) {
-			//ASSERT(_sparseToDense.find(entity) != _sparseToDense.end(), std::format("Can't get component {}. There is no such component on this {}.", typeid(T).name(), entity));
+			//ASSERT(_sparseToDense.find(entity) != _sparseToDense.end(), _noComponentMessage);
 			return _components[_sparseToDense[entity]];
 		}
 		
@@ -115,5 +115,7 @@ namespace Core {
 
 		std::vector<T> _components;
 		Entity _size = 0;
+		
+		//const char* _noComponentMessage = "There is no such component on this entity";
 	};
 }
