@@ -32,7 +32,6 @@ namespace Core {
 
         registerComponents();
         
-        auto uiSystem = ECS::RegisterSystem<UIDrawerSystem>();
         auto buttonSystem = ECS::RegisterSystem<ButtonSystem>();
         auto inputSystem = ECS::RegisterSystem<InputSystem>();
         auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
@@ -40,6 +39,7 @@ namespace Core {
         auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
         auto tweenSystem = ECS::RegisterSystem<TweenSystem>();
         auto camerSystem = ECS::RegisterSystem<CameraContorl::CameraSystem>();
+        auto uiSystem = ECS::RegisterSystem<UIDrawerSystem>();
 
         onStart();
     }

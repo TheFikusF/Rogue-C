@@ -21,12 +21,12 @@ float numColors = 8.0;
 void main()
 {
     // Texel color fetching from texture sampler
-    vec3 texelColor = texture(texture0, fragTexCoord.xy).rgb;
+    vec3 texelColor = texture(texture0, fragTexCoord.xy).rgb * fragColor.rgb;
 
     texelColor = pow(texelColor, vec3(gamma, gamma, gamma));
-    texelColor = texelColor*numColors;
+    texelColor = texelColor * numColors;
     texelColor = floor(texelColor);
-    texelColor = texelColor/numColors;
+    texelColor = texelColor / numColors;
     texelColor = pow(texelColor, vec3(1.0/gamma));
 
     finalColor = vec4(texelColor, 1.0);

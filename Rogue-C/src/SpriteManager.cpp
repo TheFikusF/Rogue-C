@@ -17,7 +17,7 @@ void SpriteManager::Init() {
     RegisterSprite(0);
     RegisterSprite(1);
 
-    instance->shaders.push_back(Shader());
+    instance->shaders.push_back(LoadShader("textures/shaders/default.vs", "textures/shaders/default.fs"));
 }
 
 SpriteID SpriteManager::RegisterTexture(const char* path) {
