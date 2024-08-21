@@ -6,16 +6,12 @@
 struct Drawer {
     Color color;
     SpriteID sprite;
+    ShaderID shader;
 
-    Drawer() : sprite(0), color(WHITE) {}
-    Drawer(const Color& color) : sprite(0), color(color) {}
-    Drawer(const SpriteID& sprite) 
-        : sprite(sprite), 
-        color(WHITE) {}
-
-    Drawer(const SpriteID& sprite, const Color& color)
-        : sprite(sprite),
-        color(color) {}
+    Drawer() : sprite(0), color(WHITE), shader(0) {}
+    Drawer(const Color& color) : sprite(0), color(color), shader(0) {}
+    Drawer(const SpriteID& sprite) : sprite(sprite), color(WHITE), shader(0) {}
+    Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), color(color), shader(0) {}
 };
 
 class DrawerSystem : public Core::System {

@@ -13,7 +13,6 @@ DrawerSystem::DrawerSystem() : drawTime(0) {
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     BeginMode2D(CameraContorl::GetCurrent());
-    BeginShaderMode(SpriteManager::GetShader(0));
     for(auto const& entity : Entities) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
@@ -24,12 +23,14 @@ void DrawerSystem::Draw() {
 
         Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
         
+        BeginShaderMode(SpriteManager::GetShader(drawer.shader));
         DrawTexturePro(tex, sprite.rect, 
             { realpos.x, realpos.y, tr.scale.x * 2.0f, tr.scale.y * 2.0f },
             { tr.scale.x, tr.scale.y }, tr.rotation,  drawer.color);
+        
+        EndShaderMode();
     }
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();
-    EndShaderMode();
     EndMode2D();
 }
