@@ -5,15 +5,25 @@
 
 using namespace Core;
 
-DrawerSystem::DrawerSystem() : drawTime(0) {
+DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Drawer>());
 }
 
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
+    _entitiesTemp.assign(Entities.begin(), Entities.end());
+
+    switch (drawOrder)
+    {
+    case DrawOrder::YAscending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortYAsc); break;
+    case DrawOrder::YDescending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortYDesc); break;
+    default: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortCustom); break;
+    }
+
+
     BeginMode2D(CameraContorl::GetCurrent());
-    for(auto const& entity : Entities) {
+    for(auto const& entity : _entitiesTemp) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
         Vec2 realpos = MTransformSystem::GetRealPosition(entity);
@@ -33,4 +43,22 @@ void DrawerSystem::Draw() {
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();
     EndMode2D();
+}
+
+bool DrawerSystem::SortYAsc(Entity a, Entity b) {
+    const Vec2 posA = MTransformSystem::GetRealPosition(a);
+    const Vec2 posB = MTransformSystem::GetRealPosition(b);
+    return posA.y < posB.y;
+}
+
+bool DrawerSystem::SortYDesc(Entity a, Entity b) { 
+    const Vec2 posA = MTransformSystem::GetRealPosition(a);
+    const Vec2 posB = MTransformSystem::GetRealPosition(b);
+    return posA.y > posB.y;
+}
+
+bool DrawerSystem::SortCustom(Entity a, Entity b) { 
+    const float orderA = ECS::GetComponent<Drawer>(a).order;
+    const float orderB = ECS::GetComponent<Drawer>(b).order;
+    return orderA < orderB;
 }
