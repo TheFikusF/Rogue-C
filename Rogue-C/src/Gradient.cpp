@@ -1,6 +1,6 @@
-#include "Gradient.h"
+#include "./include/core/Gradient.h"
+#include "./include/core/LOG.h"
 #include "./include/raylib/raymath.h"
-#include "LOG.h"
 
 GradientKey::GradientKey(Color color, float time) : color(color), time(time) { }
 

@@ -1,6 +1,6 @@
 #pragma once
+#include "./include/core/ecs/ECS.h"
 #include <functional>
-#include "ECS.h"
 
 namespace Core {
     class Scene

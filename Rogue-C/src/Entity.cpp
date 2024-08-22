@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "./include/core/ecs/Entity.h"
 
 EntityManager::EntityManager() : _entityCount(0) {
     for (Entity entity = 0; entity < MAX_ENTITIES; ++entity) {

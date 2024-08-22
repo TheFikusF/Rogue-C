@@ -1,9 +1,10 @@
 #pragma once
-#include "ComponentArray.h"
 #include <unordered_map>
-#include "Entity.h"
 #include <memory>
-#include "ASSERT.h"
+
+#include "./include/core/ecs/Entity.h"
+#include "./include/core/ecs/ComponentArray.h"
+#include "./include/core/ASSERT.h"
 
 namespace Core {
 	class ComponentManager {

@@ -1,7 +1,7 @@
 #pragma once
+#include "./include/core/rendering/Drawer.h"
+#include "./include/core/ecs/ECS.h"
 #include <unordered_set>
-#include <Drawer.h>
-#include "ECS.h"
 
 struct IPointerDown {
     virtual void PointerDown(Entity entity) = 0;
@@ -15,7 +15,7 @@ struct IPointerHover {
     virtual void PointerHover(Entity entity) = 0;
 };
 
-struct UIDrawer : public Drawer {
+struct UIDrawer : public Rendering::Drawer {
     bool clickable;
     std::unordered_set<IPointerDown*> pointerDowns;
     std::unordered_set<IPointerHover*> pointerHovers;
@@ -83,4 +83,7 @@ public:
 
     void Update(float dt) override;
     void Draw() override;
+
+private:
+    std::vector<Entity> _entitiesTemp;
 };

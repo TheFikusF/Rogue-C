@@ -1,6 +1,4 @@
 #include "PickUp.h"
-#include "Drawer.h"
-#include "Transform.h"
 #include "SpinningSphere.h"
 
 using namespace Core;
@@ -8,7 +6,7 @@ using namespace Core;
 PickUpSystem::PickUpSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Collider2D>());
-    signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Rendering::Drawer>());
     signature.set(ECS::GetComponentType<PickUp>());
 }
 
@@ -20,11 +18,11 @@ void PickUpSystem::Spawn(Vec2 position) {
     switch (type)
     {
     case 0:
-        ECS::AddComponent<Drawer>(pickup, Drawer(GREEN));
+        ECS::AddComponent<Rendering::Drawer>(pickup, Rendering::Drawer(GREEN));
         ECS::AddComponent<PickUp>(pickup, PickUp{ PickUpType::Heal });
         break;
     case 1:
-        ECS::AddComponent<Drawer>(pickup, Drawer(ORANGE));
+        ECS::AddComponent<Rendering::Drawer>(pickup, Rendering::Drawer(ORANGE));
         ECS::AddComponent<PickUp>(pickup, PickUp{ PickUpType::SpinningSphere });
         break;    
     default:

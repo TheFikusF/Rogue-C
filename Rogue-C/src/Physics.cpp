@@ -1,7 +1,6 @@
-#include "Physics.h"
-
+#include "./include/core/physics/Physics.h"
+#include "./include/core/LOG.h"
 #include <omp.h>
-#include "LOG.h"
 
 namespace Physics
 {

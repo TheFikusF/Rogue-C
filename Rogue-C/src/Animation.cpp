@@ -1,8 +1,9 @@
-#include "Animation.h"
-#include "LOG.h"
+#include "./include/core/systems/Animation.h"
+#include "./include/core/LOG.h"
 #include <iterator>
 
 using namespace Core;
+using namespace Rendering;
 
 Animation::Animation(const TextureID texture, const Vec2 size, const Vec2 start, const int framesCount) : loop(true), frameTime(1.0f / 24.0f) {
     for(int i = 0; i < framesCount; i++) {

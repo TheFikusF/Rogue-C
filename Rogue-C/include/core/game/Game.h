@@ -1,12 +1,11 @@
 #pragma once
-#include "ECS.h"
-#include "Scene.h"
+#include "./include/core/rendering/SpriteManager.h"
+#include "./include/core/audio/AudioManager.h"
+#include "./include/core/game/Scene.h"
+#include "./include/core/ecs/ECS.h"
 #include "./include/raylib/raylib.h"
-#include <thread>
 #include <barrier>
-#include "AudioManager.h"
-#include "SpriteManager.h"
-#include "Animation.h"
+#include <thread>
 
 namespace Core{
     namespace Debug {

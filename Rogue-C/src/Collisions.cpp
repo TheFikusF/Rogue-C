@@ -1,4 +1,4 @@
-#include "Collisions.h"
+#include "./include/core/physics/Collisions.h"
 
 bool PointInRectangle(Vec2 point, Vec2 position, Vec2 scale) { 
     return point.x >= position.x - scale.x &&

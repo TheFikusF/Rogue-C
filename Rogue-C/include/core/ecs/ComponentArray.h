@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
-#include "Entity.h"
-#include "ASSERT.h"
+#include "./include/core/ecs/Entity.h"
+#include "./include/core/ASSERT.h"
 
 namespace Core {
 	class IComponentArray {

@@ -1,6 +1,6 @@
 #pragma once
-#include "Vec2.h"
-#include "Entity.h"
+#include "./include/core/ecs/Entity.h"
+#include "./include/core/Vec2.h"
 
 using Layer = std::uint8_t;
 

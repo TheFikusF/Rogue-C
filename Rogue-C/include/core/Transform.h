@@ -1,7 +1,7 @@
 #pragma once
-#include "Vec2.h"
-#include "System.h"
-#include "ECS.h"
+#include "./include/core/ecs/System.h"
+#include "./include/core/ecs/ECS.h"
+#include "./include/core/Vec2.h"
 #include <unordered_map>
 #include <vector>
 

@@ -3,9 +3,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "ASSERT.h"
-#include "Collisions.h"
-#include "Entity.h"
+#include "./include/core/ASSERT.h"
+#include "./include/core/physics/Collisions.h"
+#include "./include/core/ecs/Entity.h"
 
 namespace Core {
     namespace Debug {

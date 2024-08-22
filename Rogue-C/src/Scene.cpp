@@ -1,12 +1,12 @@
-#include "Scene.h"
-#include "InputSystem.h"
-#include "Drawer.h"
-#include "Animation.h"
-#include "ParticleSystem.h"
-#include "UIDrawer.h"
-#include "Button.h"
-#include "Tween.h"
-#include "CameraContorl.h"
+#include "./include/core/game/Scene.h"
+#include "./include/core/rendering/Drawer.h"
+#include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/systems/Button.h"
+#include "./include/core/systems/InputSystem.h"
+#include "./include/core/systems/Tween.h"
+#include "./include/core/systems/CameraControl.h"
+#include "./include/core/systems/Animation.h"
 
 namespace Core {
     Scene::Scene(std::function<void(void)> registerComponents, std::function<void(void)> onStart) 
@@ -24,7 +24,7 @@ namespace Core {
         CameraContorl::Init();
 
         ECS::RegisterComponent<MTransform>();
-        ECS::RegisterComponent<Drawer>();
+        ECS::RegisterComponent<Rendering::Drawer>();
         ECS::RegisterComponent<ParticleSystem>();
         ECS::RegisterComponent<AnimationPlayer>();
         ECS::RegisterComponent<UIDrawer>();
@@ -34,7 +34,7 @@ namespace Core {
         
         auto buttonSystem = ECS::RegisterSystem<ButtonSystem>();
         auto inputSystem = ECS::RegisterSystem<InputSystem>();
-        auto drawerSystem = ECS::RegisterSystem<DrawerSystem>();
+        auto drawerSystem = ECS::RegisterSystem<Rendering::DrawerSystem>();
         auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
         auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
         auto tweenSystem = ECS::RegisterSystem<TweenSystem>();

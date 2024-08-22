@@ -1,6 +1,5 @@
 #pragma once
-#include <math.h>
-#include "MathF.h"
+#include "./include/core/MathF.h"
 
 struct Vec2 {
     float x, y;

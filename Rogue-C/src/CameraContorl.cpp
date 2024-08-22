@@ -1,6 +1,6 @@
-#include "CameraContorl.h"
-#include "MathF.h"
-#include "Transform.h"
+#include "./include/core/systems/CameraControl.h"
+#include "./include/core/MathF.h"
+#include "./include/core/Transform.h"
 
 float _smoothTime = 0.1f;
 Entity _target;

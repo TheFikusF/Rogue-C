@@ -1,6 +1,5 @@
 #include "Bullet.h"
 #include "Enemy.h"
-#include "ParticleSystem.h"
 #include "SpinningSphere.h"
 
 using namespace Core;
@@ -8,7 +7,7 @@ using namespace Core;
 BulletSystem::BulletSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Bullet>());
-    signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Rendering::Drawer>());
     signature.set(ECS::GetComponentType<Collider2D>());
 }
 
@@ -44,7 +43,7 @@ Entity SpawnBullet(Vec2 position, Vec2 direction) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform( position, Vec2(5,5)));
     ECS::AddComponent<Bullet>(entity, Bullet{ .direction = direction, .speed = 300, .timer = 0 });
-    ECS::AddComponent<Drawer>(entity, Drawer(1, YELLOW) );
+    ECS::AddComponent<Rendering::Drawer>(entity, Rendering::Drawer(1, YELLOW) );
     ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 0));
 
     return entity; 

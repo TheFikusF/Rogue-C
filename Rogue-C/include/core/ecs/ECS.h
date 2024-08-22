@@ -1,8 +1,8 @@
 #pragma once
-#include "ComponentManager.h"
-#include "Entity.h"
-#include "System.h"
-#include "Collisions.h"
+#include "./include/core/ecs/ComponentManager.h"
+#include "./include/core/ecs/Entity.h"
+#include "./include/core/ecs/System.h"
+#include "./include/core/physics/Collisions.h"
 #include <memory>
 #include <iostream>
 #include <chrono>

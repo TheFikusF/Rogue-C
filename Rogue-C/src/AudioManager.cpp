@@ -1,4 +1,4 @@
-#include "AudioManager.h"
+#include "./include/core/audio/AudioManager.h"
 
 std::vector<SoundChanel> AudioManager::_soundChanels{ 0 };
 std::vector<Sound> AudioManager::_sounds[MAX_CHANELS];

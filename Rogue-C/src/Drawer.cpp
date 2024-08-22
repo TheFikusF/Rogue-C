@@ -1,9 +1,15 @@
-#include "Drawer.h"
-#include <ECS.h>
-#include <Transform.h>
-#include "CameraContorl.h"
+#include "./include/core/rendering/Drawer.h"
+#include "./include/core/ecs/ECS.h"
+#include <./include/core/Transform.h>
+#include "./include/core/systems/CameraControl.h"
 
 using namespace Core;
+using namespace Rendering;
+
+Drawer::Drawer() : sprite(0), color(WHITE), shader(0), order(0) {}
+Drawer::Drawer(const Color& color) : sprite(0), color(color), shader(0), order(0) {}
+Drawer::Drawer(const SpriteID& sprite) : sprite(sprite), color(WHITE), shader(0), order(0) {}
+Drawer::Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), color(color), shader(0), order(0) {}
 
 DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
     signature.set(ECS::GetComponentType<MTransform>());
@@ -16,11 +22,10 @@ void DrawerSystem::Draw() {
 
     switch (drawOrder)
     {
-    case DrawOrder::YAscending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortYAsc); break;
-    case DrawOrder::YDescending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortYDesc); break;
-    default: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), DrawerSystem::SortCustom); break;
+    case DrawOrder::YAscending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYAsc); break;
+    case DrawOrder::YDescending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYDesc); break;
+    default: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortCustom); break;
     }
-
 
     BeginMode2D(CameraContorl::GetCurrent());
     for(auto const& entity : _entitiesTemp) {
@@ -45,19 +50,19 @@ void DrawerSystem::Draw() {
     EndMode2D();
 }
 
-bool DrawerSystem::SortYAsc(Entity a, Entity b) {
+bool Rendering::SortYAsc(Entity a, Entity b) {
     const Vec2 posA = MTransformSystem::GetRealPosition(a);
     const Vec2 posB = MTransformSystem::GetRealPosition(b);
     return posA.y < posB.y;
 }
 
-bool DrawerSystem::SortYDesc(Entity a, Entity b) { 
+bool Rendering::SortYDesc(Entity a, Entity b) { 
     const Vec2 posA = MTransformSystem::GetRealPosition(a);
     const Vec2 posB = MTransformSystem::GetRealPosition(b);
     return posA.y > posB.y;
 }
 
-bool DrawerSystem::SortCustom(Entity a, Entity b) { 
+bool Rendering::SortCustom(Entity a, Entity b) { 
     const float orderA = ECS::GetComponent<Drawer>(a).order;
     const float orderB = ECS::GetComponent<Drawer>(b).order;
     return orderA < orderB;

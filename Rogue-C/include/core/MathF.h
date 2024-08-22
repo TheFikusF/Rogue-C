@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <limits>
+#include <cmath>
 
 namespace MathF {
     constexpr float Sign(float a) {

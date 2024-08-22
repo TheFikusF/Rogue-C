@@ -1,4 +1,4 @@
-#include "System.h"
+#include "./include/core/ecs/System.h"
 
 namespace Core {
     namespace Debug {

@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include "./include/raylib/raylib.h"
+#include <vector>
 #include <cstdint>
 
 using SpriteID = std::uint32_t;

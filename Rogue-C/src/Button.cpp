@@ -1,6 +1,6 @@
-#include "Button.h"
-#include "LOG.h"
-#include "Transform.h"
+#include "./include/core/systems/Button.h"
+#include "./include/core/LOG.h"
+#include "./include/core/Transform.h"
 
 using namespace Core;
 

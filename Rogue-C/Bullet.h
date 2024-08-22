@@ -1,8 +1,5 @@
 #pragma once
-#include "Vec2.h"
-#include "System.h"
-#include "ECS.h"
-#include "Drawer.h"
+#include "core.h"
 
 struct Bullet {
     Vec2 direction;

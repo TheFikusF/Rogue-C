@@ -1,26 +1,9 @@
-﻿#include "Scene.h"
-#include "Rogue-C.h"
-#include <format>
-#include <vector>
-#include "Vec2.h"
+﻿#include "core.h"
 #include "Player.h"
-#include "Timer.h"
 #include "Bullet.h"
 #include "Enemy.h"
-#include "ECS.h"
-#include "Drawer.h"
-#include "Physics.h"
-#include "LOG.h"
 #include "SpinningSphere.h"
-#include "ParticleSystem.h"
-#include "AudioManager.h"
-#include "Animation.h"
 #include "PickUp.h"
-#include "Game.h"
-#include "InputSystem.h"
-#include "Button.h"
-#include <assert.h>
-#include "CameraContorl.h"
 
 using namespace Core;
 
@@ -67,7 +50,7 @@ std::vector<Scene> ConstructScenes() {
                 .abilityAmplitude = Timer(0.2f) });
 
             ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
-            ECS::AddComponent<Drawer>(player, Drawer(0));
+            ECS::AddComponent<Rendering::Drawer>(player, Rendering::Drawer(0));
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
 

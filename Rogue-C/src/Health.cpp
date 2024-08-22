@@ -1,5 +1,4 @@
 #include "Health.h"
-#include "math.h"
 
 Health::Health(int max) : max(max), current(max), onDeath([]() -> void {}), invincibilityTime(0.2f), invincible(false), onTakeDamage([](int i) -> void {}) {}
 

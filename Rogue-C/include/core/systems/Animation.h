@@ -1,11 +1,10 @@
 #pragma once
-#include "Vec2.h"
 #include <vector>
-#include "SpriteManager.h"
-#include "System.h"
-#include "ECS.h"
-#include "Timer.h"
-#include "Drawer.h"
+#include "./include/core/Vec2.h"
+#include "./include/core/rendering/SpriteManager.h"
+#include "./include/core/ecs/ECS.h"
+#include "./include/core/Timer.h"
+#include "./include/core/rendering/Drawer.h"
 
 struct Animation {
     bool loop;

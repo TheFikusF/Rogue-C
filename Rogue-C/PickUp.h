@@ -1,6 +1,5 @@
 #pragma once
-#include "ECS.h"
-#include "System.h"
+#include "core.h"
 #include "Player.h"
 
 enum class PickUpType : std::uint8_t {

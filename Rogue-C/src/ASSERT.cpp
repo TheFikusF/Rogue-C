@@ -1,4 +1,4 @@
-#include "ASSERT.h"
+#include "./include/core/ASSERT.h"
 
 void my_assert(bool condition, std::string msg) {
     if(condition == false) {

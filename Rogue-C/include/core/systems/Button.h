@@ -1,7 +1,7 @@
 #pragma once
-#include "UIDrawer.h"
+#include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/systems/Tween.h"
 #include <functional>
-#include "Tween.h"
 
 struct Button : public IPointerDown, public IPointerUp {
     Vec2 scale;

@@ -1,6 +1,7 @@
-#include "ParticleSystem.h"
+#include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/systems/CameraControl.h"
+#include "./include/core/Transform.h"
 #include "./include/raylib/raymath.h"
-#include "CameraContorl.h"
 
 using namespace Core;
 

@@ -1,7 +1,8 @@
-#include "Game.h"
-#include "SceneManager.h"
-#include "Physics.h"
-#include "Gradient.h"
+#include "./include/core/game/Game.h"
+#include "./include/core/game/SceneManager.h"
+#include "./include/core/physics/Physics.h"
+#include "./include/core/Gradient.h"
+#include "./include/core/systems/Animation.h"
 
 namespace Core {
     namespace Debug {
@@ -140,7 +141,7 @@ namespace Core {
 
     void Debug::DrawBar(const char* name, std::uint16_t y, std::uint32_t time, std::uint32_t totalTime, Color color) {
         float t = static_cast<float>(time) / static_cast<float>(totalTime);
-        DrawRectangle(0, y + 1, lerp(0, 80, t), 8, ColorLerp(color, RED, t));
+        DrawRectangle(0, y + 1, MathF::Lerp(0, 80, t), 8, ColorLerp(color, RED, t));
         DrawText(std::format("{}: {}", name, time / 1000).c_str(), 80, y, 10, WHITE);
     }
 

@@ -1,4 +1,4 @@
-#include "SpriteManager.h"
+#include "./include/core/rendering/SpriteManager.h"
 
 SpriteManager* instance;
 

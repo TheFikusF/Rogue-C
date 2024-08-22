@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+#include "./include/core/game/SceneManager.h"
 
 namespace Core {
     Game* SceneManager::_game;

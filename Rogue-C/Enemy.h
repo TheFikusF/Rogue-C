@@ -1,14 +1,9 @@
 #pragma once
-#include "LOG.h"
-#include "Vec2.h"
+#include "core.h"
+#include "PickUp.h"
 #include "Health.h"
-#include "System.h"
-#include "Entity.h"
-#include "Transform.h"
-#include "SpriteManager.h"
 #include <vector>
 #include <memory>
-#include "Tween.h"
 
 struct Enemy {
     TweenID sequence;

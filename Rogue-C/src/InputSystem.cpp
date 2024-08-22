@@ -1,7 +1,7 @@
-#include "InputSystem.h"
+#include "./include/core/systems/InputSystem.h"
+#include "./include/core/systems/CameraControl.h"
+#include "./include/core/game/SceneManager.h"
 #include "./include/raylib/raylib.h"
-#include "SceneManager.h"
-#include "CameraContorl.h"
 
 using namespace Core;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.h"
+#include "./include/core/game/Game.h"
 
 namespace Core {
     class SceneManager

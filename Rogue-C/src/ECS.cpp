@@ -1,4 +1,4 @@
-#include "ECS.h"
+#include "./include/core/ecs/ECS.h"
 
 namespace Core {
     ECS* ECS::_instance = nullptr;
