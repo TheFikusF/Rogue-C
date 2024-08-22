@@ -39,7 +39,9 @@ void UIDrawerSystem::Update(float dt) {
 }
 
 void UIDrawerSystem::Draw() {
-    _entitiesTemp.assign(Entities.begin(), Entities.end());
+    //_entitiesTemp.assign(Entities.begin(), Entities.end());
+    _entitiesTemp.clear();
+    std::copy(Entities.begin(), Entities.end(), std::back_inserter(_entitiesTemp));
     std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortCustom);
 
     for (auto const& entity : _entitiesTemp) {

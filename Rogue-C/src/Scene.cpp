@@ -32,9 +32,9 @@ namespace Core {
 
         registerComponents();
         
+        auto drawerSystem = ECS::RegisterSystem<Rendering::DrawerSystem>();
         auto buttonSystem = ECS::RegisterSystem<ButtonSystem>();
         auto inputSystem = ECS::RegisterSystem<InputSystem>();
-        auto drawerSystem = ECS::RegisterSystem<Rendering::DrawerSystem>();
         auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
         auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
         auto tweenSystem = ECS::RegisterSystem<TweenSystem>();
