@@ -18,6 +18,7 @@ DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
 
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
+    //TODO: SEGFAULT ON ASSIGN
     _entitiesTemp.assign(Entities.begin(), Entities.end());
 
     switch (drawOrder)
