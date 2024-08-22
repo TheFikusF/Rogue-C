@@ -19,6 +19,7 @@ DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     //TODO: SEGFAULT ON ASSIGN
+    //adding check for bounds and sorting only entities in bounds
     _entitiesTemp.assign(Entities.begin(), Entities.end());
 
     switch (drawOrder)

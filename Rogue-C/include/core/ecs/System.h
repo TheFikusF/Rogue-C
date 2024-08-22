@@ -1,11 +1,11 @@
 #pragma once
-#include <memory>
-#include <unordered_map>
-#include <unordered_set>
-
 #include "./include/core/ASSERT.h"
 #include "./include/core/physics/Collisions.h"
 #include "./include/core/ecs/Entity.h"
+
+#include <unordered_map>
+#include <memory>
+#include <set>
 
 namespace Core {
     namespace Debug {
@@ -23,7 +23,7 @@ namespace Core {
 	class System {
 	public:
 		Signature signature;
-		std::unordered_set<Entity> Entities;
+		std::set<Entity> Entities;
 
 		virtual void Update(float dt) {}
 		virtual void PhysicsUpdate(float dt) {}
