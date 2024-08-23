@@ -1,9 +1,8 @@
 #pragma once
+#include "./include/core/ecs/System.h"
+#include "./include/core/Timer.h"
 #include <functional>
 #include <set>
-
-#include "System.h"
-#include "Timer.h"
 
 using TweenID = std::uint32_t;
 constexpr TweenID DEFAULT_TWEENID = MAX_ENTITIES;
@@ -116,7 +115,7 @@ private:
     float intervalTemp;
 };
 
-class TweenSystem : public System {
+class TweenSystem : public Core::System {
 private:
     std::array<ITween*, MAX_ENTITIES> _tweeners;
     std::queue<TweenID> _availableIDs;

@@ -1,9 +1,6 @@
 #include "Enemy.h"
-#include "ECS.h"
-#include "Drawer.h"
-#include "Physics.h"
-#include "Player.h"
-#include "PickUp.h"
+
+using namespace Core;
 
 Enemy::Enemy() : sequence(DEFAULT_TWEENID) {}
 
@@ -33,7 +30,7 @@ Enemy::Enemy(Entity entity, float size, float speed, int health) : sequence(DEFA
 EnemySystem::EnemySystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Enemy>());
-    signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Rendering::Drawer>());
     signature.set(ECS::GetComponentType<Collider2D>());
 
     _spawnTime = 0;
@@ -49,11 +46,11 @@ void EnemySystem::Spawn(Vec2 position) {
     }
 }
 
-void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, Sprite sprite) {
+void EnemySystem::SpawnType(Vec2 position, int health, float speed, float size, SpriteID sprite) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform(position, Vec2(size, size)));
     ECS::AddComponent<Enemy>(entity, Enemy(entity, size, speed, health) );
-    ECS::AddComponent<Drawer>(entity, Drawer(sprite));
+    ECS::AddComponent<Rendering::Drawer>(entity, Rendering::Drawer(sprite));
     ECS::AddComponent<Collider2D>(entity, Collider2D(false, false, 5));
 }
 
@@ -81,7 +78,7 @@ void EnemySystem::Update(float dt) {
     }
 }
 
-void EnemySystem::SetUp(Entity player, Sprite defaultSprite, Sprite bigSprite, Sprite smallSprite) {
+void EnemySystem::SetUp(Entity player, SpriteID defaultSprite, SpriteID bigSprite, SpriteID smallSprite) {
     _player = player;
     _defaultEnemySprite = defaultSprite;
     _bigEnemySprite = bigSprite;

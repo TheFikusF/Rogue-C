@@ -1,5 +1,9 @@
-#include "ParticleSystem.h"
+#include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/systems/CameraControl.h"
+#include "./include/core/Transform.h"
 #include "./include/raylib/raymath.h"
+
+using namespace Core;
 
 ParticleSystemSystem::ParticleSystemSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
@@ -62,6 +66,7 @@ void ParticleSystemSystem::Update(float dt) {
 }
 
 void ParticleSystemSystem::Draw() {
+    BeginMode2D(CameraContorl::GetCurrent());
 	for (Particle const& particle : particles) {
 		if (particle.lifetime.IsStarted() == false) {
 			continue;
@@ -75,6 +80,7 @@ void ParticleSystemSystem::Draw() {
 		Color color = ps.gradient.Evaluate(particle.lifetime.GetProgress());
 		DrawCircle(particle.position.x, particle.position.y, particle.scale, color);
 	}
+	EndMode2D();
 }
 
 void ParticleSystemSystem::Spawn(Vec2 position, bool loop) {

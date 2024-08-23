@@ -1,7 +1,5 @@
 #pragma once
-#include "Vec2.h"
-#include "System.h"
-#include "Timer.h"
+#include "core.h"
 #include "Health.h"
 
 struct Player {
@@ -12,7 +10,7 @@ struct Player {
     Timer abilityAmplitude;
 };
 
-class PlayerSystem : public System {
+class PlayerSystem : public Core::System {
 public:
     PlayerSystem();
 

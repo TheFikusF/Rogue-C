@@ -1,10 +1,11 @@
-#include "Physics.h"
-
+#include "./include/core/physics/Physics.h"
+#include "./include/core/LOG.h"
 #include <omp.h>
-#include "LOG.h"
 
 namespace Physics
 {
+    using namespace Core;
+    
     Cell::Cell(Vec2 vec) : hash(std::floor(vec.x / GRID_SIZE) + std::floor(vec.y / GRID_SIZE)) {}
 
 	bool Cell::operator==(const Cell other) const {

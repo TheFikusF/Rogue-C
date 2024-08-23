@@ -1,7 +1,7 @@
 #pragma once
-#include "Vec2.h"
-#include "System.h"
-#include "ECS.h"
+#include "./include/core/ecs/System.h"
+#include "./include/core/ecs/ECS.h"
+#include "./include/core/Vec2.h"
 #include <unordered_map>
 #include <vector>
 
@@ -16,7 +16,7 @@ struct MTransform {
 	MTransform(Vec2 position, Vec2 scale, float rotation);
 };
 
-class MTransformSystem : public System {
+class MTransformSystem : public Core::System {
 public:
 	static const Vec2 GetRealPosition(const Entity& entity);
 

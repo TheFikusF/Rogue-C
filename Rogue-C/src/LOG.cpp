@@ -1,4 +1,4 @@
-#include "LOG.h"
+#include "./include/core/LOG.h"
 
 #ifdef LOG_TO_FILE
 std::ofstream outfile;

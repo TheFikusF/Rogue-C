@@ -1,6 +1,6 @@
-#include "Timer.h"
-#include <iostream>
+#include "./include/core/Timer.h"
 #include "./include/raylib/raymath.h"
+#include <iostream>
 
 Timer::Timer(float time) : time(time), currentTime(0), started(false) {}
 

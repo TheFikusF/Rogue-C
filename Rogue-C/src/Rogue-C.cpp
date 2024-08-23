@@ -1,31 +1,24 @@
-﻿#include "Scene.h"
-#include "Rogue-C.h"
-#include <format>
-#include <vector>
-#include "Vec2.h"
+﻿#include "core.h"
 #include "Player.h"
-#include "Timer.h"
 #include "Bullet.h"
 #include "Enemy.h"
-#include "ECS.h"
-#include "Drawer.h"
-#include "Physics.h"
-#include "LOG.h"
 #include "SpinningSphere.h"
-#include "ParticleSystem.h"
-#include "AudioManager.h"
-#include "Animation.h"
 #include "PickUp.h"
-#include "Game.h"
-#include "InputSystem.h"
-#include "Button.h"
-#include <assert.h>
+
+using namespace Core;
 
 std::vector<Scene> ConstructScenes() {
-    Sprite playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
-    Sprite enemySprite1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
-    Sprite enemySprite2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
-    Sprite enemySprite3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
+    TextureID playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
+    TextureID enemyTexture1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
+    TextureID enemyTexture2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
+    TextureID enemyTexture3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
+
+    ShaderID shader0 = SpriteManager::RegisterShader("textures/shaders/posterization.fs");
+
+    SpriteID enemySprite1 = SpriteManager::RegisterSprite(enemyTexture1);
+    SpriteID enemySprite2 = SpriteManager::RegisterSprite(enemyTexture2);
+    SpriteID enemySprite3 = SpriteManager::RegisterSprite(enemyTexture3);
+
     SoundClip gospoda = AudioManager::RegisterSound("sounds/gospoda.ogg");
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 
@@ -56,13 +49,10 @@ std::vector<Scene> ConstructScenes() {
                 .abilityDuration = Timer(1.0f), 
                 .abilityAmplitude = Timer(0.2f) });
 
-            InputSystem::SetPlayer(player);
-                
             ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
-            ECS::AddComponent<Drawer>(player, Drawer(0));
+            ECS::AddComponent<Rendering::Drawer>(player, Rendering::Drawer(0));
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));
-            enemySystem->SetUp(player, 2, 3, 4);
 
             Entity button = ECS::CreateEntity();
             ECS::AddComponent<MTransform>(button, MTransform(Vec2(100, 100), Vec2(100, 100)));
@@ -73,6 +63,11 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<MTransform>(button1, MTransform(Vec2(200, 50), Vec2(100, 50)));
             ECS::AddComponent<UIDrawer>(button1, UIDrawer(WHITE));
             ECS::AddComponent<Button>(button1, Button(Vec2(100, 50), []() -> void { LOG("HENLOOO AS WELL!!"); }));
+
+            enemySystem->SetUp(player, 2, 3, 4);
+            InputSystem::SetPlayer(player);
+            CameraContorl::SetTarget(player);
+            CameraContorl::SetSmooth(0.5f);
         }),
 
         Scene([]() -> void {}, []() -> void {

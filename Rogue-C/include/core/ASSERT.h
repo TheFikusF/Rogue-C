@@ -1,5 +1,5 @@
 #pragma once
-#include "LOG.h"
+#include "./include/core/LOG.h"
 
 void my_assert(bool condition, std::string msg);
 

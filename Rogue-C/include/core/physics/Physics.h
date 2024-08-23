@@ -1,11 +1,11 @@
 #pragma once
-#include "System.h"
-#include "ECS.h"
-#include "Vec2.h"
-#include "Transform.h"
-#include "Collisions.h"
+#include "./include/core/physics/Collisions.h"
+#include "./include/core/ecs/System.h"
+#include "./include/core/ecs/ECS.h"
+#include "./include/core/Vec2.h"
+#include "./include/core/Transform.h"
+#include <unordered_set>
 #include <mutex>
-#include <set>
 
 namespace Physics {
 	extern std::uint32_t updateGridTime;
@@ -29,7 +29,7 @@ namespace Physics {
 		std::size_t operator()(const Cell& k) const;
 	};
 
-	class PhysicsSystem : public System {
+	class PhysicsSystem : public Core::System {
 	public:
 
 	public:

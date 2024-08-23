@@ -1,12 +1,11 @@
 #pragma once
-#include <array>
-#include "ECS.h"
-#include "System.h"
-#include <vector>
+#include "./include/core/ecs/ECS.h"
+#include "./include/core/Timer.h"
+#include "./include/core/Gradient.h"
 #include "./include/raylib/raylib.h"
-#include "Timer.h"
-#include "Transform.h"
-#include "Gradient.h"
+#include "./include/core/Vec2.h"
+#include <vector>
+#include <array>
 
 struct Particle
 {
@@ -27,7 +26,7 @@ struct ParticleSystem {
 	Vec2 scaleToTime;
 };
 
-class ParticleSystemSystem : public System {
+class ParticleSystemSystem : public Core::System {
 private:
 	std::queue<uint32_t> particlesQueue;
 	std::array<Particle, MAX_ENTITIES * 4> particles;

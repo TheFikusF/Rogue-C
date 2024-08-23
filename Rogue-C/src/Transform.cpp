@@ -1,4 +1,6 @@
-#include "Transform.h"
+#include "./include/core/Transform.h"
+
+using namespace Core;
 
 MTransform::MTransform() 
 	: position(Vec2()), scale(Vec2()), rotation(0) {}

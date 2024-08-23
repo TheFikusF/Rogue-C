@@ -1,10 +1,6 @@
 #pragma once
-#include "System.h"
-#include "ECS.h"
-#include "Transform.h"
-#include "Collisions.h"
+#include "core.h"
 #include "Enemy.h"
-#include "Drawer.h"
 
 struct SpinningSphere {
     float radius;
@@ -12,7 +8,7 @@ struct SpinningSphere {
     float timer;
 };
 
-class SpinningSphereSystem : public System {
+class SpinningSphereSystem : public Core::System {
 public:
     SpinningSphereSystem();
     void Update(float dt) override;

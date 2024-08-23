@@ -1,9 +1,8 @@
 #pragma once
-#include "ECS.h"
-#include "System.h"
+#include "core.h"
 #include "Player.h"
 
-enum class PickUpType : uint8_t {
+enum class PickUpType : std::uint8_t {
     Heal,
     DamageBust,
     SpinningSphere,
@@ -13,7 +12,7 @@ struct PickUp {
     PickUpType type;
 };
 
-class PickUpSystem : public System {
+class PickUpSystem : public Core::System {
 public:
     PickUpSystem();
     

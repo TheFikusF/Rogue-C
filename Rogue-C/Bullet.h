@@ -1,8 +1,5 @@
 #pragma once
-#include "Vec2.h"
-#include "System.h"
-#include "ECS.h"
-#include "Drawer.h"
+#include "core.h"
 
 struct Bullet {
     Vec2 direction;
@@ -10,7 +7,7 @@ struct Bullet {
     float timer;
 };
 
-class BulletSystem : public System {
+class BulletSystem : public Core::System {
 public:
     BulletSystem();
 

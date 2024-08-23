@@ -1,5 +1,7 @@
 #include "SpinningSphere.h"
 
+using namespace Core;
+
 SpinningSphereSystem::SpinningSphereSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
 	signature.set(ECS::GetComponentType<SpinningSphere>());
@@ -30,7 +32,7 @@ void SpawnSphere(const Entity& parent, float size, float speed, float radius) {
     Entity entity = ECS::CreateEntity();
     ECS::AddComponent<MTransform>(entity, MTransform(Vec2(), Vec2(size, size)));
     ECS::AddComponent<SpinningSphere>(entity, SpinningSphere{ .radius = radius, .speed = speed, .timer = 0 });
-    ECS::AddComponent<Drawer>(entity, Drawer(YELLOW));
+    ECS::AddComponent<Rendering::Drawer>(entity, Rendering::Drawer(YELLOW));
     ECS::AddComponent<Collider2D>(entity, Collider2D(true, false, 5));
     ECS::SetParent(entity, parent);
 }

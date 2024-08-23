@@ -1,18 +1,14 @@
 #include "Player.h"
-#include "InputSystem.h"
-#include "Bullet.h"
 #include "SpinningSphere.h"
+#include "Bullet.h"
 #include <iostream>
-#include "Transform.h"
-#include "ECS.h"
-#include "Drawer.h"
-#include "Physics.h"
-#include "AudioManager.h"
+
+using namespace Core;
 
 PlayerSystem::PlayerSystem() {
     signature.set(ECS::GetComponentType<MTransform>());
     signature.set(ECS::GetComponentType<Player>());
-    signature.set(ECS::GetComponentType<Drawer>());
+    signature.set(ECS::GetComponentType<Rendering::Drawer>());
     signature.set(ECS::GetComponentType<Collider2D>());
 }
 
