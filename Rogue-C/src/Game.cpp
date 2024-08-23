@@ -60,13 +60,25 @@ namespace Core {
             LOG_ERROR("THERE ARE NO SCENES");
             return;
         }
+
+        float wait = 0;
+        while(!WindowShouldClose() && wait < 0.5f) {
+            BeginDrawing();
+            ClearBackground(BLACK);
+            DrawText("LOADING", GetRenderWidth() / 2 - (MeasureText("LOADING", 60) / 2), GetRenderHeight() / 2, 60, WHITE);
+            EndDrawing();
+
+            wait += GetFrameTime();
+        }
         
         _scenes[_currentScene].Start();
+        RenderTexture2D target = LoadRenderTexture(GetRenderWidth(), GetRenderHeight());
 
         std::thread mainThread(ProcessMain, this); 
         std::thread physicsThread(ProcessPhysics, this); 
         
         while (!WindowShouldClose()) {
+#pragma region read_debug_keys
             if(IsKeyPressed(KEY_F1)) {
                 Debug::benchmarkMode = 0;
             }
@@ -90,16 +102,26 @@ namespace Core {
             if(IsKeyPressed(KEY_F6)) {
                 Debug::benchmarkMode = 5;
             }
+#pragma endregion
 
+#pragma region draw_to_texture
+            BeginTextureMode(target);
 
-            BeginDrawing();
             ClearBackground(BLACK);
-            
             ECS::Draw();
+            
+            EndTextureMode();
+#pragma endregion
 
+#pragma region draw_to_screen
+            BeginDrawing();
+
+            DrawTextureRec(target.texture, { 0, 0, (float)target.texture.width, (float)-target.texture.height }, { 0, 0 }, WHITE);
             Debug::DrawInfo();
 
             EndDrawing();
+#pragma endregion
+            
             _barrier.arrive_and_wait();
         }
         
