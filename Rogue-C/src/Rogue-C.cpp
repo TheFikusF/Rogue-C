@@ -79,6 +79,8 @@ std::vector<Scene> ConstructScenes() {
 }
 
 int main() {
+    LOG("asd {}", 1);
+    sizeof(std::bitset<128>);
     Game game;
 
     std::vector<Scene> scenes = ConstructScenes();

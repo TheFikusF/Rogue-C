@@ -14,7 +14,7 @@ namespace Core {
 		template<typename T>
 		void RegisterComponent() {
 			std::size_t hash = typeid(T).hash_code();
-			LOG(std::format("registering type: {}, {}", std::string(typeid(T).name()), hash));
+			LOG("registering type: {}, {}", std::string(typeid(T).name()), hash);
 			ASSERT(_componentTypes.find(hash) == _componentTypes.end(), "Registering component type more than once.");
 
 			_componentTypes[hash] = _nextComponentType;
