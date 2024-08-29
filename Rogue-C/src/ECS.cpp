@@ -96,7 +96,8 @@ namespace Core {
         _instance->_systemManager->Draw(); 
     }
 
-    ECS::ECS() : _finishedRegistering(false), 
+    ECS::ECS()
+        : _finishedRegistering(false),
         _entityManager(std::make_unique<EntityManager>()), 
         _componentManager(std::make_unique<ComponentManager>()),
         _systemManager(std::make_unique<SystemManager>()) {
@@ -113,4 +114,9 @@ namespace Core {
         _instance->_componentManager->EntityDestroyed(entity);
         _instance->_entityManager->Destroy(entity);
     }
+    
+    std::weak_ptr<System> ECS::GetSystem(const char* name) {
+        return _instance->_systemManager->GetSystem(name);
+    }
+    
 }

@@ -7,7 +7,7 @@
 namespace Core {
     namespace Debug {
         std::uint8_t benchmarkMode = 0;
-        std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::_V2::system_clock::duration> updateClock = std::chrono::high_resolution_clock::now();
+        auto updateClock = std::chrono::high_resolution_clock::now();
         std::uint32_t totalFrameTime = 0;
     }
 
@@ -21,6 +21,8 @@ namespace Core {
     Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3,  [this]() { 
         Debug::totalFrameTime = (std::chrono::high_resolution_clock::now() - Debug::updateClock).count();
         Debug::updateClock = std::chrono::high_resolution_clock::now();
+
+        auto syncTime = std::chrono::high_resolution_clock::now();
         if(this->_scheduledScene > -1 && this->_scheduledScene < this->_scenes.size()) {
             this->_scenes[this->_currentScene].Clear();
             this->_scenes[this->_scheduledScene].Start();
@@ -29,8 +31,9 @@ namespace Core {
             return;
         }
         ECS::FreeBin(); 
+        Debug::totalSyncTime += (std::chrono::high_resolution_clock::now() - syncTime).count();
     }), _scheduledScene(-1) {
-        SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED);
+        SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED | FLAG_MSAA_4X_HINT);
         InitWindow(WIDTH, HEIGHT, "Rogue-C");
         InitAudioDevice();
         MaximizeWindow();
@@ -173,6 +176,7 @@ namespace Core {
         std::unordered_map<const char *, uint32_t> arr(begin, end);
         for(auto const pair : arr) {
             Debug::DrawBar(pair.first, y, pair.second, totalTime, GREEN);
+            DrawText(std::format("e: {}", ECS::GetSystem(pair.first).lock()->GetCount()).c_str(), 5, y, 10, WHITE);
             y += 10;
         }
     }
@@ -185,10 +189,10 @@ namespace Core {
         std::uint16_t size = 60;
         switch (Debug::benchmarkMode)
         {
-        case 2: size += Debug::updateTimings.size() * 10 + 20; break;
-        case 3: size += Debug::updateTimings.size() * 10 + 20; break;
-        case 4: size += Debug::updateTimings.size() * 10 + 20; break;
-        case 5: size += Debug::updateTimings.size() * 10 * 3 + 60; break;
+        case 2: size += Debug::updateTimings.size() * 10 + 30; break;
+        case 3: size += Debug::updateTimings.size() * 10 + 30; break;
+        case 4: size += Debug::updateTimings.size() * 10 + 30; break;
+        case 5: size += Debug::updateTimings.size() * 10 * 3 + 70; break;
         default: break;
         }
 
@@ -211,8 +215,9 @@ namespace Core {
         default: curHeight -= 10; break;
         }
 
-        Debug::DrawBar("Update", curHeight += 10, totalUpdateTime, Debug::totalFrameTime, GREEN);
-        Debug::DrawBar("Physics", curHeight += 10, totalPhysicsTime, Debug::totalFrameTime, YELLOW);
-        Debug::DrawBar("Draw", curHeight += 10, totalDrawTime, Debug::totalFrameTime, MAGENTA);
+        Debug::DrawBar("Update", curHeight += 10, Debug::totalUpdateTime, Debug::totalFrameTime, GREEN);
+        Debug::DrawBar("Physics", curHeight += 10, Debug::totalPhysicsTime, Debug::totalFrameTime, YELLOW);
+        Debug::DrawBar("Draw", curHeight += 10, Debug::totalDrawTime, Debug::totalFrameTime, MAGENTA);
+        Debug::DrawBar("Sync", curHeight += 10, Debug::totalSyncTime, Debug::totalFrameTime + Debug::totalSyncTime, BLUE);
     }
 }

@@ -18,8 +18,8 @@ struct MTransform {
 
 class MTransformSystem : public Core::System {
 public:
-	static const Vec2 GetRealPosition(const Entity& entity);
+	static const Vec2 GetRealPosition(const Entity entity);
 
 private:
-	static const void GetPosition(const Entity& entity, Vec2& pos);
+	static const void GetPosition(const Entity entity, Vec2& pos);
 };

@@ -2,6 +2,7 @@
 #include "./include/core/rendering/Drawer.h"
 #include "./include/core/rendering/ParticleSystem.h"
 #include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/UI/UIText.h"
 #include "./include/core/systems/Button.h"
 #include "./include/core/systems/InputSystem.h"
 #include "./include/core/systems/Tween.h"
@@ -29,6 +30,7 @@ namespace Core {
         ECS::RegisterComponent<AnimationPlayer>();
         ECS::RegisterComponent<UIDrawer>();
         ECS::RegisterComponent<Button>();
+        ECS::RegisterComponent<UIText>();
 
         registerComponents();
         
@@ -38,8 +40,9 @@ namespace Core {
         auto particleSystem = ECS::RegisterSystem<ParticleSystemSystem>();
         auto animationSystem = ECS::RegisterSystem<AnimationPlayerSystem>();
         auto tweenSystem = ECS::RegisterSystem<TweenSystem>();
-        auto camerSystem = ECS::RegisterSystem<CameraContorl::CameraSystem>();
+        auto cameraSystem = ECS::RegisterSystem<CameraContorl::CameraSystem>();
         auto uiSystem = ECS::RegisterSystem<UIDrawerSystem>();
+        auto uiTextSystem = ECS::RegisterSystem<UITextSystem>();
 
         onStart();
     }

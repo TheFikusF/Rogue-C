@@ -1,4 +1,13 @@
 #pragma once
+/*
+
+//=//=//=//=//=//==\\=\\=\\=\\=\\=\\
+||                                ||
+//  Proto-Indo-European Aesthetic \\
+||                                ||
+//=//=//=//=//=//==\\=\\=\\=\\=\\=\\
+
+*/
 #include "./include/core/ecs/ComponentManager.h"
 #include "./include/core/ecs/Entity.h"
 #include "./include/core/ecs/System.h"
@@ -102,6 +111,8 @@ namespace Core {
 		static std::weak_ptr<T> GetSystem() {
 			return _instance->_systemManager->GetSystem<T>();
 		}
+
+		static std::weak_ptr<System> GetSystem(const char* name);
 
 	private:
 		ECS();

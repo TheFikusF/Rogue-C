@@ -26,6 +26,8 @@
 
 #include "./include/core/audio/AudioManager.h"
 
+#include "./include/core/UI/UIText.h"
+
 #include "./include/core/Transform.h"
 #include "./include/core/ASSERT.h"
 #include "./include/core/MathF.h"

@@ -20,7 +20,9 @@ void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     //TODO: adding check for bounds and sorting only entities in bounds
     _entitiesTemp.clear();
-    std::copy(Entities.begin(), Entities.end(), std::back_inserter(_entitiesTemp));
+    for(auto const& entity : Entities) {
+        _entitiesTemp.push_back(entity);
+    }
 
     switch (drawOrder)
     {

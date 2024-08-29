@@ -14,13 +14,13 @@ MTransform::MTransform(Vec2 position, Vec2 scale)
 MTransform::MTransform(Vec2 position, Vec2 scale, float rotation)
     : position(position), scale(scale), rotation(rotation) {}
 
-const Vec2 MTransformSystem::GetRealPosition(const Entity& entity) {
+const Vec2 MTransformSystem::GetRealPosition(const Entity entity) {
 	Vec2 pos;
 	GetPosition(entity, pos);
 	return pos;
 }
 
-const void MTransformSystem::GetPosition(const Entity& entity, Vec2& pos) {
+const void MTransformSystem::GetPosition(const Entity entity, Vec2& pos) {
 	Entity parent = ECS::GetParent(entity);
 	if (ECS::HasComponent<MTransform>(entity)) {
 		pos += ECS::GetComponent<MTransform>(entity).position;

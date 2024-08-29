@@ -64,6 +64,11 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<UIDrawer>(button1, UIDrawer(WHITE));
             ECS::AddComponent<Button>(button1, Button(Vec2(100, 50), []() -> void { LOG("HENLOOO AS WELL!!"); }));
 
+            Entity text = ECS::CreateEntity();
+            ECS::SetParent(text, button1);
+            ECS::AddComponent<MTransform>(text, MTransform(Vec2(0, 0), Vec2(100, 50)));
+            ECS::AddComponent<UIText>(text, UIText("rendering some text)))))))))", BLACK));
+            
             enemySystem->SetUp(player, 2, 3, 4);
             InputSystem::SetPlayer(player);
             CameraContorl::SetTarget(player);

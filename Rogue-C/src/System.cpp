@@ -15,6 +15,10 @@ namespace Core {
 
     using namespace Debug;
 
+    std::weak_ptr<System> SystemManager::GetSystem(const char* name) {
+        return _systems[name];
+    }
+
     void SystemManager::FinishRegistering() {
         for (auto pair : _systems) {
             _signatures[pair.first] = pair.second->signature;
@@ -111,3 +115,6 @@ namespace Core {
     }
 }
 
+std::uint32_t Core::System::GetCount() { 
+    return Entities.size();
+}

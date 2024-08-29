@@ -36,6 +36,8 @@ namespace Core {
 
 		virtual void OnCollision(const Collision2D& collision) {}
 		virtual void OnTrigger(const Collision2D& collision) {}
+
+		std::uint32_t GetCount();
 	};
 
 	class SystemManager {
@@ -56,6 +58,8 @@ namespace Core {
 			static const char* typeName = typeid(T).name();
 			return std::static_pointer_cast<T>(_systems[typeName]);
 		}
+
+		std::weak_ptr<System> GetSystem(const char* name);
 
 		void FinishRegistering();
 
