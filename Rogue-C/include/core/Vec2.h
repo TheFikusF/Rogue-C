@@ -1,7 +1,9 @@
 #pragma once
 #include "./include/core/MathF.h"
+#include "./include/core/serialization/Serializable.h"
+#include <format>
 
-struct Vec2 {
+struct Vec2 : public Serializable {
     float x, y;
 
     constexpr Vec2() : x(0), y(0) {}
@@ -51,6 +53,14 @@ struct Vec2 {
         return *this;
     }
 
+    void Read(std::string name, void* value) override {
+        if(name.compare("x") == 0) x = *(float*)value;
+        if(name.compare("y") == 0) y = *(float*)value;
+    }
+
+    std::string Write() override {
+        return std::format("x:{}\ny:{}", x, y).c_str();
+    }
 
     constexpr float GetMagnitude() const { 
         return sqrt(GetMagnitudeSquared()); 

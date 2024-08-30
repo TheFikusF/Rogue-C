@@ -1,11 +1,12 @@
 #pragma once
+#include "./include/core/serialization/Serializable.h"
 #include "./include/core/ecs/System.h"
 #include "./include/core/ecs/ECS.h"
 #include "./include/core/Vec2.h"
 #include <unordered_map>
 #include <vector>
 
-struct MTransform {
+struct MTransform : public Serializable {
 	Vec2 position;
 	Vec2 scale;
 	float rotation;
@@ -14,6 +15,9 @@ struct MTransform {
 	MTransform(Vec2 position);
 	MTransform(Vec2 position, Vec2 scale);
 	MTransform(Vec2 position, Vec2 scale, float rotation);
+
+	void Read(std::string name, void* value) override;
+	std::string Write() override;
 };
 
 class MTransformSystem : public Core::System {
