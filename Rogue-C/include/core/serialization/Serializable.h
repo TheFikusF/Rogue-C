@@ -9,12 +9,21 @@
 
 #if defined(_MSC_VER)
 #else
-#include <cxxabi.h>
-#include <memory>
+    #include <cxxabi.h>
+    #include <memory>
 #endif
+
+//:~
+////[]::::====-------------------------------------
+//[0]::==---------------
+//[ GET DRUNK, FIND GUN ahh type serialization ]::===:{#}~
+//[0]:=-------
+///[]:::===-----------------------
+//:~
 
 namespace Serialization {
     struct Node {
+        bool isArray;
         Node* parent;
         std::string name;
         std::string value;
@@ -27,7 +36,7 @@ namespace Serialization {
 
         Node* AddChild(std::string name = "", std::string value = "");
 
-        void Print(std::ostream& stream, int identing = 0) const;
+        void Print(std::ostream& stream, int identing = 0, bool isArrayElement = false) const;
 
         template<typename T>
         T Read() const;
@@ -35,10 +44,14 @@ namespace Serialization {
         void ReadUntyped(std::string type, void* where);
     };
 
-
     struct Serializable {
         virtual void Read(std::string name, std::string value, Node* curent) = 0;
         virtual void Write(Node* parent) = 0;
+    };
+
+    struct SerializedEntity : public Serializable {
+        void Read(std::string name, std::string value, Node* curent) override;
+        void Write(Node* curent) override;
     };
 
 #pragma region TYPE_REGISTERING
@@ -82,84 +95,14 @@ namespace Serialization {
         return result;
     }
 
+    void ConstructNodes(Node& root, const char* path);
+
     template<typename T>
     T Deserialize(const char* path) {
         Node root;
         root.name = "root";
 
-        Node* current = &root;
-
-        std::ifstream file(path);
-        std::string line;
-
-        bool start = true;
-        bool bracesOpened = false;
-        std::uint8_t lastIndenting = 0;
-        std::string name;
-        std::string value;
-
-        while (std::getline(file, line)) {
-            bool finishedIndenting = false;
-            bool finishedName = false;
-            bool hasValue = false;
-
-            name = "";
-            value = "";
-            std::uint8_t indenting = 0;
-            for (std::uint32_t i = 0; i < line.size(); i++) {
-                if (line[i] == '\"') {
-                    bracesOpened = !bracesOpened;
-                    continue;
-                }
-
-                if (line[i] == ' ' && bracesOpened == false) {
-                    if (finishedIndenting == false) {
-                        indenting++;
-                    }
-                    continue;
-                }
-
-                if (finishedIndenting == false) {
-                    if (lastIndenting == indenting && !start) {
-                        current = current->parent->AddChild();
-                    }
-
-                    if (lastIndenting < indenting || start) {
-                        current = current->AddChild();
-                    }
-
-                    if (lastIndenting > indenting) {
-                        for (int dif = (lastIndenting - indenting) / 2; dif >= 0; dif--) {
-                            current = current->parent;
-                            if (dif == 0) {
-                                current = current->AddChild();
-                            }
-                        }
-                    }
-                }
-
-                finishedIndenting = true;
-
-                if (line[i] == ':') {
-                    finishedName = true;
-                    continue;
-                }
-
-                if (finishedName) {
-                    value.push_back(line[i]);
-                    hasValue = true;
-                } else {
-                    name.push_back(line[i]);
-                }
-            }
-
-            current->value = value;
-            current->name = name;
-
-            lastIndenting = indenting;
-            start = false;
-        }
-        file.close();
+        ConstructNodes(root, path);
 
         root.Print(std::cout);
         return root.children[0].Read<T>();
