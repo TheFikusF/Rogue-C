@@ -48,14 +48,16 @@ namespace Serialization {
     };
 
     struct Serializable {
-        virtual void Read(std::string name, std::string value, Node* curent) = 0;
+        virtual void Read(std::string name, std::string value, const Node* curent) = 0;
         virtual void Write(Node* parent) = 0;
     };
 
     struct SerializedEntity : public Serializable {
         Entity id;
 
-        void Read(std::string name, std::string value, Node* curent) override;
+        SerializedEntity() : id(0) { }
+
+        void Read(std::string name, std::string value, const Node* curent) override;
         void Write(Node* curent) override;
     };
 
@@ -66,8 +68,7 @@ namespace Serialization {
 #if defined(_MSC_VER)
         if (name[0] == 'c') {
             return std::string(name).substr(6);
-        }
-        else {
+        } else {
             return std::string(name).substr(7);
         }
 #else

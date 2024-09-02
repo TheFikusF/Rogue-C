@@ -3,7 +3,7 @@
 #include "./include/core/serialization/Serializable.h"
 #include <format>
 
-struct Vec2 : public Serializable {
+struct Vec2 : public Serialization::Serializable {
     float x, y;
 
     constexpr Vec2() : x(0), y(0) {}
@@ -53,13 +53,14 @@ struct Vec2 : public Serializable {
         return *this;
     }
 
-    void Read(std::string name, void* value) override {
-        if(name.compare("x") == 0) x = *(float*)value;
-        if(name.compare("y") == 0) y = *(float*)value;
+    void Read(std::string name, std::string value, const Serialization::Node* node) override {
+        if(name.compare("x") == 0) x = std::stof(value);
+        if(name.compare("y") == 0) y = std::stof(value);
     }
 
-    std::string Write() override {
-        return std::format("x:{}\ny:{}", x, y).c_str();
+    void Write(Serialization::Node* node) override {
+        node->AddChild("x", std::to_string(x));
+        node->AddChild("y", std::to_string(y));
     }
 
     constexpr float GetMagnitude() const { 

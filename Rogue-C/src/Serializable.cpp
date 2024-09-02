@@ -39,9 +39,15 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement = false
     }
 }
 
-void Serialization::SerializedEntity::Read(std::string name, std::string value, Node* curent) {
+void Serialization::SerializedEntity::Read(std::string name, std::string value, const Node* curent) {
     if(name == "id") {
         id = Core::ECS::CreateEntity();
+        return;
+    } 
+    
+    if (name == "parent") {
+        Core::ECS::SetParent(id, std::stoul(value));
+        return;
     }
 
     void* data = malloc(typeSizeMap[name]);
