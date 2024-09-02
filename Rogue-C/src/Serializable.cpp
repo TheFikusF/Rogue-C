@@ -1,8 +1,11 @@
 #include "./include/core/serialization/Serializable.h"
+#include "./include/core/ecs/ECS.h"
 
 using namespace Serialization;
 
 std::unordered_map<std::string, ReadFunction> readFunctionsMap;
+std::unordered_map<std::string, std::size_t> typeHashesMap;
+std::unordered_map<std::string, std::size_t> typeSizeMap;
 
 Node* Node::AddChild(std::string name, std::string value) {
     children.emplace_back(Node(this, name, value));
@@ -36,13 +39,28 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement = false
     }
 }
 
-void Node::ReadUntyped(std::string type, void* where) {
+void Serialization::SerializedEntity::Read(std::string name, std::string value, Node* curent) {
+    if(name == "id") {
+        id = Core::ECS::CreateEntity();
+    }
+
+    void* data = malloc(typeSizeMap[name]);
+    curent->ReadUntyped(name, data);
+    Core::ECS::AddComponent(id, typeHashesMap[name], data);
+    std::free(data);
+}
+
+void Serialization::SerializedEntity::Write(Node* curent) {}
+
+void Node::ReadUntyped(std::string type, void* where) const{
     ReadFunction fun = readFunctionsMap[type];
     (*fun)(this, where);
 }
 
-void Serialization::SetReadFunction(std::string typeName, ReadFunction func) {
+void Serialization::SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction func) {
     readFunctionsMap[typeName] = func;
+    typeHashesMap[typeName] = hash;
+    typeSizeMap[typeName] = size;
 }
 
 void Serialization::ConstructNodes(Node& root, const char* path) {

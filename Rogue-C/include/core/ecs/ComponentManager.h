@@ -29,6 +29,9 @@ namespace Core {
 			return _componentTypes[typeid(T).hash_code()];
 		}
 
+		void AddComponent(Entity entity, std::size_t componentTypeHash, void* data) {
+			_componentArrays[componentTypeHash]->SetData(entity, data);
+		}
 
 		template<typename T>
 		void AddComponent(Entity entity, T component) {

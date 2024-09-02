@@ -41,7 +41,10 @@ namespace Serialization {
         template<typename T>
         T Read() const;
 
-        void ReadUntyped(std::string type, void* where);
+        template<typename T>
+        T ReadVector(std::vector<T>& target) const;
+
+        void ReadUntyped(std::string type, void* where) const;
     };
 
     struct Serializable {
@@ -50,6 +53,8 @@ namespace Serialization {
     };
 
     struct SerializedEntity : public Serializable {
+        Entity id;
+
         void Read(std::string name, std::string value, Node* curent) override;
         void Write(Node* curent) override;
     };
@@ -75,18 +80,18 @@ namespace Serialization {
 #endif
     }
 
-    void SetReadFunction(std::string typeName, ReadFunction func);
+    void SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction func);
     
     template<typename T>
-    void RegisterType() {
+    inline void RegisterType() {
         std::string name = demangle(typeid(T).name());
         std::cout << name << std::endl;
-        SetReadFunction(name, [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); });
+        SetTypeSerializationData(name, [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); });
     }
 #pragma endregion
 
     template<typename T>
-    T Node::Read() const {
+    inline T Node::Read() const {
         static_assert(std::is_base_of<Serializable, T>::value);
         T result;
         for (auto const& child : children) {
@@ -95,10 +100,17 @@ namespace Serialization {
         return result;
     }
 
+    template<typename T>
+    inline T Node::ReadVector(std::vector<T>& target) const {
+        for(auto const& child : children) {
+            target.emplace_back(child.Read<T>());
+        }
+    }
+
     void ConstructNodes(Node& root, const char* path);
 
     template<typename T>
-    T Deserialize(const char* path) {
+    inline T Deserialize(const char* path) {
         Node root;
         root.name = "root";
 

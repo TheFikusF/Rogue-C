@@ -50,6 +50,10 @@ namespace Core {
 
 		static void DestroyEntity(Entity entity);
 
+		static void AddComponent(Entity entity, std::size_t typeHash, void* data) {
+			_instance->_componentManager->AddComponent(entity, typeHash, data);
+		}
+
 		template<typename T>
 		static void AddComponent(Entity entity, T component) {
 			std::lock_guard<std::mutex> guard(_instance->ecsMutex);

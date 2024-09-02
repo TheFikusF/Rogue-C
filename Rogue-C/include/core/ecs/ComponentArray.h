@@ -7,6 +7,7 @@ namespace Core {
 	class IComponentArray {
 	public:
 		virtual ~IComponentArray() = default;
+		virtual void SetData(Entity entity, void* data) = 0;
 		virtual void EntityDestroyed(Entity entity) = 0;
 		virtual void Init() { }
 		virtual void Clear() { }
@@ -17,6 +18,10 @@ namespace Core {
 	public:
 		ComponentArray() {
 			Init();
+		}
+
+		void SetData(Entity entity, void* data) override {
+			AddComponent(entity, *((T*)data));
 		}
 
 		void AddComponent(Entity entity, T component) {
