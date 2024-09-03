@@ -12,7 +12,7 @@ Node* Node::AddChild(std::string name, std::string value) {
     return &(children.back());
 }
 
-void Node::Print(std::ostream& stream, int identing, bool isArrayElement = false) const {
+void Node::Print(std::ostream& stream, int identing, bool isArrayElement) const {
     for (int i = 0; i < identing; i++) {
         stream << "  ";
     }
@@ -69,7 +69,27 @@ void Serialization::SetTypeSerializationData(std::string typeName, std::size_t h
     typeSizeMap[typeName] = size;
 }
 
+std::string Serialization::demangle(const char* name) {
+#if defined(_MSC_VER)
+    int substring = 6
+    if (name[0] == 's') {
+        substring = 7;
+    }
+    std::string result = std::string(name).substr(substring);
+#else
+    int status = -1;
+    std::unique_ptr<char, void(*)(void*)> res{
+        abi::__cxa_demangle(name, NULL, NULL, &status),
+        std::free
+    };
+    std::string result = (status == 0) ? res.get() : name;
+#endif
+    std::replace(result.begin(), result.end(), ':', '_');
+    return result;
+}
+
 void Serialization::ConstructNodes(Node& root, const char* path) {
+    root.isArray = false;
     Node* current = &root;
     Node* array = nullptr;
 

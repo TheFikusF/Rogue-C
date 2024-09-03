@@ -25,7 +25,7 @@ std::vector<Scene> ConstructScenes() {
     Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
 
     std::vector<Scene> scenes = {
-        Scene([]() -> void {
+        Scene([animation]() -> void {
             ECS::RegisterComponent<Player>();
             ECS::RegisterComponent<Enemy>();
             ECS::RegisterComponent<Bullet>();
@@ -33,7 +33,6 @@ std::vector<Scene> ConstructScenes() {
             ECS::RegisterComponent<PickUp>();
             ECS::RegisterComponent<Collider2D>();
 
-        }, [animation]() -> void {
             auto physicsSystem = ECS::RegisterSystem<Physics::PhysicsSystem>();
             auto playerSystem = ECS::RegisterSystem<PlayerSystem>();
             auto enemySystem = ECS::RegisterSystem<EnemySystem>();
@@ -41,7 +40,9 @@ std::vector<Scene> ConstructScenes() {
             auto spheresSystem = ECS::RegisterSystem<SpinningSphereSystem>();
             auto pickupSystem = ECS::RegisterSystem<PickUpSystem>();
 
-            ECS::FinishRegistering();
+            Scene::FinishRegistration();
+
+            Scene::ReadScene("scene.txt");
 
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 
@@ -77,36 +78,15 @@ std::vector<Scene> ConstructScenes() {
             CameraContorl::SetSmooth(0.5f);
         }),
 
-        Scene([]() -> void {}, []() -> void {
-            ECS::FinishRegistering();
+        Scene([]() -> void {
+            Scene::FinishRegistration();
         }),
     };
 
     return scenes;
 }
 
-std::string demangle(const char* name) {
-#if defined(_MSC_VER)
-    if(name[0] == 'c') {
-        return std::string(name).substr(6);
-    } else {
-        return std::string(name).substr(7);
-    }
-#else
-    int status = -1;
-    std::unique_ptr<char, void(*)(void*)> res {
-        abi::__cxa_demangle(name, NULL, NULL, &status),
-        std::free
-    };
-    return (status == 0) ? res.get() : name;
-#endif
-}
-
 int main() {
-    std::cout << demangle(typeid(MTransform).name()) << std::endl;
-    std::cout << demangle(typeid(Collider2D).name()) << std::endl;
-    std::cout << demangle(typeid(Rendering::Drawer).name()) << std::endl;
-    sizeof(std::bitset<128>);
     Game game;
 
     std::vector<Scene> scenes = ConstructScenes();

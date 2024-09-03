@@ -3,7 +3,7 @@
 #include "./include/core/systems/Tween.h"
 #include <functional>
 
-struct Button : public IPointerDown, public IPointerUp {
+struct Button : public IPointerDown, public IPointerUp, public Serialization::Serializable {
     Vec2 scale;
     TweenID _tween;
     std::function<void (void)> onClick;
@@ -14,6 +14,9 @@ struct Button : public IPointerDown, public IPointerUp {
 
     void PointerDown(Entity entity) override;
     void PointerUp(Entity entity) override;
+
+    void Read(std::string name, std::string value, const Serialization::Node* current) override {}
+    void Write(Serialization::Node* current) override {}
 };
 
 class ButtonSystem : public PointerCallbackSystem<Button> { 

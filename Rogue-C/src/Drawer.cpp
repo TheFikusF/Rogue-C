@@ -6,10 +6,42 @@
 using namespace Core;
 using namespace Rendering;
 
+Color SerializedColor::ToRLColor() {
+    return Color(r, g, b, a);
+}
+
+void SerializedColor::Read(std::string name, std::string value, const Serialization::Node* current) {
+    if(name == "r") r = std::stoi(value);
+    if(name == "g") g = std::stoi(value);
+    if(name == "b") b = std::stoi(value);
+    if(name == "a") a = std::stoi(value);
+}
+
+void SerializedColor::Write(Serialization::Node* current) {
+    current->AddChild("r", std::to_string(r));
+    current->AddChild("g", std::to_string(g));
+    current->AddChild("b", std::to_string(b));
+    current->AddChild("a", std::to_string(a));
+}
+
 Drawer::Drawer() : sprite(0), color(WHITE), shader(0), order(0) {}
 Drawer::Drawer(const Color& color) : sprite(0), color(color), shader(0), order(0) {}
 Drawer::Drawer(const SpriteID& sprite) : sprite(sprite), color(WHITE), shader(0), order(0) {}
 Drawer::Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), color(color), shader(0), order(0) {}
+
+void Drawer::Read(std::string name, std::string value, const Serialization::Node* current) {
+    if(name == "color") color = current->Read<SerializedColor>().ToRLColor();
+    if(name == "sprite") sprite = std::stoul(value);
+    if(name == "shader") sprite = std::stoul(value);
+    if(name == "order") order = std::stof(value);
+}
+
+void Drawer::Write(Serialization::Node* current) {
+    SerializedColor(color).Write(current->AddChild("color"));
+    current->AddChild("sprite", std::to_string(sprite));
+    current->AddChild("shader", std::to_string(shader));
+    current->AddChild("order", std::to_string(order));
+}
 
 DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
     signature.set(ECS::GetComponentType<MTransform>());

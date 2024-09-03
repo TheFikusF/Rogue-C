@@ -10,8 +10,8 @@
 #include "./include/core/systems/Animation.h"
 
 namespace Core {
-    Scene::Scene(std::function<void(void)> registerComponents, std::function<void(void)> onStart) 
-        : registerComponents(registerComponents), onStart(onStart), started(false) { }
+    Scene::Scene(std::function<void(void)> onStart) 
+        : onStart(onStart), started(false) { }
 
     Scene::~Scene() {
         if(started) {
@@ -32,8 +32,10 @@ namespace Core {
         ECS::RegisterComponent<Button>();
         ECS::RegisterComponent<UIText>();
 
-        registerComponents();
-        
+        onStart();
+    }
+
+    void Scene::FinishRegistration() {
         auto drawerSystem = ECS::RegisterSystem<Rendering::DrawerSystem>();
         auto buttonSystem = ECS::RegisterSystem<ButtonSystem>();
         auto inputSystem = ECS::RegisterSystem<InputSystem>();
@@ -44,11 +46,23 @@ namespace Core {
         auto uiSystem = ECS::RegisterSystem<UIDrawerSystem>();
         auto uiTextSystem = ECS::RegisterSystem<UITextSystem>();
 
-        onStart();
+        ECS::FinishRegistering();
+    }
+
+    void Scene::ReadScene(const char* sceneFile) {
+        Serialization::Deserialize<SerializedScene>(sceneFile);
     }
 
     void Scene::Clear() {
         CameraContorl::Stop();
         ECS::Clear();
+    }
+
+    void SerializedScene::Read(std::string name, std::string value, const Serialization::Node* curent) {
+        curent->Read<Serialization::SerializedEntity>();
+    }
+
+    void SerializedScene::Write(Serialization::Node* curent) {
+
     }
 }

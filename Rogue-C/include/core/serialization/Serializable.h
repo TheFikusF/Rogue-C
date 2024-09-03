@@ -1,9 +1,11 @@
 #pragma once
+#include "./include/core/ecs/Entity.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <algorithm>
 #include <unordered_map>
 #include <cstdarg>
 
@@ -64,39 +66,24 @@ namespace Serialization {
 #pragma region TYPE_REGISTERING
     using ReadFunction = void (*)(const Node*, void*);
 
-    std::string demangle(const char* name) {
-#if defined(_MSC_VER)
-        if (name[0] == 'c') {
-            return std::string(name).substr(6);
-        } else {
-            return std::string(name).substr(7);
-        }
-#else
-        int status = -1;
-        std::unique_ptr<char, void(*)(void*)> res{
-            abi::__cxa_demangle(name, NULL, NULL, &status),
-            std::free
-        };
-        return (status == 0) ? res.get() : name;
-#endif
-    }
+    std::string demangle(const char* name);
 
     void SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction func);
     
     template<typename T>
-    inline void RegisterType() {
+    void RegisterType() {
         std::string name = demangle(typeid(T).name());
         std::cout << name << std::endl;
-        SetTypeSerializationData(name, [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); });
+        SetTypeSerializationData(name, typeid(T).hash_code(), sizeof(T), [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); });
     }
 #pragma endregion
 
     template<typename T>
     inline T Node::Read() const {
-        static_assert(std::is_base_of<Serializable, T>::value);
         T result;
+        Serializable* ptr = (Serializable*)(&result);
         for (auto const& child : children) {
-            result.Read(child.name, child.value, &child);
+            ptr->Read(child.name, child.value, &child);
         }
         return result;
     }

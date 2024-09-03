@@ -1,4 +1,5 @@
 #pragma once
+#include "./include/core/serialization/Serializable.h"
 #include "./include/core/ecs/System.h"
 #include "./include/core/rendering/SpriteManager.h"
 #include "./include/raylib/raylib.h"
@@ -10,7 +11,19 @@ namespace Rendering {
         CustomOrder,
     };
 
-    struct Drawer {
+    struct SerializedColor : public Serialization::Serializable {
+        std::uint8_t r, g, b, a;
+
+        SerializedColor() : r(0), g(0), b(0), a(0) { }
+        SerializedColor(Color color) : r(color.r), g(color.g), b(color.b), a(color.a) { }
+
+        Color ToRLColor();
+
+        void Read(std::string name, std::string value, const Serialization::Node* current) override;
+        void Write(Serialization::Node* current) override;
+    };
+
+    struct Drawer : public Serialization::Serializable {
         Color color;
         SpriteID sprite;
         ShaderID shader;
@@ -20,6 +33,9 @@ namespace Rendering {
         Drawer(const Color& color);
         Drawer(const SpriteID& sprite);
         Drawer(const SpriteID& sprite, const Color& color);
+
+        void Read(std::string name, std::string value, const Serialization::Node* current) override;
+        void Write(Serialization::Node* current) override;
     };
 
     class DrawerSystem : public Core::System {

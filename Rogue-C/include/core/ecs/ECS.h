@@ -1,13 +1,12 @@
 #pragma once
-/*
 
-//=//=//=//=//=//==\\=\\=\\=\\=\\=\\
-||                                ||
-//  Proto-Indo-European Aesthetic \\
-||                                ||
-//=//=//=//=//=//==\\=\\=\\=\\=\\=\\
+//-[II]:::===~--
+//=//=//=//=//=//==\\=\\=\\=\\=\\=\\-[I]::==~-
+//  Proto-Indo-European Aesthetic \\[]:=~
+//=//=//=//=//=//==\\=\\=\\=\\=\\=\\-[I]::==~-
+//-[II]:::===~--
 
-*/
+#include "./include/core/serialization/Serializable.h"
 #include "./include/core/ecs/ComponentManager.h"
 #include "./include/core/ecs/Entity.h"
 #include "./include/core/ecs/System.h"
@@ -19,8 +18,7 @@
 #include <mutex>
 
 namespace Core {
-	class ECS
-	{
+	class ECS {
 	public:
 		static void Init();
 		
@@ -34,6 +32,9 @@ namespace Core {
 		template<typename T>
 		static void RegisterComponent() {
 			_instance->_componentManager->RegisterComponent<T>();
+			if(std::is_base_of<Serialization::Serializable, T>::value == false) {
+				Serialization::RegisterType<T>();
+        	}
 		}
 
 		static void FinishRegistering();
