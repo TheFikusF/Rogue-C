@@ -78,7 +78,11 @@ std::vector<Scene> ConstructScenes() {
 
         Scene([]() -> void {
             Scene::FinishRegistration();
+
+            auto updateClock = std::chrono::high_resolution_clock::now();
             Scene::ReadScene("scene.txt");
+            auto time_stamp = duration_cast<std::chrono::duration<float>>(std::chrono::high_resolution_clock::now() - updateClock);
+            LOG("TIME {}", (time_stamp).count());
         }),
     };
 

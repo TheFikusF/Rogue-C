@@ -32,7 +32,7 @@ Drawer::Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), col
 void Drawer::Read(std::string name, std::string value, const Serialization::Node* current) {
     if(name.compare("color") == 0) color = current->Read<SerializedColor>().ToRLColor();
     if(name.compare("sprite") == 0) sprite = std::stoul(value);
-    if(name.compare("shader") == 0) sprite = std::stoul(value);
+    if(name.compare("shader") == 0) shader = std::stoul(value);
     if(name.compare("order") == 0) order = std::stof(value);
 }
 
