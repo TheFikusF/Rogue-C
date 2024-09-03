@@ -42,8 +42,6 @@ std::vector<Scene> ConstructScenes() {
 
             Scene::FinishRegistration();
 
-            Scene::ReadScene("scene.txt");
-
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 
                 .speed = 100, 
@@ -80,6 +78,7 @@ std::vector<Scene> ConstructScenes() {
 
         Scene([]() -> void {
             Scene::FinishRegistration();
+            Scene::ReadScene("scene.txt");
         }),
     };
 

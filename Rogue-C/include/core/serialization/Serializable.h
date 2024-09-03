@@ -32,9 +32,9 @@ namespace Serialization {
 
         std::vector<Node> children;
 
-        Node() : parent(nullptr), name("root") { }
-        Node(Node* parent) : parent(parent) { }
-        Node(Node* parent, std::string name, std::string value) : parent(parent), name(name), value(value) { }
+        Node() : parent(nullptr), name("root"), isArray(false) { }
+        Node(Node* parent) : parent(parent), isArray(false) { }
+        Node(Node* parent, std::string name, std::string value) : parent(parent), name(name), value(value), isArray(false) { }
 
         Node* AddChild(std::string name = "", std::string value = "");
 

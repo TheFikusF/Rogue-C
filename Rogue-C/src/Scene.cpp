@@ -59,6 +59,7 @@ namespace Core {
     }
 
     void SerializedScene::Read(std::string name, std::string value, const Serialization::Node* curent) {
+        LOG("Reading: {}, {}", name, value);
         curent->Read<Serialization::SerializedEntity>();
     }
 

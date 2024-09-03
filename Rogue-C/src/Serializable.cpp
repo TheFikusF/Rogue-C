@@ -40,12 +40,13 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement) const 
 }
 
 void Serialization::SerializedEntity::Read(std::string name, std::string value, const Node* curent) {
-    if(name == "id") {
+    std::cout << "reading: " << name << " " << value << std::endl;
+    if(name.compare("id") == 0) {
         id = Core::ECS::CreateEntity();
         return;
     } 
     
-    if (name == "parent") {
+    if (name.compare("parent") == 0) {
         Core::ECS::SetParent(id, std::stoul(value));
         return;
     }
@@ -89,7 +90,6 @@ std::string Serialization::demangle(const char* name) {
 }
 
 void Serialization::ConstructNodes(Node& root, const char* path) {
-    root.isArray = false;
     Node* current = &root;
     Node* array = nullptr;
 

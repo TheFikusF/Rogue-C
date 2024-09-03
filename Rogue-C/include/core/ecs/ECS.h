@@ -32,7 +32,7 @@ namespace Core {
 		template<typename T>
 		static void RegisterComponent() {
 			_instance->_componentManager->RegisterComponent<T>();
-			if(std::is_base_of<Serialization::Serializable, T>::value == false) {
+			if(std::is_base_of<Serialization::Serializable, T>::value) {
 				Serialization::RegisterType<T>();
         	}
 		}
