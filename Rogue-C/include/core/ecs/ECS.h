@@ -51,9 +51,7 @@ namespace Core {
 
 		static void DestroyEntity(Entity entity);
 
-		static void AddComponent(Entity entity, std::size_t typeHash, void* data) {
-			_instance->_componentManager->AddComponent(entity, typeHash, data);
-		}
+		static void AddComponent(Entity entity, std::size_t typeHash, void* data);
 
 		template<typename T>
 		static void AddComponent(Entity entity, T component) {

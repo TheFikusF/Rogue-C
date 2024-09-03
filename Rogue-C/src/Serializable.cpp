@@ -40,9 +40,9 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement) const 
 }
 
 void Serialization::SerializedEntity::Read(std::string name, std::string value, const Node* curent) {
-    std::cout << "reading: " << name << " " << value << std::endl;
     if(name.compare("id") == 0) {
         id = Core::ECS::CreateEntity();
+        LOG("creating entity {}", id);
         return;
     } 
     
@@ -51,13 +51,14 @@ void Serialization::SerializedEntity::Read(std::string name, std::string value, 
         return;
     }
 
+    std::cout << "reading: " << name << " " << value << std::endl;
     void* data = malloc(typeSizeMap[name]);
     curent->ReadUntyped(name, data);
     Core::ECS::AddComponent(id, typeHashesMap[name], data);
     std::free(data);
 }
 
-void Serialization::SerializedEntity::Write(Node* curent) {}
+void Serialization::SerializedEntity::Write(Node* curent) { }
 
 void Node::ReadUntyped(std::string type, void* where) const{
     ReadFunction fun = readFunctionsMap[type];

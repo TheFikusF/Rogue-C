@@ -29,9 +29,11 @@ namespace Core {
 			return _componentTypes[typeid(T).hash_code()];
 		}
 
-		void AddComponent(Entity entity, std::size_t componentTypeHash, void* data) {
-			_componentArrays[componentTypeHash]->SetData(entity, data);
+		constexpr ComponentType GetComponentTypeFromHash(std::size_t hash) {
+			return _componentTypes[hash];
 		}
+
+		void AddComponent(Entity entity, std::size_t componentTypeHash, void* data);
 
 		template<typename T>
 		void AddComponent(Entity entity, T component) {
@@ -49,13 +51,7 @@ namespace Core {
 			return GetComponentArray<T>()->GetData(entity);
 		}
 
-		void EntityDestroyed(Entity entity) {
-			for (auto const& pair : _componentArrays)
-			{
-				auto const& component = pair.second;
-				component->EntityDestroyed(entity);
-			}
-		}
+		void EntityDestroyed(Entity entity);
 
 	private:
 		std::unordered_map<std::size_t, ComponentType> _componentTypes{};

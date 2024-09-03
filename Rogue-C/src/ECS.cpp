@@ -28,6 +28,16 @@ namespace Core {
         _instance->_scheduledForDeletion.insert(entity);
     }
 
+    void ECS::AddComponent(Entity entity, std::size_t typeHash, void* data) {
+        LOG("Adding component {} to entity {}", entity, typeHash);
+        std::lock_guard<std::mutex> guard(_instance->ecsMutex);
+		if(_instance->_scheduledSignatures.contains(entity) == false) {
+		    _instance->_scheduledSignatures[entity] = _instance->_entityManager->GetSignature(entity);
+		}
+		_instance->_scheduledSignatures[entity].set(_instance->_componentManager->GetComponentTypeFromHash(typeHash), true);
+	    _instance->_componentManager->AddComponent(entity, typeHash, data);
+	}
+
     Entity ECS::GetEntityCount() { return _instance->_entityManager->_entityCount; }
 
     void ECS::HandleCollisions(const std::vector<Collision2D>& collision) {
