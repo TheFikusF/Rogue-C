@@ -39,22 +39,22 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement) const 
     }
 }
 
-void Serialization::SerializedEntity::Read(std::string name, std::string value, const Node* curent) {
-    if(name.compare("id") == 0) {
+void Serialization::SerializedEntity::Read(const Node* curent) {
+    if(curent->name.compare("id") == 0) {
         id = Core::ECS::CreateEntity();
         LOG("creating entity {}", id);
         return;
     } 
     
-    if (name.compare("parent") == 0) {
-        Core::ECS::SetParent(id, std::stoul(value));
+    if (curent->name.compare("parent") == 0) {
+        Core::ECS::SetParent(id, std::stoul(curent->value));
         return;
     }
 
-    std::cout << "reading: " << name << " " << value << std::endl;
-    void* data = malloc(typeSizeMap[name]);
-    curent->ReadUntyped(name, data);
-    Core::ECS::AddComponent(id, typeHashesMap[name], data);
+    std::cout << "reading: " << curent->name << " " << curent->value << std::endl;
+    void* data = malloc(typeSizeMap[curent->name]);
+    curent->ReadUntyped(curent->name, data);
+    Core::ECS::AddComponent(id, typeHashesMap[curent->name], data);
     std::free(data);
 }
 

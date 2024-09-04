@@ -14,11 +14,11 @@ struct Collider2D : public Serialization::Serializable {
 	Vec2 force;
 	Vec2 velocity;
 
-	Collider2D() = default; 
+	Collider2D() : force(), velocity() { } 
 	Collider2D(bool trigger, bool useGravity, float mass) 
-		: isTrigger(trigger), useGravity(useGravity), layer(0), mass(mass), isStatic(false), kinematic(false), force(), velocity() {}
+		: isTrigger(trigger), useGravity(useGravity), layer(0), mass(mass), isStatic(false), kinematic(false), force(), velocity() { }
 
-	void Read(std::string name, std::string value, const Serialization::Node* current) override;
+	void Read(const Serialization::Node* current) override;
     void Write(Serialization::Node* current) override;
 };
 

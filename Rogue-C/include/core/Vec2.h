@@ -53,9 +53,9 @@ struct Vec2 : public Serialization::Serializable {
         return *this;
     }
 
-    void Read(std::string name, std::string value, const Serialization::Node* node) override {
-        if(name.compare("x") == 0) x = std::stof(value);
-        if(name.compare("y") == 0) y = std::stof(value);
+    void Read(const Serialization::Node* node) override {
+        if(node->name.compare("x") == 0) x = std::stof(node->value);
+        if(node->name.compare("y") == 0) y = std::stof(node->value);
     }
 
     void Write(Serialization::Node* node) override {

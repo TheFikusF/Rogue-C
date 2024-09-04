@@ -50,7 +50,7 @@ namespace Serialization {
     };
 
     struct Serializable {
-        virtual void Read(std::string name, std::string value, const Node* curent) = 0;
+        virtual void Read(const Node* curent) = 0;
         virtual void Write(Node* parent) = 0;
     };
 
@@ -59,7 +59,7 @@ namespace Serialization {
 
         SerializedEntity() : id(0) { }
 
-        void Read(std::string name, std::string value, const Node* curent) override;
+        void Read(const Node* curent) override;
         void Write(Node* curent) override;
     };
 
@@ -83,7 +83,7 @@ namespace Serialization {
         T result;
         Serializable* ptr = (Serializable*)(&result);
         for (auto const& child : children) {
-            ptr->Read(child.name, child.value, &child);
+            ptr->Read(&child);
         }
         return result;
     }

@@ -10,11 +10,11 @@ Color SerializedColor::ToRLColor() {
     return Color(r, g, b, a);
 }
 
-void SerializedColor::Read(std::string name, std::string value, const Serialization::Node* current) {
-    if(name == "r") r = std::stoi(value);
-    if(name == "g") g = std::stoi(value);
-    if(name == "b") b = std::stoi(value);
-    if(name == "a") a = std::stoi(value);
+void SerializedColor::Read(const Serialization::Node* current) {
+    if(current->name == "r") r = std::stoi(current->value);
+    if(current->name == "g") g = std::stoi(current->value);
+    if(current->name == "b") b = std::stoi(current->value);
+    if(current->name == "a") a = std::stoi(current->value);
 }
 
 void SerializedColor::Write(Serialization::Node* current) {
@@ -29,11 +29,11 @@ Drawer::Drawer(const Color& color) : sprite(0), color(color), shader(0), order(0
 Drawer::Drawer(const SpriteID& sprite) : sprite(sprite), color(WHITE), shader(0), order(0) {}
 Drawer::Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), color(color), shader(0), order(0) {}
 
-void Drawer::Read(std::string name, std::string value, const Serialization::Node* current) {
-    if(name.compare("color") == 0) color = current->Read<SerializedColor>().ToRLColor();
-    if(name.compare("sprite") == 0) sprite = std::stoul(value);
-    if(name.compare("shader") == 0) shader = std::stoul(value);
-    if(name.compare("order") == 0) order = std::stof(value);
+void Drawer::Read(const Serialization::Node* current) {
+    if(current->name.compare("color") == 0) color = current->Read<SerializedColor>().ToRLColor();
+    if(current->name.compare("sprite") == 0) sprite = std::stoul(current->value);
+    if(current->name.compare("shader") == 0) shader = std::stoul(current->value);
+    if(current->name.compare("order") == 0) order = std::stof(current->value);
 }
 
 void Drawer::Write(Serialization::Node* current) {

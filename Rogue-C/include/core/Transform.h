@@ -16,7 +16,7 @@ struct MTransform : public Serialization::Serializable {
 	MTransform(Vec2 position, Vec2 scale);
 	MTransform(Vec2 position, Vec2 scale, float rotation);
 
-	void Read(std::string name, std::string value, const Serialization::Node* curent) override;
+	void Read(const Serialization::Node* curent) override;
 	void Write(Serialization::Node* node) override;
 };
 

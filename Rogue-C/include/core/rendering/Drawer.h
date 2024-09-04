@@ -19,7 +19,7 @@ namespace Rendering {
 
         Color ToRLColor();
 
-        void Read(std::string name, std::string value, const Serialization::Node* current) override;
+        void Read(const Serialization::Node* current) override;
         void Write(Serialization::Node* current) override;
     };
 
@@ -34,7 +34,7 @@ namespace Rendering {
         Drawer(const SpriteID& sprite);
         Drawer(const SpriteID& sprite, const Color& color);
 
-        void Read(std::string name, std::string value, const Serialization::Node* current) override;
+        void Read(const Serialization::Node* current) override;
         void Write(Serialization::Node* current) override;
     };
 
