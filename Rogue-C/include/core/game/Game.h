@@ -23,7 +23,7 @@ namespace Core{
         float _mainDt = 1;
         float _physicsDt = 1;
         std::atomic<bool> _gameRunning;
-        std::barrier<std::function<void()>> _barrier;
+        std::barrier<void (*)(void) noexcept> _barrier;
 
         std::vector<Scene> _scenes;
         int _currentScene;
@@ -36,9 +36,11 @@ namespace Core{
         void Run();
         void AddScenes(std::vector<Scene> scenes);
         void SetScene(std::uint8_t index);
+        void Sync() noexcept;
 
     private:
         static void ProcessMain(Game* instance);
         static void ProcessPhysics(Game* instance);
+
     };
 }

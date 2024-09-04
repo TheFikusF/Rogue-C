@@ -29,7 +29,7 @@ namespace MathF {
     }
 
     constexpr float MoveTowards(float current, float target, float maxDelta) {
-        if (std::abs(target - current) <= maxDelta) {
+        if ((target - current) * Sign(target - current) <= maxDelta) {
             return target;
         }
 

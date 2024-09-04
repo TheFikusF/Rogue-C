@@ -5,7 +5,7 @@ SpriteManager* instance;
 Sprite::Sprite(TextureID texture, Rectangle rect) : texture(texture), rect(rect) {}
 
 Sprite::Sprite(TextureID texture)
-    : texture(texture), rect{0, 0, SpriteManager::GetTexture(texture).width, SpriteManager::GetTexture(texture).height} {}
+    : texture(texture), rect{0, 0, (float)SpriteManager::GetTexture(texture).width, (float)SpriteManager::GetTexture(texture).height} {}
 
 void SpriteManager::Init() {
     instance = new SpriteManager();

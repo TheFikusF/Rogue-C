@@ -63,7 +63,7 @@ struct Vec2 : public Serialization::Serializable {
         node->AddChild("y", std::to_string(y));
     }
 
-    constexpr float GetMagnitude() const { 
+    float GetMagnitude() const { 
         return sqrt(GetMagnitudeSquared()); 
     }
 
@@ -71,7 +71,7 @@ struct Vec2 : public Serialization::Serializable {
         return x * x + y * y; 
     }
 
-    constexpr Vec2 GetNormalized() const {
+    Vec2 GetNormalized() const {
         float magnitude = GetMagnitude();
         if (magnitude == 0) {
             return Vec2();
@@ -80,7 +80,7 @@ struct Vec2 : public Serialization::Serializable {
         return (*this) / magnitude;
     }
 
-    static constexpr float Distance(const Vec2 a, const Vec2 b) {
+    static float Distance(const Vec2 a, const Vec2 b) {
         return (a - b).GetMagnitude();
     }
 

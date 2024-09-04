@@ -73,7 +73,7 @@ void Serialization::SetTypeSerializationData(std::string typeName, std::size_t h
 
 std::string Serialization::demangle(const char* name) {
 #if defined(_MSC_VER)
-    int substring = 6
+    int substring = 6;
     if (name[0] == 's') {
         substring = 7;
     }

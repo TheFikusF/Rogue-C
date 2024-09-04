@@ -25,11 +25,11 @@ namespace Core {
 		}
 
 		template<typename T>
-		constexpr ComponentType GetComponentType() {
+		ComponentType GetComponentType() {
 			return _componentTypes[typeid(T).hash_code()];
 		}
 
-		constexpr ComponentType GetComponentTypeFromHash(std::size_t hash) {
+		ComponentType GetComponentTypeFromHash(std::size_t hash) {
 			return _componentTypes[hash];
 		}
 
@@ -46,7 +46,7 @@ namespace Core {
 		}
 
 		template<typename T>
-		constexpr T& GetComponent(Entity entity) {
+		T& GetComponent(Entity entity) {
 			//ASSERT(_componentArrays.find(typeid(T).hash_code()) != _componentArrays.end(), "Component not registered before use.");
 			return GetComponentArray<T>()->GetData(entity);
 		}

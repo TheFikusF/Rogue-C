@@ -4,7 +4,6 @@
 #include "Enemy.h"
 #include "SpinningSphere.h"
 #include "PickUp.h"
-#include <cxxabi.h>
 #include <memory>
 
 using namespace Core;
