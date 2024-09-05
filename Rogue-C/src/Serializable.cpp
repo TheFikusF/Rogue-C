@@ -70,13 +70,12 @@ void Serialization::SerializedEntity::Write(Node* curent) const {
         Core::ECS::GetComponent<MTransform>(id).Write(curent->AddChild("MTransform"));
     }
 
-    // Serializable const* component = nullptr;
-    // for(auto const& hash : typeHashesMap) {
-    //     component = ((Serializable const*)Core::ECS::GetComponent(id, hash.second));
-    //     if(component != nullptr) {
-    //         component->Write(curent->AddChild(hash.first));
-    //     }
-    // }
+    for(auto const& hash : typeHashesMap) {
+        auto component = static_cast<Serializable const*>(Core::ECS::GetComponent(id, hash.second));
+        if(component != nullptr) {
+            component->Write(curent->AddChild(hash.first));
+        }
+    }
 }
 
 void Node::ReadUntyped(std::string type, void* where) const{

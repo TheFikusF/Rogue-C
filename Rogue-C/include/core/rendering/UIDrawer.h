@@ -4,14 +4,17 @@
 #include <unordered_set>
 
 struct IPointerDown {
+    virtual ~IPointerDown() = default;
     virtual void PointerDown(Entity entity) = 0;
 };
 
 struct IPointerUp {
+    virtual ~IPointerUp() = default;
     virtual void PointerUp(Entity entity) = 0;
 };
 
 struct IPointerHover {
+    virtual ~IPointerHover() = default;
     virtual void PointerHover(Entity entity) = 0;
 };
 

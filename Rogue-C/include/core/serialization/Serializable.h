@@ -50,6 +50,7 @@ namespace Serialization {
     };
 
     struct Serializable {
+        virtual ~Serializable() = default;
         virtual void Read(const Node* curent) = 0;
         virtual void Write(Node* parent) const = 0;
     };

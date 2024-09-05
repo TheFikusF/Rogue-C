@@ -9,7 +9,7 @@ static void foo() { }
 Button::Button() : scale(), _tween(DEFAULT_TWEENID), onClick(foo), onUp(foo) { }
 
 Button::Button(Vec2 scale, void (*onClickFunc)(void)) 
-    : scale(scale), onClick(onClickFunc), onUp([]() -> void {}), _tween(DEFAULT_TWEENID) { }
+    : scale(scale), onClick(onClickFunc), onUp(foo), _tween(DEFAULT_TWEENID) { }
 
 void Button::PointerDown(Entity entity) {
     MTransform& tr = ECS::GetComponent<MTransform>(entity);
@@ -25,10 +25,6 @@ void Button::PointerUp(Entity entity) {
     onUp();
 }
 
-void Button::Read(const Serialization::Node* current) {
+void Button::Read(const Serialization::Node* current) { }
 
-}
-
-void Button::Write(Serialization::Node* current) const {
-    
-}
+void Button::Write(Serialization::Node* current) const { }

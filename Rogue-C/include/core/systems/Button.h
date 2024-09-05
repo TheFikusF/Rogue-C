@@ -19,6 +19,4 @@ struct Button : public IPointerDown, public IPointerUp, public Serialization::Se
     void Write(Serialization::Node* current) const override;
 };
 
-class ButtonSystem : public PointerCallbackSystem<Button> { 
-    //ButtonSystem() { }
-};
+class ButtonSystem : public PointerCallbackSystem<Button> { };
