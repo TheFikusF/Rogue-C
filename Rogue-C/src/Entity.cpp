@@ -1,4 +1,11 @@
 #include "./include/core/ecs/Entity.h"
+#include <set>
+
+namespace Core {
+    namespace Debug {
+        std::set<Entity> currentEntities;
+    }
+}
 
 EntityManager::EntityManager() : _entityCount(0) {
     for (Entity entity = 0; entity < MAX_ENTITIES; ++entity) {
@@ -12,6 +19,7 @@ Entity EntityManager::New() {
     std::unique_lock<std::mutex> lock(_entityMutex);
 
     Entity id = _availableEntities.front();
+    Core::Debug::currentEntities.insert(id);
     _availableEntities.pop();
     ++_entityCount;
 
@@ -24,6 +32,7 @@ Entity EntityManager::New() {
 void EntityManager::Destroy(const Entity entity) {
     _signatures[entity].reset();
     _availableEntities.push(entity);
+    Core::Debug::currentEntities.erase(entity);
     --_entityCount;
 
     _childToParent[entity] = MAX_ENTITIES + 1;

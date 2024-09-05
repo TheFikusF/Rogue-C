@@ -50,6 +50,11 @@ namespace Core {
             this->_scenes[this->_scheduledScene].Start();
             this->_currentScene = this->_scheduledScene;
             this->_scheduledScene = -1;
+
+            Debug::drawTimings.clear();
+            Debug::updateTimings.clear();
+            Debug::physUpdateTimings.clear();
+            Debug::syncTimings.clear();
             return;
         }
         ECS::FreeBin();
