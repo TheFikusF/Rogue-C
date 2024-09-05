@@ -10,6 +10,10 @@ void Core::ComponentManager::AddComponent(Entity entity, std::size_t componentTy
     _componentArrays[componentTypeHash]->SetData(entity, data);
 }
 
+void const* Core::ComponentManager::GetComponent(Entity entity, std::size_t componentTypeHash) {
+    return _componentArrays[componentTypeHash]->GetDataUntyped(entity);
+}
+
 void Core::ComponentManager::EntityDestroyed(Entity entity) {
 	for (auto const& pair : _componentArrays) {
 		auto const& component = pair.second;

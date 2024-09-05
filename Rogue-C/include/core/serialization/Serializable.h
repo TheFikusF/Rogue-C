@@ -51,16 +51,17 @@ namespace Serialization {
 
     struct Serializable {
         virtual void Read(const Node* curent) = 0;
-        virtual void Write(Node* parent) = 0;
+        virtual void Write(Node* parent) const = 0;
     };
 
     struct SerializedEntity : public Serializable {
         Entity id;
 
         SerializedEntity() : id(0) { }
+        SerializedEntity(Entity id) : id(id) { }
 
         void Read(const Node* curent) override;
-        void Write(Node* curent) override;
+        void Write(Node* curent) const override;
     };
 
 #pragma region TYPE_REGISTERING

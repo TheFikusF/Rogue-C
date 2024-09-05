@@ -15,8 +15,8 @@ struct Button : public IPointerDown, public IPointerUp, public Serialization::Se
     void PointerDown(Entity entity) override;
     void PointerUp(Entity entity) override;
 
-    void Read(const Serialization::Node* current) override {}
-    void Write(Serialization::Node* current) override {}
+    void Read(const Serialization::Node* current) override;
+    void Write(Serialization::Node* current) const override;
 };
 
 class ButtonSystem : public PointerCallbackSystem<Button> { 

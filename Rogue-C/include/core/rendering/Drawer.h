@@ -15,12 +15,12 @@ namespace Rendering {
         std::uint8_t r, g, b, a;
 
         SerializedColor() : r(0), g(0), b(0), a(0) { }
-        SerializedColor(Color color) : r(color.r), g(color.g), b(color.b), a(color.a) { }
+        SerializedColor(Color const color) : r(color.r), g(color.g), b(color.b), a(color.a) { }
 
         Color ToRLColor();
 
         void Read(const Serialization::Node* current) override;
-        void Write(Serialization::Node* current) override;
+        void Write(Serialization::Node* current) const override;
     };
 
     struct Drawer : public Serialization::Serializable {
@@ -35,7 +35,7 @@ namespace Rendering {
         Drawer(const SpriteID& sprite, const Color& color);
 
         void Read(const Serialization::Node* current) override;
-        void Write(Serialization::Node* current) override;
+        void Write(Serialization::Node* current) const override;
     };
 
     class DrawerSystem : public Core::System {

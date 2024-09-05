@@ -15,6 +15,7 @@ namespace Core{
             std::uint32_t totalTime, std::uint16_t& y);
         
         void DrawInfo();
+        void DrawHierarchy();
     }
 
     class Game

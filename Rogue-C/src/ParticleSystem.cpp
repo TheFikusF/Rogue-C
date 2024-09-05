@@ -18,7 +18,7 @@ void ParticleSystem::Read(const Serialization::Node* current) {
 	if (current->name.compare("scaleToTime") == 0) scaleToTime = current->Read<Vec2>();
 }
 
-void ParticleSystem::Write(Serialization::Node* current) {
+void ParticleSystem::Write(Serialization::Node* current) const {
 	current->AddChild("loop", std::to_string(loop));
 	current->AddChild("destroyOnStop", std::to_string(destroyOnStop));
 	current->AddChild("speed", std::to_string(speed));

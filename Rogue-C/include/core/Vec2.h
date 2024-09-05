@@ -58,7 +58,7 @@ struct Vec2 : public Serialization::Serializable {
         if(node->name.compare("y") == 0) y = std::stof(node->value);
     }
 
-    void Write(Serialization::Node* node) override {
+    void Write(Serialization::Node* node) const override {
         node->AddChild("x", std::to_string(x));
         node->AddChild("y", std::to_string(y));
     }

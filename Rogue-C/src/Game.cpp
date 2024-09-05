@@ -55,6 +55,7 @@ namespace Core {
             Debug::updateTimings.clear();
             Debug::physUpdateTimings.clear();
             Debug::syncTimings.clear();
+            Debug::currentEntities.clear();
             return;
         }
         ECS::FreeBin();
@@ -132,6 +133,7 @@ namespace Core {
 
             DrawTextureRec(target.texture, { 0, 0, (float)target.texture.width, (float)-target.texture.height }, { 0, 0 }, WHITE);
             Debug::DrawInfo();
+            Debug::DrawHierarchy();
 
             EndDrawing();
 #pragma endregion
@@ -230,5 +232,14 @@ namespace Core {
         Debug::DrawBar("Physics", curHeight += 10, Debug::totalPhysicsTime, Debug::totalFrameTime, YELLOW);
         Debug::DrawBar("Draw", curHeight += 10, Debug::totalDrawTime, Debug::totalFrameTime, MAGENTA);
         Debug::DrawBar("Sync", curHeight += 10, Debug::totalSyncTime, Debug::totalFrameTime + Debug::totalSyncTime, BLUE);
+    }
+
+    void Debug::DrawHierarchy() {
+        Serialization::Node root;
+        SerializedScene scene;
+        scene.Write(&root);
+        std::stringstream buffer;
+        root.Print(buffer);
+        DrawText(buffer.str().c_str(), 5, 5, 10, WHITE);
     }
 }

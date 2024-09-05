@@ -38,6 +38,10 @@ namespace Core {
 	    _instance->_componentManager->AddComponent(entity, typeHash, data);
 	}
 
+    void const* ECS::GetComponent(Entity entity, std::size_t componentTypeHash) {
+        return _instance->_componentManager->GetComponent(entity, componentTypeHash);
+    }
+
     Entity ECS::GetEntityCount() { return _instance->_entityManager->_entityCount; }
 
     void ECS::HandleCollisions(const std::vector<Collision2D>& collision) {

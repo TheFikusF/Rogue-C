@@ -40,7 +40,7 @@ void MTransform::Read(const Serialization::Node* current) {
 	if(current->name.compare("rotation") == 0) rotation = std::stof(current->value); 
 }
 
-void MTransform::Write(Serialization::Node* node) { 
+void MTransform::Write(Serialization::Node* node) const { 
 	position.Write(node->AddChild("position"));
 	scale.Write(node->AddChild("scale"));
 	node->AddChild("rotation", std::to_string(rotation));

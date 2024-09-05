@@ -1,5 +1,4 @@
 #include "./include/core/ecs/Entity.h"
-#include <set>
 
 namespace Core {
     namespace Debug {

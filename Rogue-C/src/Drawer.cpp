@@ -17,7 +17,7 @@ void SerializedColor::Read(const Serialization::Node* current) {
     if(current->name == "a") a = std::stoi(current->value);
 }
 
-void SerializedColor::Write(Serialization::Node* current) {
+void SerializedColor::Write(Serialization::Node* current) const {
     current->AddChild("r", std::to_string(r));
     current->AddChild("g", std::to_string(g));
     current->AddChild("b", std::to_string(b));
@@ -36,7 +36,7 @@ void Drawer::Read(const Serialization::Node* current) {
     if(current->name.compare("order") == 0) order = std::stof(current->value);
 }
 
-void Drawer::Write(Serialization::Node* current) {
+void Drawer::Write(Serialization::Node* current) const {
     SerializedColor(color).Write(current->AddChild("color"));
     current->AddChild("sprite", std::to_string(sprite));
     current->AddChild("shader", std::to_string(shader));

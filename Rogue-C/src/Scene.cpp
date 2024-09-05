@@ -63,7 +63,9 @@ namespace Core {
         curent->Read<Serialization::SerializedEntity>();
     }
 
-    void SerializedScene::Write(Serialization::Node* curent) {
-
+    void SerializedScene::Write(Serialization::Node* curent) const {
+        for(auto const entity : Core::Debug::currentEntities) {
+            Serialization::SerializedEntity(entity).Write(curent->AddChild(std::format("entity_{}", entity)));
+        }
     }
 }

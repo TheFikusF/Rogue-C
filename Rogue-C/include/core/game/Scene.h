@@ -20,8 +20,8 @@ namespace Core {
         static void ReadScene(const char* sceneFile);
     };
 
-    class SerializedScene : public Serialization::Serializable {
+    struct SerializedScene : public Serialization::Serializable {
         void Read(const Serialization::Node* curent) override;
-        void Write(Serialization::Node* curent) override;
+        void Write(Serialization::Node* curent) const override;
     };
 }

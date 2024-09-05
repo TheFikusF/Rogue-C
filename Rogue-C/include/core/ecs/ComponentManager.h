@@ -45,6 +45,8 @@ namespace Core {
 			GetComponentArray<T>()->RemoveComponent(entity);
 		}
 
+		void const* GetComponent(Entity entity, std::size_t componentTypeHash);
+
 		template<typename T>
 		T& GetComponent(Entity entity) {
 			//ASSERT(_componentArrays.find(typeid(T).hash_code()) != _componentArrays.end(), "Component not registered before use.");

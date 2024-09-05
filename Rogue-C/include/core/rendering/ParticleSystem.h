@@ -28,7 +28,7 @@ struct ParticleSystem : public Serialization::Serializable {
 	ParticleSystem();
 
 	void Read(const Serialization::Node* current) override;
-	void Write(Serialization::Node* current) override;
+	void Write(Serialization::Node* current) const override;
 };
 
 class ParticleSystemSystem : public Core::System {

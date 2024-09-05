@@ -1,4 +1,5 @@
 #include "./include/core/serialization/Serializable.h"
+#include "./include/core/Transform.h"
 #include "./include/core/ecs/ECS.h"
 
 using namespace Serialization;
@@ -58,7 +59,25 @@ void Serialization::SerializedEntity::Read(const Node* curent) {
     std::free(data);
 }
 
-void Serialization::SerializedEntity::Write(Node* curent) { }
+void Serialization::SerializedEntity::Write(Node* curent) const { 
+    curent->AddChild("id", std::to_string(id));
+    
+    if(Core::ECS::GetParent(id) != MAX_ENTITIES) {
+        curent->AddChild("parent", std::to_string(Core::ECS::GetParent(id)));
+    }
+
+    if(Core::ECS::HasComponent<MTransform>(id)) {
+        Core::ECS::GetComponent<MTransform>(id).Write(curent->AddChild("MTransform"));
+    }
+
+    // Serializable const* component = nullptr;
+    // for(auto const& hash : typeHashesMap) {
+    //     component = ((Serializable const*)Core::ECS::GetComponent(id, hash.second));
+    //     if(component != nullptr) {
+    //         component->Write(curent->AddChild(hash.first));
+    //     }
+    // }
+}
 
 void Node::ReadUntyped(std::string type, void* where) const{
     ReadFunction fun = readFunctionsMap[type];

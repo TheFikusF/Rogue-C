@@ -9,7 +9,7 @@ void GradientKey::Read(const Serialization::Node* current) {
     if (current->name.compare("time") == 0) time = std::stof(current->value);
 }
 
-void GradientKey::Write(Serialization::Node* current) {
+void GradientKey::Write(Serialization::Node* current) const {
     Rendering::SerializedColor(color).Write(current->AddChild("color"));
     current->AddChild("time", std::to_string(time));
 }
@@ -41,7 +41,7 @@ void Gradient::Read(const Serialization::Node* current) {
     if (current->name.compare("keyFrames") == 0) current->ReadVector<GradientKey>(keyFrames);
 }
 
-void Gradient::Write(Serialization::Node* current) {
+void Gradient::Write(Serialization::Node* current) const {
     auto node = current->AddChild("keyFrames");
     node->isArray = true;
     for (auto frame : keyFrames) {

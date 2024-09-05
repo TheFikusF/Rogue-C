@@ -73,6 +73,8 @@ namespace Core {
 			_instance->_componentManager->RemoveComponent<T>(entity);
 		}
 
+		static void const* GetComponent(Entity entity, std::size_t componentTypeHash);
+
 		template<typename T>
 		static T& GetComponent(Entity entity) {
 			return _instance->_componentManager->GetComponent<T>(entity);

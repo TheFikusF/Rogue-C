@@ -17,7 +17,7 @@ struct MTransform : public Serialization::Serializable {
 	MTransform(Vec2 position, Vec2 scale, float rotation);
 
 	void Read(const Serialization::Node* curent) override;
-	void Write(Serialization::Node* node) override;
+	void Write(Serialization::Node* node) const override;
 };
 
 class MTransformSystem : public Core::System {

@@ -13,7 +13,7 @@ struct GradientKey : public Serialization::Serializable {
     GradientKey(Color color, float time);
 
     void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) override;
+    void Write(Serialization::Node* current) const override;
 };
 
 
@@ -26,7 +26,7 @@ struct Gradient : public Serialization::Serializable {
     Color Evaluate(float t) const;
 
     void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) override;
+    void Write(Serialization::Node* current) const override;
 };
 
 Color ColorLerp(Color start, Color end, float t);

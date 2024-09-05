@@ -8,6 +8,7 @@ namespace Core {
 	public:
 		virtual ~IComponentArray() = default;
 		virtual void SetData(Entity entity, void* data) = 0;
+		virtual void* GetDataUntyped(Entity entity) = 0;
 		virtual void EntityDestroyed(Entity entity) = 0;
 		virtual void Init() { }
 		virtual void Clear() { }
@@ -94,6 +95,13 @@ namespace Core {
 		T& GetData(Entity entity) {
 			//ASSERT(_sparseToDense.find(entity) != _sparseToDense.end(), _noComponentMessage);
 			return _components[_sparseToDense[entity]];
+		}
+
+		void* GetDataUntyped(Entity entity) override {
+			if(_sparseToDense.find(entity) == _sparseToDense.end()) {
+				return nullptr;
+			}
+			return &_components[_sparseToDense[entity]];
 		}
 		
 		void EntityDestroyed(Entity entity) override {

@@ -19,7 +19,7 @@ struct Collider2D : public Serialization::Serializable {
 		: isTrigger(trigger), useGravity(useGravity), layer(0), mass(mass), isStatic(false), kinematic(false), force(), velocity() { }
 
 	void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) override;
+    void Write(Serialization::Node* current) const override;
 };
 
 struct Collision2D {

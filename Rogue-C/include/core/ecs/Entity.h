@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include <queue>
 #include <cstdint>
 #include <bitset>
@@ -13,6 +14,12 @@ const Entity MAX_ENTITIES = 5000;
 const ComponentType MAX_COMPONENTS = 128;
 
 using Signature = std::bitset<MAX_COMPONENTS>;
+
+namespace Core {
+	namespace Debug {
+		extern std::set<Entity> currentEntities;
+	}
+}
 
 class EntityManager {
 public:

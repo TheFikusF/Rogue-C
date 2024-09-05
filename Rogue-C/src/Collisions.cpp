@@ -9,7 +9,7 @@ void Collider2D::Read(const Serialization::Node* current) {
     if(current->name == "mass") mass = std::stof(current->value);
 }
 
-void Collider2D::Write(Serialization::Node* current) {
+void Collider2D::Write(Serialization::Node* current) const {
     current->AddChild("isStatic", std::to_string(isStatic));
     current->AddChild("isTrigger", std::to_string(isTrigger));
     current->AddChild("useGravity", std::to_string(useGravity));
