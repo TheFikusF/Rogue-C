@@ -21,7 +21,7 @@ namespace Core {
     };
 
     class SerializedScene : public Serialization::Serializable {
-        void Read(std::string name, std::string value, const Serialization::Node* curent) override;
+        void Read(const Serialization::Node* curent) override;
         void Write(Serialization::Node* curent) override;
     };
 }

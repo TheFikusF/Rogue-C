@@ -44,7 +44,7 @@ namespace Serialization {
         T Read() const;
 
         template<typename T>
-        T ReadVector(std::vector<T>& target) const;
+        void ReadVector(std::vector<T>& target) const;
 
         void ReadUntyped(std::string type, void* where) const;
     };
@@ -89,7 +89,7 @@ namespace Serialization {
     }
 
     template<typename T>
-    inline T Node::ReadVector(std::vector<T>& target) const {
+    inline void Node::ReadVector(std::vector<T>& target) const {
         for(auto const& child : children) {
             target.emplace_back(child.Read<T>());
         }

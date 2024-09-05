@@ -4,9 +4,12 @@
 
 using namespace Core;
 
-Button::Button() : scale() {}
+static void foo() { }
 
-Button::Button(Vec2 scale, void (*onClickFunc)(void)) : scale(scale), onClick(onClickFunc), onUp([]() -> void {}), _tween(DEFAULT_TWEENID) {}
+Button::Button() : scale(), _tween(DEFAULT_TWEENID), onClick(foo), onUp(foo) { }
+
+Button::Button(Vec2 scale, void (*onClickFunc)(void)) 
+    : scale(scale), onClick(onClickFunc), onUp([]() -> void {}), _tween(DEFAULT_TWEENID) { }
 
 void Button::PointerDown(Entity entity) {
     MTransform& tr = ECS::GetComponent<MTransform>(entity);

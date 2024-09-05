@@ -58,8 +58,8 @@ namespace Core {
         ECS::Clear();
     }
 
-    void SerializedScene::Read(std::string name, std::string value, const Serialization::Node* curent) {
-        LOG("Reading: {}, {}", name, value);
+    void SerializedScene::Read(const Serialization::Node* curent) {
+        LOG("Reading: {}, {}", curent->name, curent->value);
         curent->Read<Serialization::SerializedEntity>();
     }
 

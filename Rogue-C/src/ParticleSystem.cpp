@@ -5,6 +5,29 @@
 
 using namespace Core;
 
+ParticleSystem::ParticleSystem()
+	: loop(true), destroyOnStop(false), speed(0), gradient(), lifetime(0), spawnrate(0), scaleToTime() { }
+
+void ParticleSystem::Read(const Serialization::Node* current) {
+	if (current->name.compare("loop") == 0) loop = std::stoi(current->value);
+	if (current->name.compare("destroyOnStop") == 0) destroyOnStop = std::stoi(current->value);
+	if (current->name.compare("speed") == 0) speed = std::stof(current->value);
+	if (current->name.compare("gradient") == 0) gradient = current->Read<Gradient>();
+	if (current->name.compare("lifetime") == 0) lifetime = std::stof(current->value);
+	if (current->name.compare("spawnrate") == 0) spawnrate = std::stof(current->value);
+	if (current->name.compare("scaleToTime") == 0) scaleToTime = current->Read<Vec2>();
+}
+
+void ParticleSystem::Write(Serialization::Node* current) {
+	current->AddChild("loop", std::to_string(loop));
+	current->AddChild("destroyOnStop", std::to_string(destroyOnStop));
+	current->AddChild("speed", std::to_string(speed));
+	gradient.Write(current->AddChild("gradient"));
+	current->AddChild("lifetime", std::to_string(lifetime.time));
+	current->AddChild("spawnrate", std::to_string(spawnrate.time));
+	scaleToTime.Write(current->AddChild("scaleToTime"));
+}
+
 ParticleSystemSystem::ParticleSystemSystem() {
 	signature.set(ECS::GetComponentType<MTransform>());
 	signature.set(ECS::GetComponentType<ParticleSystem>());
@@ -20,7 +43,7 @@ void ParticleSystemSystem::Update(float dt) {
 
 		if (ps.spawnrate.Check(dt)) {
 			int angle = GetRandomValue(0, 360);
-			uint32_t particle = particlesQueue.front();
+			std::uint32_t particle = particlesQueue.front();
 			particlesQueue.pop();
 			particles[particle] = Particle{
 				.attachedSystem = entity,
@@ -45,7 +68,7 @@ void ParticleSystemSystem::Update(float dt) {
 		}
 	}
 
-	for (uint32_t i = 0; i < MAX_ENTITIES * 4; i++) {
+	for (std::uint32_t i = 0; i < MAX_ENTITIES * 4; i++) {
 		if (particles[i].lifetime.IsStarted() == false) {
 			continue;
 		}
@@ -86,17 +109,17 @@ void ParticleSystemSystem::Draw() {
 void ParticleSystemSystem::Spawn(Vec2 position, bool loop) {
 	Entity ps = ECS::CreateEntity();
 	ECS::AddComponent<MTransform>(ps, MTransform(position));
-	Timer lifetime = 1;
-	Timer spawnrate = 0.1f;
-	lifetime.Start();
-	spawnrate.Start();
-	ECS::AddComponent<ParticleSystem>(ps, ParticleSystem{ 
-		.loop = loop, 
-		.destroyOnStop = !loop, 
-		.speed = 200,
-		.gradient = Gradient({ GradientKey(RED, 0), GradientKey(BLACK, 1) }),
-		.lifetime = lifetime, 
-		.spawnrate = spawnrate, 
-		.scaleToTime = Vec2(5, 0),
-	});
+	
+	ParticleSystem s;
+	s.loop = loop;
+	s.destroyOnStop = !loop;
+	s.speed = 200;
+	s.gradient = Gradient({ GradientKey(RED, 0), GradientKey(BLACK, 1) });
+	s.lifetime = 1;
+	s.spawnrate = 0.1f;
+	s.scaleToTime = Vec2(5, 0);
+	s.lifetime.Start();
+	s.spawnrate.Start();
+
+	ECS::AddComponent<ParticleSystem>(ps, s);
 }
