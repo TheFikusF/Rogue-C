@@ -1,21 +1,23 @@
 #include "./include/core/physics/Collisions.h"
 
-void Collider2D::Read(const Serialization::Node* current) {
-    if(current->name == "isStatic") isStatic = std::stoi(current->value);
-    if(current->name == "isTrigger") isTrigger = std::stoi(current->value);
-    if(current->name == "useGravity") useGravity = std::stoi(current->value);
-    if(current->name == "kinematic") kinematic = std::stoi(current->value);
-    if(current->name == "layer") layer = std::stoi(current->value);
-    if(current->name == "mass") mass = std::stof(current->value);
+template<>
+void Serialization::Read<Collider2D>(const Serialization::Node* current, Collider2D& target) {
+    if(current->name == "isStatic") target.isStatic = std::stoi(current->value);
+    if(current->name == "isTrigger") target.isTrigger = std::stoi(current->value);
+    if(current->name == "useGravity") target.useGravity = std::stoi(current->value);
+    if(current->name == "kinematic") target.kinematic = std::stoi(current->value);
+    if(current->name == "layer") target.layer = std::stoi(current->value);
+    if(current->name == "mass") target.mass = std::stof(current->value);
 }
 
-void Collider2D::Write(Serialization::Node* current) const {
-    current->AddChild("isStatic", std::to_string(isStatic));
-    current->AddChild("isTrigger", std::to_string(isTrigger));
-    current->AddChild("useGravity", std::to_string(useGravity));
-    current->AddChild("kinematic", std::to_string(kinematic));
-    current->AddChild("layer", std::to_string(layer));
-    current->AddChild("mass", std::to_string(mass));
+template<>
+void Serialization::Write<Collider2D>(Serialization::Node* current, const Collider2D& from) {
+    current->AddChild("isStatic", std::to_string(from.isStatic));
+    current->AddChild("isTrigger", std::to_string(from.isTrigger));
+    current->AddChild("useGravity", std::to_string(from.useGravity));
+    current->AddChild("kinematic", std::to_string(from.kinematic));
+    current->AddChild("layer", std::to_string(from.layer));
+    current->AddChild("mass", std::to_string(from.mass));
 }
 
 bool PointInRectangle(Vec2 point, Vec2 position, Vec2 scale) { 

@@ -5,28 +5,22 @@
 #include <vector>
 #include <cstdint>
 
-struct GradientKey : public Serialization::Serializable {
+struct GradientKey {
     Color color;
     float time;
 
     GradientKey() = default;
     GradientKey(Color color, float time);
-
-    void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) const override;
 };
 
 
-struct Gradient : public Serialization::Serializable {
+struct Gradient {
     std::vector<GradientKey> keyFrames;
 
     Gradient() : keyFrames() { }
     Gradient(std::vector<GradientKey> keyFrames);
 
     Color Evaluate(float t) const;
-
-    void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) const override;
 };
 
 Color ColorLerp(Color start, Color end, float t);

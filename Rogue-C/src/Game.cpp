@@ -1,4 +1,5 @@
 #include "./include/core/game/Game.h"
+#include "./include/core/rendering/ParticleSystem.h"
 #include "./include/core/game/SceneManager.h"
 #include "./include/core/physics/Physics.h"
 #include "./include/core/Gradient.h"
@@ -20,6 +21,12 @@ namespace Core {
     extern std::uint32_t findCollisionsTime;
     extern std::uint32_t correctTime;
 
+    void RegisterSerializedTypes() {
+        Serialization::RegisterType<MTransform>();
+        Serialization::RegisterType<Rendering::Drawer>();
+        Serialization::RegisterType<ParticleSystem>();
+    }
+
     Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3, []() noexcept { instance->Sync(); }), _scheduledScene(-1) {
         SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_MAXIMIZED | FLAG_MSAA_4X_HINT);
         InitWindow(WIDTH, HEIGHT, "Rogue-C");
@@ -29,6 +36,7 @@ namespace Core {
 
         instance = this;
 
+        RegisterSerializedTypes();
         SetRandomSeed(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
         SceneManager(this);
         SpriteManager::Init();

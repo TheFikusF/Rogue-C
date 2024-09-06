@@ -6,22 +6,20 @@
 using namespace Core;
 using namespace Rendering;
 
-Color SerializedColor::ToRLColor() {
-    return Color(r, g, b, a);
+template<>
+void Serialization::Read<Color>(const Serialization::Node* current, Color& target) {
+    if(current->name == "r") target.r = std::stoi(current->value);
+    if(current->name == "g") target.g = std::stoi(current->value);
+    if(current->name == "b") target.b = std::stoi(current->value);
+    if(current->name == "a") target.a = std::stoi(current->value);
 }
 
-void SerializedColor::Read(const Serialization::Node* current) {
-    if(current->name == "r") r = std::stoi(current->value);
-    if(current->name == "g") g = std::stoi(current->value);
-    if(current->name == "b") b = std::stoi(current->value);
-    if(current->name == "a") a = std::stoi(current->value);
-}
-
-void SerializedColor::Write(Serialization::Node* current) const {
-    current->AddChild("r", std::to_string(r));
-    current->AddChild("g", std::to_string(g));
-    current->AddChild("b", std::to_string(b));
-    current->AddChild("a", std::to_string(a));
+template<>
+void Serialization::Write<Color>(Serialization::Node* current, const Color& from) {
+    current->AddChild("r", std::to_string(from.r));
+    current->AddChild("g", std::to_string(from.g));
+    current->AddChild("b", std::to_string(from.b));
+    current->AddChild("a", std::to_string(from.a));
 }
 
 Drawer::Drawer() : sprite(0), color(WHITE), shader(0), order(0) {}
@@ -29,18 +27,20 @@ Drawer::Drawer(const Color& color) : sprite(0), color(color), shader(0), order(0
 Drawer::Drawer(const SpriteID& sprite) : sprite(sprite), color(WHITE), shader(0), order(0) {}
 Drawer::Drawer(const SpriteID& sprite, const Color& color) : sprite(sprite), color(color), shader(0), order(0) {}
 
-void Drawer::Read(const Serialization::Node* current) {
-    if(current->name.compare("color") == 0) color = current->Read<SerializedColor>().ToRLColor();
-    if(current->name.compare("sprite") == 0) sprite = std::stoul(current->value);
-    if(current->name.compare("shader") == 0) shader = std::stoul(current->value);
-    if(current->name.compare("order") == 0) order = std::stof(current->value);
+template<>
+void Serialization::Read<Drawer>(const Serialization::Node* current, Drawer& target) {
+    if(current->name.compare("color") == 0) target.color = current->Read<Color>();
+    if(current->name.compare("sprite") == 0) target.sprite = std::stoul(current->value);
+    if(current->name.compare("shader") == 0) target.shader = std::stoul(current->value);
+    if(current->name.compare("order") == 0) target.order = std::stof(current->value);
 }
 
-void Drawer::Write(Serialization::Node* current) const {
-    SerializedColor(color).Write(current->AddChild("color"));
-    current->AddChild("sprite", std::to_string(sprite));
-    current->AddChild("shader", std::to_string(shader));
-    current->AddChild("order", std::to_string(order));
+template<>
+void Serialization::Write<Drawer>(Serialization::Node* current, const Drawer& from) {
+    Serialization::Write(current->AddChild("color"), from.color);
+    current->AddChild("sprite", std::to_string(from.sprite));
+    current->AddChild("shader", std::to_string(from.shader));
+    current->AddChild("order", std::to_string(from.order));
 }
 
 DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {

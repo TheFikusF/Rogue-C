@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-struct MTransform : public Serialization::Serializable {
+struct MTransform {
 	Vec2 position;
 	Vec2 scale;
 	float rotation;
@@ -15,9 +15,6 @@ struct MTransform : public Serialization::Serializable {
 	MTransform(Vec2 position);
 	MTransform(Vec2 position, Vec2 scale);
 	MTransform(Vec2 position, Vec2 scale, float rotation);
-
-	void Read(const Serialization::Node* curent) override;
-	void Write(Serialization::Node* node) const override;
 };
 
 class MTransformSystem : public Core::System {

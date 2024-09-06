@@ -57,15 +57,17 @@ namespace Core {
         CameraContorl::Stop();
         ECS::Clear();
     }
+}
 
-    void SerializedScene::Read(const Serialization::Node* curent) {
-        LOG("Reading: {}, {}", curent->name, curent->value);
-        curent->Read<Serialization::SerializedEntity>();
-    }
+template<>
+void Serialization::Read<Core::SerializedScene>(const Serialization::Node* current, Core::SerializedScene& target) {
+    LOG("Reading: {}, {}", current->name, current->value);
+    current->Read<Serialization::SerializedEntity>();
+}
 
-    void SerializedScene::Write(Serialization::Node* curent) const {
-        for(auto const entity : Core::Debug::currentEntities) {
-            Serialization::SerializedEntity(entity).Write(curent->AddChild(std::format("entity_{}", entity)));
-        }
+template<>
+void Serialization::Write<Core::SerializedScene>(Serialization::Node* current, const Core::SerializedScene& from) {
+    for(auto const entity : Core::Debug::currentEntities) {
+        Serialization::Write(current->AddChild(std::format("entity_{}", entity)), Serialization::SerializedEntity(entity));
     }
 }

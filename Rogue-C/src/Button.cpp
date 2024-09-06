@@ -24,7 +24,3 @@ void Button::PointerUp(Entity entity) {
     _tween = TweenSystem::To(tr.scale, scale, Vec2::Lerp, 0.1f, Ease::InOutBack);
     onUp();
 }
-
-void Button::Read(const Serialization::Node* current) { }
-
-void Button::Write(Serialization::Node* current) const { }

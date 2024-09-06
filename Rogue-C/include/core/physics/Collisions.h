@@ -4,7 +4,7 @@
 
 using Layer = std::uint8_t;
 
-struct Collider2D : public Serialization::Serializable {
+struct Collider2D {
 	bool isStatic;
 	bool isTrigger;
 	bool useGravity;
@@ -17,9 +17,6 @@ struct Collider2D : public Serialization::Serializable {
 	Collider2D() : force(), velocity() { } 
 	Collider2D(bool trigger, bool useGravity, float mass) 
 		: isTrigger(trigger), useGravity(useGravity), layer(0), mass(mass), isStatic(false), kinematic(false), force(), velocity() { }
-
-	void Read(const Serialization::Node* current) override;
-    void Write(Serialization::Node* current) const override;
 };
 
 struct Collision2D {

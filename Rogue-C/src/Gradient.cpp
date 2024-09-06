@@ -4,14 +4,16 @@
 
 GradientKey::GradientKey(Color color, float time) : color(color), time(time) { }
 
-void GradientKey::Read(const Serialization::Node* current) {
-    if (current->name.compare("color") == 0) color = current->Read<Rendering::SerializedColor>().ToRLColor();
-    if (current->name.compare("time") == 0) time = std::stof(current->value);
+template<>
+void Serialization::Read<GradientKey>(const Serialization::Node* current, GradientKey& target) {
+    if (current->name.compare("color") == 0) target.color = current->Read<Color>();
+    if (current->name.compare("time") == 0) target.time = std::stof(current->value);
 }
 
-void GradientKey::Write(Serialization::Node* current) const {
-    Rendering::SerializedColor(color).Write(current->AddChild("color"));
-    current->AddChild("time", std::to_string(time));
+template<>
+void Serialization::Write<GradientKey>(Serialization::Node* current, const GradientKey& from) {
+    Serialization::Write(current->AddChild("color"), from.color);
+    current->AddChild("time", std::to_string(from.time));
 }
 
 Gradient::Gradient(std::vector<GradientKey> keyFrames) : keyFrames(keyFrames) { }
@@ -37,15 +39,17 @@ Color Gradient::Evaluate(float t) const {
     return keyFrames.back().color;
 }
 
-void Gradient::Read(const Serialization::Node* current) {
-    if (current->name.compare("keyFrames") == 0) current->ReadVector<GradientKey>(keyFrames);
+template<>
+void Serialization::Read<Gradient>(const Serialization::Node* current, Gradient& target) {
+    if (current->name.compare("keyFrames") == 0) current->ReadVector<GradientKey>(target.keyFrames);
 }
 
-void Gradient::Write(Serialization::Node* current) const {
+template<>
+void Serialization::Write<Gradient>(Serialization::Node* current, const Gradient& from) {
     auto node = current->AddChild("keyFrames");
     node->isArray = true;
-    for (auto frame : keyFrames) {
-        frame.Write(node->AddChild());
+    for (auto frame : from.keyFrames) {
+        Serialization::Write<GradientKey>(node->AddChild(), frame);
     }
 }
 

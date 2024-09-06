@@ -40,41 +40,43 @@ void Node::Print(std::ostream& stream, int identing, bool isArrayElement) const 
     }
 }
 
-void Serialization::SerializedEntity::Read(const Node* curent) {
-    if(curent->name.compare("id") == 0) {
-        id = Core::ECS::CreateEntity();
-        LOG("creating entity {}", id);
-        return;
-    } 
-    
-    if (curent->name.compare("parent") == 0) {
-        Core::ECS::SetParent(id, std::stoul(curent->value));
+template<>
+void Serialization::Read(const Node* current, SerializedEntity& target) { 
+    if (current->name.compare("id") == 0) {
+        target.id = Core::ECS::CreateEntity();
+        LOG("creating entity {}", target.id);
         return;
     }
 
-    std::cout << "reading: " << curent->name << " " << curent->value << std::endl;
-    void* data = malloc(typeSizeMap[curent->name]);
-    curent->ReadUntyped(curent->name, data);
-    Core::ECS::AddComponent(id, typeHashesMap[curent->name], data);
+    if (current->name.compare("parent") == 0) {
+        Core::ECS::SetParent(target.id, std::stoul(current->value));
+        return;
+    }
+
+    std::cout << "reading: " << current->name << " " << current->value << std::endl;
+    void* data = malloc(typeSizeMap[current->name]);
+    current->ReadUntyped(current->name, data);
+    Core::ECS::AddComponent(target.id, typeHashesMap[current->name], data);
     std::free(data);
 }
 
-void Serialization::SerializedEntity::Write(Node* curent) const { 
-    curent->AddChild("id", std::to_string(id));
-    
-    if(Core::ECS::GetParent(id) != MAX_ENTITIES) {
-        curent->AddChild("parent", std::to_string(Core::ECS::GetParent(id)));
+template<>
+void Serialization::Write(Node* parent, const SerializedEntity& from) { 
+    parent->AddChild("id", std::to_string(from.id));
+
+    if (Core::ECS::GetParent(from.id) != MAX_ENTITIES) {
+        parent->AddChild("parent", std::to_string(Core::ECS::GetParent(from.id)));
     }
 
-    if(Core::ECS::HasComponent<MTransform>(id)) {
-        Core::ECS::GetComponent<MTransform>(id).Write(curent->AddChild("MTransform"));
+    if (Core::ECS::HasComponent<MTransform>(from.id)) {
+        Core::ECS::GetComponent<MTransform>(from.id).Write(parent->AddChild("MTransform"));
     }
 
-    for(auto const& hash : typeHashesMap) {
-        auto component = static_cast<Serializable const*>(Core::ECS::GetComponent(id, hash.second));
-        if(component != nullptr) {
+    for (auto const& hash : typeHashesMap) {
+        /*auto component = static_cast<Serializable const*>(Core::ECS::GetComponent(id, hash.second));
+        if (component != nullptr) {
             component->Write(curent->AddChild(hash.first));
-        }
+        }*/
     }
 }
 

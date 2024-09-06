@@ -11,19 +11,7 @@ namespace Rendering {
         CustomOrder,
     };
 
-    struct SerializedColor : public Serialization::Serializable {
-        std::uint8_t r, g, b, a;
-
-        SerializedColor() : r(0), g(0), b(0), a(0) { }
-        SerializedColor(Color const color) : r(color.r), g(color.g), b(color.b), a(color.a) { }
-
-        Color ToRLColor();
-
-        void Read(const Serialization::Node* current) override;
-        void Write(Serialization::Node* current) const override;
-    };
-
-    struct Drawer : public Serialization::Serializable {
+    struct Drawer {
         Color color;
         SpriteID sprite;
         ShaderID shader;
@@ -33,9 +21,6 @@ namespace Rendering {
         Drawer(const Color& color);
         Drawer(const SpriteID& sprite);
         Drawer(const SpriteID& sprite, const Color& color);
-
-        void Read(const Serialization::Node* current) override;
-        void Write(Serialization::Node* current) const override;
     };
 
     class DrawerSystem : public Core::System {

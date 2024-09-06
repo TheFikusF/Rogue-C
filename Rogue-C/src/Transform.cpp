@@ -34,14 +34,16 @@ const void MTransformSystem::GetPosition(const Entity entity, Vec2& pos) {
 	GetPosition(parent, pos);
 }
 
-void MTransform::Read(const Serialization::Node* current) {
-	if(current->name.compare("position") == 0) position = current->Read<Vec2>(); 
-	if(current->name.compare("scale") == 0) scale = current->Read<Vec2>(); 
-	if(current->name.compare("rotation") == 0) rotation = std::stof(current->value); 
+template<>
+void Serialization::Read<MTransform>(const Serialization::Node* current, MTransform& target) {
+	if(current->name.compare("position") == 0) target.position = current->Read<Vec2>(); 
+	if(current->name.compare("scale") == 0) target.scale = current->Read<Vec2>();
+	if(current->name.compare("rotation") == 0) target.rotation = std::stof(current->value);
 }
 
-void MTransform::Write(Serialization::Node* node) const { 
-	position.Write(node->AddChild("position"));
-	scale.Write(node->AddChild("scale"));
-	node->AddChild("rotation", std::to_string(rotation));
+template<>
+void Serialization::Write<MTransform>(Serialization::Node* node, const MTransform& from) {
+	Write(node->AddChild("position"), from.position);
+	Write(node->AddChild("scale"), from.scale);
+	node->AddChild("rotation", std::to_string(from.rotation));
 }

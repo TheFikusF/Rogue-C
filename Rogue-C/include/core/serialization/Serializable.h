@@ -49,20 +49,17 @@ namespace Serialization {
         void ReadUntyped(std::string type, void* where) const;
     };
 
-    struct Serializable {
-        virtual ~Serializable() = default;
-        virtual void Read(const Node* curent) = 0;
-        virtual void Write(Node* parent) const = 0;
-    };
+    template<typename T>
+    void Read(const Node* current, T& target) { }
+    
+    template<typename T>
+    void Write(Node* parent, const T& from) { }
 
-    struct SerializedEntity : public Serializable {
+    struct SerializedEntity {
         Entity id;
 
         SerializedEntity() : id(0) { }
         SerializedEntity(Entity id) : id(id) { }
-
-        void Read(const Node* curent) override;
-        void Write(Node* curent) const override;
     };
 
 #pragma region TYPE_REGISTERING
@@ -83,9 +80,8 @@ namespace Serialization {
     template<typename T>
     inline T Node::Read() const {
         T result;
-        Serializable* ptr = (Serializable*)(&result);
         for (auto const& child : children) {
-            ptr->Read(&child);
+            Serialization::Read(child, &result);
         }
         return result;
     }
@@ -93,7 +89,9 @@ namespace Serialization {
     template<typename T>
     inline void Node::ReadVector(std::vector<T>& target) const {
         for(auto const& child : children) {
-            target.emplace_back(child.Read<T>());
+            T result;
+            this->Read<T>(child, &result);
+            target.emplace_back(result);
         }
     }
 
