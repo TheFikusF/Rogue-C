@@ -5,6 +5,7 @@
 using namespace Serialization;
 
 std::unordered_map<std::string, ReadFunction> readFunctionsMap;
+std::unordered_map<std::string, WriteFunction> writeFunctionsMap;
 std::unordered_map<std::string, std::size_t> typeHashesMap;
 std::unordered_map<std::string, std::size_t> typeSizeMap;
 
@@ -68,15 +69,16 @@ void Serialization::Write(Node* parent, const SerializedEntity& from) {
         parent->AddChild("parent", std::to_string(Core::ECS::GetParent(from.id)));
     }
 
-    if (Core::ECS::HasComponent<MTransform>(from.id)) {
-        Core::ECS::GetComponent<MTransform>(from.id).Write(parent->AddChild("MTransform"));
-    }
+    // if (Core::ECS::HasComponent<MTransform>(from.id)) {
+    //     Serialization::Write(parent->AddChild("MTransform"), Core::ECS::GetComponent<MTransform>(from.id));
+    // }
 
     for (auto const& hash : typeHashesMap) {
-        /*auto component = static_cast<Serializable const*>(Core::ECS::GetComponent(id, hash.second));
+        auto component = Core::ECS::GetComponent(from.id, hash.second);
         if (component != nullptr) {
-            component->Write(curent->AddChild(hash.first));
-        }*/
+            WriteFunction fun = writeFunctionsMap[hash.first];
+            (*fun)(parent->AddChild(hash.first), component);
+        }
     }
 }
 
@@ -85,8 +87,9 @@ void Node::ReadUntyped(std::string type, void* where) const{
     (*fun)(this, where);
 }
 
-void Serialization::SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction func) {
-    readFunctionsMap[typeName] = func;
+void Serialization::SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction readFunc, WriteFunction writeFunc) {
+    readFunctionsMap[typeName] = readFunc;
+    writeFunctionsMap[typeName] = writeFunc;
     typeHashesMap[typeName] = hash;
     typeSizeMap[typeName] = size;
 }

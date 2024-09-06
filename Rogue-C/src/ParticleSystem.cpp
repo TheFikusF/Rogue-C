@@ -8,24 +8,26 @@ using namespace Core;
 ParticleSystem::ParticleSystem()
 	: loop(true), destroyOnStop(false), speed(0), gradient(), lifetime(0), spawnrate(0), scaleToTime() { }
 
-void ParticleSystem::Read(const Serialization::Node* current) {
-	if (current->name.compare("loop") == 0) loop = std::stoi(current->value);
-	if (current->name.compare("destroyOnStop") == 0) destroyOnStop = std::stoi(current->value);
-	if (current->name.compare("speed") == 0) speed = std::stof(current->value);
-	if (current->name.compare("gradient") == 0) gradient = current->Read<Gradient>();
-	if (current->name.compare("lifetime") == 0) lifetime = std::stof(current->value);
-	if (current->name.compare("spawnrate") == 0) spawnrate = std::stof(current->value);
-	if (current->name.compare("scaleToTime") == 0) scaleToTime = current->Read<Vec2>();
+template<>
+void Serialization::Read<ParticleSystem>(const Serialization::Node* current, ParticleSystem& target) {
+	if (current->name.compare("loop") == 0) target.loop = std::stoi(current->value);
+	if (current->name.compare("destroyOnStop") == 0) target.destroyOnStop = std::stoi(current->value);
+	if (current->name.compare("speed") == 0) target.speed = std::stof(current->value);
+	if (current->name.compare("gradient") == 0) target.gradient = current->Read<Gradient>();
+	if (current->name.compare("lifetime") == 0) target.lifetime = std::stof(current->value);
+	if (current->name.compare("spawnrate") == 0) target.spawnrate = std::stof(current->value);
+	if (current->name.compare("scaleToTime") == 0) target.scaleToTime = current->Read<Vec2>();
 }
 
-void ParticleSystem::Write(Serialization::Node* current) const {
-	current->AddChild("loop", std::to_string(loop));
-	current->AddChild("destroyOnStop", std::to_string(destroyOnStop));
-	current->AddChild("speed", std::to_string(speed));
-	gradient.Write(current->AddChild("gradient"));
-	current->AddChild("lifetime", std::to_string(lifetime.time));
-	current->AddChild("spawnrate", std::to_string(spawnrate.time));
-	scaleToTime.Write(current->AddChild("scaleToTime"));
+template<>
+void Serialization::Write<ParticleSystem>(Serialization::Node* current, const ParticleSystem& from) {
+	current->AddChild("loop", std::to_string(from.loop));
+	current->AddChild("destroyOnStop", std::to_string(from.destroyOnStop));
+	current->AddChild("speed", std::to_string(from.speed));
+	Serialization::Write(current->AddChild("gradient"), from.gradient);
+	current->AddChild("lifetime", std::to_string(from.lifetime.time));
+	current->AddChild("spawnrate", std::to_string(from.spawnrate.time));
+	Serialization::Write(current->AddChild("scaleToTime"), from.scaleToTime);
 }
 
 ParticleSystemSystem::ParticleSystemSystem() {

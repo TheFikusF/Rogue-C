@@ -116,15 +116,3 @@ struct Vec2 {
         return (p1 * 3 * u2 * t) + (p2 * 3 * u * t2) + (Vec2(1, 1) * t3);
     }
 };
-
-template<>
-void Serialization::Read<Vec2>(const Node* current, Vec2& target) {
-    if (current->name.compare("x") == 0) target.x = std::stof(current->value);
-    if (current->name.compare("y") == 0) target.y = std::stof(current->value);
-}
-
-template<>
-void Serialization::Write<Vec2>(Serialization::Node* parent, const Vec2& from) {
-    parent->AddChild("x", std::to_string(from.x));
-    parent->AddChild("y", std::to_string(from.y));
-}

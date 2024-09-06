@@ -245,7 +245,7 @@ namespace Core {
     void Debug::DrawHierarchy() {
         Serialization::Node root;
         SerializedScene scene;
-        scene.Write(&root);
+        Serialization::Write(&root, scene);
         std::stringstream buffer;
         root.Print(buffer);
         DrawText(buffer.str().c_str(), 5, 5, 10, WHITE);

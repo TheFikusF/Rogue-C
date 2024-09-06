@@ -64,16 +64,19 @@ namespace Serialization {
 
 #pragma region TYPE_REGISTERING
     using ReadFunction = void (*)(const Node*, void*);
+    using WriteFunction = void (*)(Node*, void const*);
 
     std::string demangle(const char* name);
 
-    void SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction func);
+    void SetTypeSerializationData(std::string typeName, std::size_t hash, std::size_t size, ReadFunction readFunc, WriteFunction writeFunc);
     
     template<typename T>
     void RegisterType() {
         std::string name = demangle(typeid(T).name());
         std::cout << name << std::endl;
-        SetTypeSerializationData(name, typeid(T).hash_code(), sizeof(T), [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); });
+        SetTypeSerializationData(name, typeid(T).hash_code(), sizeof(T), 
+            [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); },
+            [](Node* node, void const* what) -> void { Serialization::Write(node, *((T const*)what)); });
     }
 #pragma endregion
 
@@ -81,7 +84,7 @@ namespace Serialization {
     inline T Node::Read() const {
         T result;
         for (auto const& child : children) {
-            Serialization::Read(child, &result);
+            Serialization::Read(&child, result);
         }
         return result;
     }
@@ -89,8 +92,7 @@ namespace Serialization {
     template<typename T>
     inline void Node::ReadVector(std::vector<T>& target) const {
         for(auto const& child : children) {
-            T result;
-            this->Read<T>(child, &result);
+            T result = child.Read<T>();
             target.emplace_back(result);
         }
     }

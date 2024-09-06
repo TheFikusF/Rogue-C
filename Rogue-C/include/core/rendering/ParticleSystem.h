@@ -16,7 +16,7 @@ struct Particle
 	float scale;
 };
 
-struct ParticleSystem : public Serialization::Serializable {
+struct ParticleSystem {
 	bool loop;
 	bool destroyOnStop;
 	float speed;
@@ -26,9 +26,6 @@ struct ParticleSystem : public Serialization::Serializable {
 	Vec2 scaleToTime;
 
 	ParticleSystem();
-
-	void Read(const Serialization::Node* current) override;
-	void Write(Serialization::Node* current) const override;
 };
 
 class ParticleSystemSystem : public Core::System {
