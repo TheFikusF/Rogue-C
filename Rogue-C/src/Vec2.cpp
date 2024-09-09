@@ -8,6 +8,6 @@ void Serialization::Read<Vec2>(const Node* current, Vec2& target) {
 
 template<>
 void Serialization::Write<Vec2>(Serialization::Node* parent, const Vec2& from) {
-    parent->AddChild("x", std::to_string(from.x));
-    parent->AddChild("y", std::to_string(from.y));
+    parent->AddChild(from.x, "x");
+    parent->AddChild(from.y, "y");
 }

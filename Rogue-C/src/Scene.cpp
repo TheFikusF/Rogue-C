@@ -68,6 +68,6 @@ void Serialization::Read<Core::SerializedScene>(const Serialization::Node* curre
 template<>
 void Serialization::Write<Core::SerializedScene>(Serialization::Node* current, const Core::SerializedScene& from) {
     for(auto const entity : Core::Debug::currentEntities) {
-        Serialization::Write(current->AddChild(std::format("entity_{}", entity)), Serialization::SerializedEntity(entity));
+        current->AddChild<Serialization::SerializedEntity>(Serialization::SerializedEntity(entity), std::format("entity_{}", entity));
     }
 }

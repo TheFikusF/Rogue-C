@@ -12,8 +12,8 @@ void Serialization::Read<GradientKey>(const Serialization::Node* current, Gradie
 
 template<>
 void Serialization::Write<GradientKey>(Serialization::Node* current, const GradientKey& from) {
-    Serialization::Write(current->AddChild("color"), from.color);
-    current->AddChild("time", std::to_string(from.time));
+    current->AddChild(from.color, "color");
+    current->AddChild(from.time, "time");
 }
 
 Gradient::Gradient(std::vector<GradientKey> keyFrames) : keyFrames(keyFrames) { }
@@ -49,7 +49,7 @@ void Serialization::Write<Gradient>(Serialization::Node* current, const Gradient
     auto node = current->AddChild("keyFrames");
     node->isArray = true;
     for (auto frame : from.keyFrames) {
-        Serialization::Write<GradientKey>(node->AddChild(), frame);
+        node->AddChild(frame);
     }
 }
 

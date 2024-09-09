@@ -9,8 +9,65 @@ std::unordered_map<std::string, WriteFunction> writeFunctionsMap;
 std::unordered_map<std::string, std::size_t> typeHashesMap;
 std::unordered_map<std::string, std::size_t> typeSizeMap;
 
-Node* Node::AddChild(std::string name, std::string value) {
+
+Node* Node::AddChildEmpty(std::string name, std::string value) {
     children.emplace_back(Node(this, name, value));
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const int& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(int).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const float& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(float).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const std::string& value, std::string name) {
+    children.emplace_back(Node(this, name, value));
+    children.back().type = typeid(std::string).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const bool& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(bool).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const std::uint8_t& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(std::uint8_t).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const std::uint16_t& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(std::uint16_t).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const std::uint32_t& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(std::uint32_t).hash_code();
+    return &(children.back());
+}
+
+template<>
+Node* Node::AddChild(const std::uint64_t& value, std::string name) {
+    children.emplace_back(Node(this, name, std::to_string(value)));
+    children.back().type = typeid(std::uint64_t).hash_code();
     return &(children.back());
 }
 
@@ -54,7 +111,6 @@ void Serialization::Read(const Node* current, SerializedEntity& target) {
         return;
     }
 
-    std::cout << "reading: " << current->name << " " << current->value << std::endl;
     void* data = malloc(typeSizeMap[current->name]);
     current->ReadUntyped(current->name, data);
     Core::ECS::AddComponent(target.id, typeHashesMap[current->name], data);
@@ -63,26 +119,22 @@ void Serialization::Read(const Node* current, SerializedEntity& target) {
 
 template<>
 void Serialization::Write(Node* parent, const SerializedEntity& from) { 
-    parent->AddChild("id", std::to_string(from.id));
+    parent->AddChild(from.id, "id");
 
-    if (Core::ECS::GetParent(from.id) != MAX_ENTITIES) {
-        parent->AddChild("parent", std::to_string(Core::ECS::GetParent(from.id)));
+    if (Core::ECS::GetParent(from.id) < MAX_ENTITIES) {
+        parent->AddChild(Core::ECS::GetParent(from.id), "parent");
     }
-
-    // if (Core::ECS::HasComponent<MTransform>(from.id)) {
-    //     Serialization::Write(parent->AddChild("MTransform"), Core::ECS::GetComponent<MTransform>(from.id));
-    // }
 
     for (auto const& hash : typeHashesMap) {
         auto component = Core::ECS::GetComponent(from.id, hash.second);
         if (component != nullptr) {
             WriteFunction fun = writeFunctionsMap[hash.first];
-            (*fun)(parent->AddChild(hash.first), component);
+            (*fun)(parent->AddChildEmpty(hash.first), component);
         }
     }
 }
 
-void Node::ReadUntyped(std::string type, void* where) const{
+void Node::ReadUntyped(std::string type, void* where) const {
     ReadFunction fun = readFunctionsMap[type];
     (*fun)(this, where);
 }
@@ -157,22 +209,22 @@ void Serialization::ConstructNodes(Node& root, const char* path) {
 
             if (finishedIndenting == false) {
                 if (arrayStarted && line[i] == '-') {
-                    current = array->AddChild();
+                    current = array->AddChildEmpty();
                     finishedName = true;
                     finishedIndenting = true;
                     continue;
                 }
 
                 if (lastIndenting == indenting && !start) {
-                    current = current->parent->AddChild();
+                    current = current->parent->AddChildEmpty();
                 } else if (lastIndenting < indenting || start) {
-                    current = current->AddChild();
+                    current = current->AddChildEmpty();
                 } else if (lastIndenting > indenting) {
                     for (int dif = (lastIndenting - indenting) / 2; dif >= 0;
                          dif--) {
                         current = current->parent;
                         if (dif == 0) {
-                            current = current->AddChild();
+                            current = current->AddChildEmpty();
                         }
                     }
                 }

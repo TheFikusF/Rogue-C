@@ -1,4 +1,5 @@
 #include "./include/core/game/Game.h"
+#include "./include/core/game/Debug.h"
 #include "./include/core/rendering/ParticleSystem.h"
 #include "./include/core/game/SceneManager.h"
 #include "./include/core/physics/Physics.h"
@@ -103,27 +104,11 @@ namespace Core {
         while (!WindowShouldClose()) {
 #pragma region read_debug_keys
             if(IsKeyPressed(KEY_F1)) {
-                Debug::benchmarkMode = 0;
+                Debug::benchmarkMode = std::max(0, Debug::benchmarkMode - 1);
             }
 
             if(IsKeyPressed(KEY_F2)) {
-                Debug::benchmarkMode = 1;
-            }
-
-            if(IsKeyPressed(KEY_F3)) {
-                Debug::benchmarkMode = 2;
-            }
-
-            if(IsKeyPressed(KEY_F4)) {
-                Debug::benchmarkMode = 3;
-            }
-
-            if(IsKeyPressed(KEY_F5)) {
-                Debug::benchmarkMode = 4;
-            }
-
-            if(IsKeyPressed(KEY_F6)) {
-                Debug::benchmarkMode = 5;
+                Debug::benchmarkMode = std::min(5, Debug::benchmarkMode + 1);
             }
 #pragma endregion
 
@@ -243,11 +228,20 @@ namespace Core {
     }
 
     void Debug::DrawHierarchy() {
-        Serialization::Node root;
-        SerializedScene scene;
-        Serialization::Write(&root, scene);
-        std::stringstream buffer;
-        root.Print(buffer);
-        DrawText(buffer.str().c_str(), 5, 5, 10, WHITE);
+        Serialization::Debug::PrintHierarchy();
+        if(IsKeyDown(KEY_BACKSLASH)) {
+            Serialization::Node root;
+            SerializedScene scene;
+            Serialization::Write(&root, scene);
+            std::ofstream buffer("test_nodes.text");
+            root.Print(buffer);
+            buffer.close();
+        }
+        // Serialization::Node root;
+        // SerializedScene scene;
+        // Serialization::Write(&root, scene);
+        // std::stringstream buffer;
+        // root.Print(buffer);
+        // DrawText(buffer.str().c_str(), 5, 5, 10, WHITE);
     }
 }

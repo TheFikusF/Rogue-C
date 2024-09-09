@@ -9,6 +9,7 @@ private:
     std::unordered_map<Entity, Entity> _sceneToNetwork;
     std::unordered_map<Entity, Entity> _networkToScene;
     std::unordered_map<Entity, bool> _localMap;
+    std::unordered_map<Entity, Signature> _localSignatures;
 
 public:
     NetworkManager(/* args */);

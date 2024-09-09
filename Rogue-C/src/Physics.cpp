@@ -202,9 +202,6 @@ namespace Physics
         for(std::int8_t y = -1; y < 2; ++y) {
             for(std::int8_t x = -1; x < 2; ++x) {
                 Cell cell(position + Vec2(x * GRID_SIZE, y * GRID_SIZE));
-                if(_grid.find(cell) == _grid.end()) {
-                    continue;
-                }
 
                 for (Entity const entity : _grid[cell]) {
                     iterationsCount++;

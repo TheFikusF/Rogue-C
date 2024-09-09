@@ -16,10 +16,10 @@ void Serialization::Read<Color>(const Serialization::Node* current, Color& targe
 
 template<>
 void Serialization::Write<Color>(Serialization::Node* current, const Color& from) {
-    current->AddChild("r", std::to_string(from.r));
-    current->AddChild("g", std::to_string(from.g));
-    current->AddChild("b", std::to_string(from.b));
-    current->AddChild("a", std::to_string(from.a));
+    current->AddChild(from.r, "r");
+    current->AddChild(from.g, "g");
+    current->AddChild(from.b, "b");
+    current->AddChild(from.a, "a");
 }
 
 Drawer::Drawer() : sprite(0), color(WHITE), shader(0), order(0) {}
@@ -37,10 +37,10 @@ void Serialization::Read<Drawer>(const Serialization::Node* current, Drawer& tar
 
 template<>
 void Serialization::Write<Drawer>(Serialization::Node* current, const Drawer& from) {
-    Serialization::Write(current->AddChild("color"), from.color);
-    current->AddChild("sprite", std::to_string(from.sprite));
-    current->AddChild("shader", std::to_string(from.shader));
-    current->AddChild("order", std::to_string(from.order));
+    current->AddChild(from.color, "color");
+    current->AddChild(from.sprite, "sprite");
+    current->AddChild(from.shader, "shader");
+    current->AddChild(from.order, "order");
 }
 
 DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {

@@ -43,7 +43,7 @@ void Serialization::Read<MTransform>(const Serialization::Node* current, MTransf
 
 template<>
 void Serialization::Write<MTransform>(Serialization::Node* node, const MTransform& from) {
-	Write(node->AddChild("position"), from.position);
-	Write(node->AddChild("scale"), from.scale);
-	node->AddChild("rotation", std::to_string(from.rotation));
+	node->AddChild(from.position, "position");
+	node->AddChild(from.scale, "scale");
+	node->AddChild(from.rotation, "rotation");
 }

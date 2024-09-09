@@ -26,17 +26,21 @@
 namespace Serialization {
     struct Node {
         bool isArray;
+        std::size_t type;
         Node* parent;
         std::string name;
         std::string value;
 
         std::vector<Node> children;
 
-        Node() : parent(nullptr), name("root"), isArray(false) { }
+        Node() : parent(nullptr), name("root"), isArray(false), type(0) { }
         Node(Node* parent) : parent(parent), isArray(false) { }
         Node(Node* parent, std::string name, std::string value) : parent(parent), name(name), value(value), isArray(false) { }
 
-        Node* AddChild(std::string name = "", std::string value = "");
+        Node* AddChildEmpty(std::string name = "", std::string value = "");
+
+        template<typename T>
+        Node* AddChild(const T& value, std::string name = "");
 
         void Print(std::ostream& stream, int identing = 0, bool isArrayElement = false) const;
 
@@ -54,6 +58,14 @@ namespace Serialization {
     
     template<typename T>
     void Write(Node* parent, const T& from) { }
+
+    template<typename T>
+    inline Node* Node::AddChild(const T& value, std::string name) {
+        children.emplace_back(Node(this, name, ""));
+        children.back().type = typeid(T).hash_code();
+        Serialization::Write(&(children.back()), value);
+        return &(children.back());
+    }
 
     struct SerializedEntity {
         Entity id;
@@ -76,7 +88,7 @@ namespace Serialization {
         std::cout << name << std::endl;
         SetTypeSerializationData(name, typeid(T).hash_code(), sizeof(T), 
             [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); },
-            [](Node* node, void const* what) -> void { Serialization::Write(node, *((T const*)what)); });
+            [](Node* node, void const* what) -> void { Serialization::Write(node, *((T const*)what)); node->type = typeid(T).hash_code(); });
     }
 #pragma endregion
 
