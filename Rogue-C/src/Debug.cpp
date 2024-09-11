@@ -16,30 +16,52 @@ namespace Serialization::Debug {
     };
 
     static Entity currentEntity = -1;
+    static bool hierarchyOpened = false;
+
+    void PrintEntity(int x, int& y, const Node& node) {
+        int startingX = x;
+        int startingY = y;
+        Entity id = std::stoi(node.children[0].value);
+        if(IMGUIButton(x, y, "SELECT")) {
+            currentEntity = id;
+        }
+
+        DrawText(node.name.c_str(), x + 60, y, 10, WHITE);
+
+        if(id == currentEntity) {
+            for(auto const& comp : node.children) {
+                y += 14;
+                Serialization::Debug::PPrint(x + 10, y, &comp);
+                y += 14;
+            }
+        }
+
+        DrawRectangleLines(startingX - 4, startingY - 4, 245 - startingX, y - startingY + 18, WHITE);
+
+        y += 16;
+    }
 
     void PrintHierarchy() {
+        if(IsKeyPressed(KEY_F3)) {
+            hierarchyOpened = !hierarchyOpened;
+        }        
+
+        if(hierarchyOpened == false) {
+            return;
+        }
+
         Serialization::Node root;
         Core::SerializedScene scene;
         Serialization::Write(&root, scene);
 
         DrawRectangle(0, 0, 250, GetRenderHeight(), Color(0, 0, 0, 180));
         int y = 5;
+        DrawText(std::format("FPS: {}", GetFPS()).c_str(), 5, y, 10, WHITE);
+        DrawText(std::format("Entities: {}", root.children.size()).c_str(), 5, y + 16, 10, WHITE);
+        y += 36;
+
         for(auto const& entity : root.children) {
-            Entity id = std::stoi(entity.children[0].value);
-            if(IMGUIButton(5, y, "SELECT")) {
-                currentEntity = id;
-            }
-
-            DrawText(entity.name.c_str(), 5 + 60, y, 10, WHITE);
-
-            if(id == currentEntity) {
-                for(auto const& comp : entity.children) {
-                    y += 14;
-                    Serialization::Debug::PPrint(15, y, &comp);
-                    y += 14;
-                }
-            }
-            y += 16;
+            PrintEntity(5, y, entity);
         }
     }
 
