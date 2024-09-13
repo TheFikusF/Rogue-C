@@ -2,6 +2,7 @@
 #include "./include/core/rendering/Drawer.h"
 #include "./include/core/rendering/ParticleSystem.h"
 #include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/rendering/TileGrid.h"
 #include "./include/core/UI/UIText.h"
 #include "./include/core/systems/Button.h"
 #include "./include/core/systems/InputSystem.h"
@@ -31,11 +32,13 @@ namespace Core {
         ECS::RegisterComponent<UIDrawer>();
         ECS::RegisterComponent<Button>();
         ECS::RegisterComponent<UIText>();
+        ECS::RegisterComponent<TileGrid>();
 
         onStart();
     }
 
     void Scene::FinishRegistration() {
+        auto tileGridSystem = ECS::RegisterSystem<TileGridSystem>();
         auto drawerSystem = ECS::RegisterSystem<Rendering::DrawerSystem>();
         auto buttonSystem = ECS::RegisterSystem<ButtonSystem>();
         auto inputSystem = ECS::RegisterSystem<InputSystem>();

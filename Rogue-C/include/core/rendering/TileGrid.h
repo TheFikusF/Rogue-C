@@ -8,16 +8,18 @@ struct TileSet {
 };
 
 struct TileGrid {
-    std::uint16_t width;
-    std::uint16_t height;
+    std::uint32_t width;
+    std::uint32_t height;
     TileSet* tileSet;
     std::vector<SpriteID> tiles;
 
     TileGrid() : tileSet(nullptr) { }
-    TileGrid(std::uint16_t width, std::uint16_t height) : tileSet(nullptr), width(width), height(height) { tiles.reserve(width * height); }
+    TileGrid(std::uint32_t width, std::uint32_t height);
+    TileGrid(std::uint8_t charPerTile, const char* filePath);
 };
 
 class TileGridSystem : public Core::System {
+public:
     TileGridSystem();
 
     void Draw() override;
