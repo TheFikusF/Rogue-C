@@ -4,7 +4,8 @@
 #include <vector>
 
 struct TileSet {
-    std::vector<SpriteID> tiles;
+    std::unordered_map<char, SpriteID> tiles;
+    std::unordered_map<char, Color> tileTints;
 };
 
 struct TileGrid {
