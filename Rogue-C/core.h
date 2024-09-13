@@ -17,6 +17,7 @@
 #include "./include/core/rendering/ParticleSystem.h"
 #include "./include/core/rendering/SpriteManager.h"
 #include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/rendering/TileGrid.h"
 
 #include "./include/core/systems/Button.h"
 #include "./include/core/systems/CameraControl.h"
