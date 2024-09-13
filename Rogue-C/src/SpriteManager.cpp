@@ -1,4 +1,6 @@
 #include "./include/core/rendering/SpriteManager.h"
+#include <fstream>
+#include <iostream>
 
 SpriteManager* instance;
 
@@ -18,6 +20,90 @@ void SpriteManager::Init() {
     RegisterSprite(1);
 
     instance->shaders.push_back(LoadShader("textures/shaders/default.vs", "textures/shaders/default.fs"));
+}
+
+void SpriteManager::LoadTexturesFromText(const char* path) {
+    std::ifstream file(path);
+    std::string line;
+    
+    std::string name;
+    std::string data;
+
+    float rect[4];
+    std::uint8_t rectStage = 0;
+
+    bool textureRegistering = true;
+    bool readingName = false;
+    bool nameRead = false;
+    bool quotesOpened = false;
+
+    while (std::getline(file, line)) {
+        name.clear();
+        data.clear();
+        nameRead = false;
+        readingName = false;
+        rectStage = 0;
+
+        for(auto c : line) {
+            if(c == '\"') {
+                quotesOpened = !quotesOpened;
+                continue;
+            }
+
+            if(c == ' ') {
+                if(nameRead == false) {
+                    nameRead = true;
+                } else if(textureRegistering == false && rectStage < 4) {
+                    std::cout << line << std::endl;
+                    rect[rectStage] = std::stof(data);
+                    data.clear();
+                    rectStage++;
+                }
+
+                continue;
+            }
+
+            if(c == '#') {
+                readingName = true;
+                continue;
+            }
+
+            if(c == ':') {
+                textureRegistering = false;
+                break;
+            }
+
+            if(nameRead) {
+                data.push_back(c);
+            } else {
+                name.push_back(c);
+            }
+        }
+
+        if(nameRead == false) {
+            continue;
+        }
+
+        if(textureRegistering) {
+            TextureID id = SpriteManager::RegisterTexture(data.c_str()); 
+            instance->namesMap[name] = id;
+        } else {
+            TextureID textureId = readingName ? instance->namesMap[name] : std::stoi(name);
+            
+            if(rectStage == 2) {
+                rect[2] = std::stof(data);
+            }
+            
+            rect[3] = std::stof(data);
+            if(rectStage >= 2) {
+                SpriteManager::RegisterSprite(textureId, { rect[0], rect[1], rect[2], rect[3] });
+            } else {
+                SpriteManager::RegisterSprite(textureId);
+            }
+        }
+    }
+
+    file.close();
 }
 
 SpriteID SpriteManager::RegisterTexture(const char* path) {
@@ -42,6 +128,10 @@ SpriteID SpriteManager::RegisterSprite(const TextureID texture, Rectangle rect) 
 
 Texture2D& SpriteManager::GetTexture(const TextureID& texture) {
     return instance->textures[texture];
+}
+
+Texture2D& SpriteManager::GetTexture(const char* name) {
+    return GetTexture(instance->namesMap[name]);
 }
 
 Sprite& SpriteManager::GetSprite(const SpriteID& sprite) {

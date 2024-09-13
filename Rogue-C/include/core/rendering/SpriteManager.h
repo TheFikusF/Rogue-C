@@ -1,5 +1,7 @@
 #pragma once
 #include "./include/raylib/raylib.h"
+#include <unordered_map>
+#include <string>
 #include <vector>
 #include <cstdint>
 
@@ -19,12 +21,14 @@ struct Sprite {
 class SpriteManager
 {
 private:
+    std::unordered_map<std::string, TextureID> namesMap;
     std::vector<Sprite> sprites;
     std::vector<Texture2D> textures;
     std::vector<Shader> shaders;
     
 public:
     static void Init();
+    static void LoadTexturesFromText(const char* path);
 
     static TextureID RegisterTexture(const char* path);
     static ShaderID RegisterShader(const char* path);
@@ -32,6 +36,7 @@ public:
     static SpriteID RegisterSprite(const TextureID texture, Rectangle rect);
 
     static Texture2D& GetTexture(const TextureID& texture);
+    static Texture2D& GetTexture(const char* name);
     static Sprite& GetSprite(const SpriteID& sprite);
     static Shader& GetShader(const ShaderID& shader);
 

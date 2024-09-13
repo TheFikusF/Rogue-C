@@ -9,23 +9,27 @@
 using namespace Core;
 
 std::vector<Scene> ConstructScenes() {
-    TextureID playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
-    TextureID enemyTexture1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
-    TextureID enemyTexture2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
-    TextureID enemyTexture3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
-    TextureID tileSetTexture = SpriteManager::RegisterTexture("textures/photo_2022-08-04_11-52-30.png");
+    // TextureID playerSprite = SpriteManager::RegisterTexture("textures/photo_2024-07-17_14-13-38.png");
+    // TextureID enemyTexture1 = SpriteManager::RegisterTexture("textures/photo_2024-07-17_10-53-09.png");
+    // TextureID enemyTexture2 = SpriteManager::RegisterTexture("textures/Pasted image.png");
+    // TextureID enemyTexture3 = SpriteManager::RegisterTexture("textures/Pasted image 1.png");
+    // TextureID tileSetTexture = SpriteManager::RegisterTexture("textures/photo_2022-08-04_11-52-30.png");
+    // TextureID tileSetTexture2 = SpriteManager::RegisterTexture("textures/IMG_20240204_142449_873.png");
 
+    // SpriteID enemySprite1 = SpriteManager::RegisterSprite(enemyTexture1);
+    // SpriteID enemySprite2 = SpriteManager::RegisterSprite(enemyTexture2);
+    // SpriteID enemySprite3 = SpriteManager::RegisterSprite(enemyTexture3);
+
+    // SpriteID tile1 = SpriteManager::RegisterSprite(tileSetTexture, { 400, 75, 100, 100 });
+    // SpriteID tile2 = SpriteManager::RegisterSprite(tileSetTexture, { 385, 405, 200, 200 });
+    // SpriteID tile3 = SpriteManager::RegisterSprite(tileSetTexture2, { 700, 2200, 400, 400 });
+    // SpriteID tile4 = SpriteManager::RegisterSprite(tileSetTexture2, { 3500, 800, 800, 800 });
+    SpriteManager::LoadTexturesFromText("image_importing.txt");
+    
     ShaderID shader0 = SpriteManager::RegisterShader("textures/shaders/posterization.fs");
 
-    SpriteID enemySprite1 = SpriteManager::RegisterSprite(enemyTexture1);
-    SpriteID enemySprite2 = SpriteManager::RegisterSprite(enemyTexture2);
-    SpriteID enemySprite3 = SpriteManager::RegisterSprite(enemyTexture3);
-
-    SpriteID tile1 = SpriteManager::RegisterSprite(tileSetTexture, { 400, 75, 100, 100 });
-    SpriteID tile2 = SpriteManager::RegisterSprite(tileSetTexture, { 385, 405, 200, 200 });
-
     SoundClip gospoda = AudioManager::RegisterSound("sounds/gospoda.ogg");
-    Animation* animation = new Animation(playerSprite, Vec2(32, 32), Vec2(0, 0), 5);
+    Animation* animation = new Animation(2, Vec2(32, 32), Vec2(0, 0), 5);
 
     std::vector<Scene> scenes = {
         Scene([animation]() -> void {
@@ -48,6 +52,10 @@ std::vector<Scene> ConstructScenes() {
             Entity tileMap = ECS::CreateEntity();
             ECS::AddComponent<TileGrid>(tileMap, TileGrid(1, "tiles.txt"));
             ECS::AddComponent<MTransform>(tileMap, MTransform(Vec2(0, 0), Vec2(100, 100)));
+            
+            Entity tileMap1 = ECS::CreateEntity();
+            ECS::AddComponent<TileGrid>(tileMap1, TileGrid(1, "tiles1.txt"));
+            ECS::AddComponent<MTransform>(tileMap1, MTransform(Vec2(0, 0), Vec2(100, 100)));
 
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 

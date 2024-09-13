@@ -24,6 +24,13 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : tileSet(nul
         std::uint8_t charNum = 0;
         SpriteID sprite = 0;
         for (std::uint32_t i = 0; i < line.size(); i++) {
+            if(line[i] == '-') {
+                tiles.push_back(-1);
+                i += charPerTile - charNum - 1;
+                sprite = 0;
+                charNum = 0;
+                continue;
+            }
             charNum++;
             sprite *= 16;
             sprite += FromChar(line[i]);
@@ -40,6 +47,8 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : tileSet(nul
 
         height++;
     }
+    
+    file.close();
 }
 
 // TODO: I NEED TO LIKE MAKE A DOUBLE BUFFER WITH SORTED HASH_MAP I 
@@ -56,7 +65,12 @@ void RenderGrid(const TileGrid& grid, const MTransform& tr) {
     //float width = grid.size.x * tr.scale.x;
     for(std::uint32_t y = 0; y < grid.height; y++) {
         for(std::uint32_t x = 0; x < grid.width; x++) {
-            const Sprite& sprite = SpriteManager::GetSprite(grid.tiles[(grid.width * y) + x]);
+            SpriteID id = grid.tiles[(grid.width * y) + x];
+            if(id == -1) {
+                continue;
+            }
+
+            const Sprite& sprite = SpriteManager::GetSprite(id);
             const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
 
             DrawRectangle(tr.position.x + ((float)x * tr.scale.x * 2), tr.position.y + ((float)y * tr.scale.y * 2), tr.scale.x * 2.0f, tr.scale.y * 2.0f, RED);
