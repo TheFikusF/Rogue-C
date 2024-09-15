@@ -12,6 +12,7 @@ namespace Rendering {
         MTransform where;
         Color tint;
 
+        ThingToRender() { };
         ThingToRender(SpriteID id, const MTransform& tr, Color tint) : what(id), where(tr), tint(tint) { }
     };
 
