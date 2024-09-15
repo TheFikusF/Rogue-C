@@ -1,6 +1,7 @@
 #include "./include/core/game/Game.h"
 #include "./include/core/game/Debug.h"
 #include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/rendering/ESRendering.h"
 #include "./include/core/game/SceneManager.h"
 #include "./include/core/physics/Physics.h"
 #include "./include/core/Gradient.h"
@@ -68,6 +69,7 @@ namespace Core {
             return;
         }
         ECS::FreeBin();
+        Rendering::ESRenderer::Sync();
         Debug::totalSyncTime += (std::chrono::high_resolution_clock::now() - syncTime).count();
     }
 
@@ -115,8 +117,8 @@ namespace Core {
 #pragma region draw_to_texture
             BeginTextureMode(target);
 
-            ClearBackground(BLACK);
             ECS::Draw();
+            Rendering::ESRenderer::DrawAll();
             
             EndTextureMode();
 #pragma endregion

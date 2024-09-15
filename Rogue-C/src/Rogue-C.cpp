@@ -14,7 +14,7 @@ std::vector<Scene> ConstructScenes() {
     ShaderID shader0 = SpriteManager::RegisterShader("textures/shaders/posterization.fs");
 
     SoundClip gospoda = AudioManager::RegisterSound("sounds/gospoda.ogg");
-    Animation* animation = new Animation(2, Vec2(32, 32), Vec2(0, 0), 5);
+    Animation* animation = new Animation(2, Vec2(256, 256), Vec2(0, 0), 5, 6);
 
     std::vector<Scene> scenes = {
         Scene([animation]() -> void {
@@ -38,9 +38,11 @@ std::vector<Scene> ConstructScenes() {
             ECS::AddComponent<TileGrid>(tileMap, TileGrid(1, "tiles.txt"));
             ECS::AddComponent<MTransform>(tileMap, MTransform(Vec2(0, 0), Vec2(100, 100)));
             
-            // Entity tileMap1 = ECS::CreateEntity();
-            // ECS::AddComponent<TileGrid>(tileMap1, TileGrid(1, "tiles1.txt"));
-            // ECS::AddComponent<MTransform>(tileMap1, MTransform(Vec2(0, 0), Vec2(100, 100)));
+            TileGrid grid2(1, "tiles1.txt");
+            grid2.order = 0;
+            Entity tileMap1 = ECS::CreateEntity();
+            ECS::AddComponent<TileGrid>(tileMap1, grid2);
+            ECS::AddComponent<MTransform>(tileMap1, MTransform(Vec2(0, 0), Vec2(100, 100)));
 
             Entity player = ECS::CreateEntity();
             ECS::AddComponent<Player>(player, Player{ 
@@ -50,7 +52,7 @@ std::vector<Scene> ConstructScenes() {
                 .abilityDuration = Timer(1.0f), 
                 .abilityAmplitude = Timer(0.2f) });
 
-            ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(10, 10)));
+            ECS::AddComponent<MTransform>(player, MTransform(Vec2(GetRenderWidth() / 2, GetRenderHeight() / 2), Vec2(35, 35)));
             ECS::AddComponent<Rendering::Drawer>(player, Rendering::Drawer(0));
             ECS::AddComponent<Collider2D>(player, Collider2D(false, false, 5));
             ECS::AddComponent<AnimationPlayer>(player, AnimationPlayer(animation));

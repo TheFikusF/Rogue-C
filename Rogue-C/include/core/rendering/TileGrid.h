@@ -10,6 +10,7 @@ struct TileSet {
 };
 
 struct TileGrid {
+    float order;
     std::uint32_t width;
     std::uint32_t height;
     TileSet* tileSet;

@@ -1,32 +1,28 @@
 #include "./include/core/rendering/ESRendering.h"
-
-// =[:=-=:]:::=~
-// [ ES in ESRenderer primarily stands for Esoteric Scenes ] ::: =~
-// =[:=-=:]:::=~
+#include "./include/core/systems/CameraControl.h"
 
 using namespace Rendering;
 
 static ESRenderer renderer;
+static ESRenderer uiRenderer;
 
 std::uint8_t ESRenderer::GetNextQueue() {
     return ((renderer.currentQueue + 1) >= 2) ? 0 : renderer.currentQueue;
 }
 
-void ESRenderer::PushRenderFunc(float order, SpriteID sprite, const MTransform &tr, Color tint) {
+void ESRenderer::Push(float order, SpriteID sprite, const MTransform &tr, Color tint) {
     renderer.renderQueues[renderer.currentQueue][order].emplace_back(sprite, tr, tint);
 }
 
-struct {
-    bool operator()(const ThingToRender& a, const ThingToRender& b) {
-        return a.where.position.y < b.where.position.y;
-    }
-} sorter;
+void ESRenderer::PushUI(float order, SpriteID sprite, const MTransform &tr, Color tint) {
+    uiRenderer.renderQueues[uiRenderer.currentQueue][order].emplace_back(sprite, tr, tint);
+}
 
 void ESRenderer::Draw() {
-    /*std::unordered_map<float, float> f;
-    f.clear();*/
-    for(auto const& [order, queue] : renderer.renderQueues[renderer.GetNextQueue()]) {
-        std::sort(queue.begin(), queue.end(), sorter);
+    for(auto& [order, queue] : renderQueues[GetNextQueue()]) {
+        std::sort(queue.begin(), queue.end(), [](const ThingToRender& a, const ThingToRender& b) -> bool {
+            return a.where.position.y < b.where.position.y;
+        });
 
         for(auto const& thing : queue) {
             const Sprite& sprite = SpriteManager::GetSprite(thing.what);
@@ -42,7 +38,19 @@ void ESRenderer::Draw() {
     }
 }
 
+void ESRenderer::DrawAll() {
+    ClearBackground(BLACK);
+    BeginMode2D(CameraContorl::GetCurrent());
+    renderer.Draw();
+    EndMode2D();
+
+    uiRenderer.Draw();
+}
+
 void ESRenderer::Sync() {
     renderer.currentQueue = renderer.GetNextQueue();
     renderer.renderQueues[renderer.currentQueue].clear();
+
+    uiRenderer.currentQueue = uiRenderer.GetNextQueue();
+    uiRenderer.renderQueues[uiRenderer.currentQueue].clear();
 }
