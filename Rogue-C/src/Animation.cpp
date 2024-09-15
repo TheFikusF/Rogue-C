@@ -5,10 +5,12 @@
 using namespace Core;
 using namespace Rendering;
 
-Animation::Animation(const TextureID texture, const Vec2 size, const Vec2 start, const int framesCount) : loop(true), frameTime(1.0f / 24.0f) {
-    for(int i = 0; i < framesCount; i++) {
-        SpriteID id = SpriteManager::RegisterSprite(texture, { start.x + i * size.x, start.y, size.x, size.y });
-        frames.push_back(id);
+Animation::Animation(const TextureID texture, const Vec2 size, const Vec2 start, int framesCountX, int framesCountY) : loop(true), frameTime(1.0f / 24.0f) {
+    for(int y = 0; y < framesCountY; y++) {
+        for(int x = 0; x < framesCountX; x++) {
+            SpriteID id = SpriteManager::RegisterSprite(texture, { start.x + x * size.x, start.y + y * size.y, size.x, size.y });
+            frames.push_back(id);
+        }
     }
 }
 

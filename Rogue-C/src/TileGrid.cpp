@@ -1,11 +1,14 @@
 #include "./include/core/rendering/TileGrid.h"
+#include "./include/core/rendering/ESRendering.h"
 #include "./include/core/systems/CameraControl.h"
 #include "./include/core/Transform.h"
 
 using namespace Core;
 
+// TODO: Implement usage of tileset in tilegrid
+
 TileGrid::TileGrid(std::uint32_t width, std::uint32_t height) 
-    : tileSet(nullptr), width(width), height(height) {
+    : tileSet(nullptr), width(width), height(height), order(-100) {
     tiles.reserve(width * height);
 }
 
@@ -56,6 +59,8 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : tileSet(nul
 // THEY WANT TO RENDER THE THING AND THEN IT JUST YA KNOW WHAT? 
 // TAKES AND RENDERS IT ON THE NEXT FRAME LOLLLLLLLL
 
+// TODO: implement tilegrid collider
+
 TileGridSystem::TileGridSystem() {
     signature.set(Core::ECS::GetComponentType<TileGrid>());
     signature.set(Core::ECS::GetComponentType<MTransform>());
@@ -73,10 +78,10 @@ void RenderGrid(const TileGrid& grid, const MTransform& tr) {
             const Sprite& sprite = SpriteManager::GetSprite(id);
             const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
 
-            DrawRectangle(tr.position.x + ((float)x * tr.scale.x * 2), tr.position.y + ((float)y * tr.scale.y * 2), tr.scale.x * 2.0f, tr.scale.y * 2.0f, RED);
-            DrawTexturePro(tex, sprite.rect, 
-                { tr.position.x + ((float)x * tr.scale.x * 2), tr.position.y + ((float)y * tr.scale.y * 2), tr.scale.x * 2.0f, tr.scale.y * 2.0f },
-                { 0, 0 }, 0,  WHITE);
+            Rendering::ESRenderer::Push(grid.order, id, MTransform(tr.position + (Vec2(x, y) * tr.scale.x * 2), tr.scale, 0), WHITE);
+            // DrawTexturePro(tex, sprite.rect, 
+            //     { tr.position.x + ((float)x * tr.scale.x * 2), tr.position.y + ((float)y * tr.scale.y * 2), tr.scale.x * 2.0f, tr.scale.y * 2.0f },
+            //     { 0, 0 }, 0,  WHITE);
         }
     }
 }

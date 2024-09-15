@@ -1,4 +1,5 @@
 #include "./include/core/rendering/Drawer.h"
+#include "./include/core/rendering/ESRendering.h"
 #include "./include/core/ecs/ECS.h"
 #include "./include/core/Transform.h"
 #include "./include/core/systems/CameraControl.h"
@@ -51,39 +52,39 @@ DrawerSystem::DrawerSystem() : drawTime(0), drawOrder(DrawOrder::YAscending) {
 void DrawerSystem::Draw() {
     auto start = std::chrono::high_resolution_clock::now();
     //TODO: adding check for bounds and sorting only entities in bounds
-    _entitiesTemp.clear();
+    // _entitiesTemp.clear();
+    // for(auto const& entity : Entities) {
+    //     _entitiesTemp.push_back(entity);
+    // }
+
+    // switch (drawOrder)
+    // {
+    // case DrawOrder::YAscending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYAsc); break;
+    // case DrawOrder::YDescending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYDesc); break;
+    // default: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortCustom); break;
+    // }
+
     for(auto const& entity : Entities) {
-        _entitiesTemp.push_back(entity);
-    }
-
-    switch (drawOrder)
-    {
-    case DrawOrder::YAscending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYAsc); break;
-    case DrawOrder::YDescending: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortYDesc); break;
-    default: std::sort(_entitiesTemp.begin(), _entitiesTemp.end(), SortCustom); break;
-    }
-
-    BeginMode2D(CameraContorl::GetCurrent());
-    for(auto const& entity : _entitiesTemp) {
         MTransform& tr = ECS::GetComponent<MTransform>(entity);
         const Drawer& drawer = ECS::GetComponent<Drawer>(entity);
         Vec2 realpos = MTransformSystem::GetRealPosition(entity);
 
-        const Sprite& sprite = SpriteManager::GetSprite(drawer.sprite);
-        const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
+        // const Sprite& sprite = SpriteManager::GetSprite(drawer.sprite);
+        // const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
 
-        Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
+        //Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
+
+        ESRenderer::Push(drawer.order, drawer.sprite, MTransform(realpos, tr.scale, tr.rotation), drawer.color);
         
-        BeginShaderMode(SpriteManager::GetShader(drawer.shader));
-        DrawTexturePro(tex, sprite.rect, 
-            { realpos.x, realpos.y, tr.scale.x * 2.0f, tr.scale.y * 2.0f },
-            { tr.scale.x, tr.scale.y }, tr.rotation,  drawer.color);
+        // BeginShaderMode(SpriteManager::GetShader(drawer.shader));
+        // DrawTexturePro(tex, sprite.rect, 
+        //     { realpos.x, realpos.y, tr.scale.x * 2.0f, tr.scale.y * 2.0f },
+        //     { tr.scale.x, tr.scale.y }, tr.rotation,  drawer.color);
         
-        EndShaderMode();
+        // EndShaderMode();
     }
     auto end = std::chrono::high_resolution_clock::now();
     drawTime = (end - start).count();
-    EndMode2D();
 }
 
 bool Rendering::SortYAsc(Entity a, Entity b) {

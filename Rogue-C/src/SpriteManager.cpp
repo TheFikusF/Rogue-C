@@ -50,7 +50,7 @@ void SpriteManager::LoadTexturesFromText(const char* path) {
                 continue;
             }
 
-            if(c == ' ') {
+            if(c == ' ' && quotesOpened == false) {
                 if(nameRead == false) {
                     nameRead = true;
                 } else if(textureRegistering == false && rectStage < 4) {
@@ -63,12 +63,12 @@ void SpriteManager::LoadTexturesFromText(const char* path) {
                 continue;
             }
 
-            if(c == '#') {
+            if(c == '#' && quotesOpened == false) {
                 readingName = true;
                 continue;
             }
 
-            if(c == ':') {
+            if(c == ':' && quotesOpened == false) {
                 textureRegistering = false;
                 break;
             }

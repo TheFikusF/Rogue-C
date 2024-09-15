@@ -1,5 +1,7 @@
 #include "./include/core/physics/Physics.h"
 #include "./include/core/LOG.h"
+#include "./include/raylib/raylib.h"
+#include "./include/core/systems/CameraControl.h"
 #include <omp.h>
 
 namespace Physics
@@ -59,6 +61,15 @@ namespace Physics
         updateGridTime = (resolveClock - findClock).count();
         findCollisionsTime = (updateClock - resolveClock).count();
         correctTime = (endClock - updateClock).count();
+    }
+
+    void PhysicsSystem::Draw() {
+        BeginMode2D(CameraContorl::GetCurrent());
+        for (auto const& entity : Entities) {
+            MTransform& tr = ECS::GetComponent<MTransform>(entity);
+            DrawCircleLines(tr.position.x, tr.position.y, tr.scale.x, GREEN);
+        }
+        EndMode2D();
     }
 
     std::shared_ptr<PhysicsSystem> PhysicsSystem::RegisterPhysics() {

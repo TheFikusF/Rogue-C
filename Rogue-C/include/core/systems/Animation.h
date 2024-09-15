@@ -12,7 +12,7 @@ struct Animation {
     std::vector<SpriteID> frames;
 
     Animation() = default;
-    Animation(const TextureID sprite, const Vec2 size, const Vec2 start, const int framesCount);
+    Animation(const TextureID sprite, const Vec2 size, const Vec2 start, int framesCountX, int framesCountY = 1);
     Animation(const TextureID sprite, const Vec2 size, const Vec2 start[]);
     Animation(const SpriteID start[]);
 };

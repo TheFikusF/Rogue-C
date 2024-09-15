@@ -37,6 +37,7 @@ namespace Physics {
 		void SetLayer(Layer a, Layer b, bool flag);
 		bool WillCollide(Layer a, Layer b);
 		void PhysicsUpdate(float dt) override;
+		void Draw() override;
 
 		static std::shared_ptr<PhysicsSystem> RegisterPhysics();
 

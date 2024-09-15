@@ -1,4 +1,5 @@
 #include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/rendering/ESRendering.h"
 #include "./include/core/systems/CameraControl.h"
 #include "./include/core/Transform.h"
 #include "./include/raylib/raymath.h"
@@ -103,7 +104,8 @@ void ParticleSystemSystem::Draw() {
 
 		const ParticleSystem& ps = ECS::GetComponent<ParticleSystem>(particle.attachedSystem);
 		Color color = ps.gradient.Evaluate(particle.lifetime.GetProgress());
-		DrawCircle(particle.position.x, particle.position.y, particle.scale, color);
+		//DrawCircle(particle.position.x, particle.position.y, particle.scale, color);
+        Rendering::ESRenderer::Push(0, 1, MTransform(particle.position, Vec2(particle.scale, particle.scale), 0), color);
 	}
 	EndMode2D();
 }

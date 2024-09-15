@@ -1,4 +1,5 @@
 #include "./include/core/rendering/UIDrawer.h"
+#include "./include/core/rendering/ESRendering.h"
 #include "./include/core/physics/Collisions.h"
 #include "./include/core/Transform.h"
 
@@ -49,13 +50,6 @@ void UIDrawerSystem::Draw() {
         const UIDrawer& drawer = ECS::GetComponent<UIDrawer>(entity);
         Vec2 realpos = MTransformSystem::GetRealPosition(entity);
 
-        const Sprite& sprite = SpriteManager::GetSprite(drawer.sprite);
-        const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
-
-        Vector2 scale(tr.scale.x / tex.width, tr.scale.y / tex.height);
-
-        DrawTexturePro(tex, sprite.rect,
-            { realpos.x, realpos.y, tr.scale.x * 2.0f, tr.scale.y * 2.0f },
-            { tr.scale.x, tr.scale.y }, tr.rotation, drawer.color);
+        ESRenderer::PushUI(drawer.order, drawer.sprite, MTransform(realpos, tr.scale, tr.rotation), drawer.color);
     }
 }
