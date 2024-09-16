@@ -1,6 +1,7 @@
 #include "./include/core/game/Game.h"
 #include "./include/core/game/Debug.h"
 #include "./include/core/rendering/ParticleSystem.h"
+#include "./include/core/rendering/TileGrid.h"
 #include "./include/core/rendering/ESRendering.h"
 #include "./include/core/game/SceneManager.h"
 #include "./include/core/physics/Physics.h"
@@ -27,6 +28,7 @@ namespace Core {
         Serialization::RegisterType<MTransform>();
         Serialization::RegisterType<Rendering::Drawer>();
         Serialization::RegisterType<ParticleSystem>();
+        Serialization::RegisterType<TileGrid>();
     }
 
     Game::Game() : _gameRunning(true), _currentScene(0), _barrier(3, []() noexcept { instance->Sync(); }), _scheduledScene(-1) {

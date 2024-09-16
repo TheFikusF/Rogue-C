@@ -111,8 +111,8 @@ void Serialization::Read(const Node* current, SerializedEntity& target) {
         return;
     }
 
-    void* data = malloc(typeSizeMap[current->name]);
-    current->ReadUntyped(current->name, data);
+    void* data = nullptr;
+    current->ReadUntyped(current->name, &data);
     Core::ECS::AddComponent(target.id, typeHashesMap[current->name], data);
     std::free(data);
 }
@@ -134,7 +134,7 @@ void Serialization::Write(Node* parent, const SerializedEntity& from) {
     }
 }
 
-void Node::ReadUntyped(std::string type, void* where) const {
+void Node::ReadUntyped(std::string type, void** where) const {
     ReadFunction fun = readFunctionsMap[type];
     (*fun)(this, where);
 }

@@ -1,18 +1,37 @@
 #include "./include/core/game/Debug.h"
 #include "./include/core/game/Scene.h"
 #include "./include/core/physics/Collisions.h"
+#include "./include/core/rendering/TileGrid.h"
 #include "./include/raylib/raylib.h"
 
 namespace Serialization::Debug {
-    static std::unordered_map<std::size_t, std::function<void (int, int, const Serialization::Node*)>> printFunctions {
-        { typeid(Vec2).hash_code(), [](int x, int y, const Serialization::Node* vec) { 
+    static std::unordered_map<std::size_t, std::function<void (int, int&, const Serialization::Node*, Entity)>> printFunctions {
+        { typeid(Vec2).hash_code(), [](int x, int& y, const Serialization::Node* vec, Entity entity) { 
             DrawText(std::format("{}: | x:{:5.2f}, y:{:5.2f} |", vec->name, std::stof(vec->children[0].value), std::stof(vec->children[1].value)).c_str(), x, y, 10, WHITE); } },
-        { typeid(Color).hash_code(), [](int x, int y, const Serialization::Node* color) { 
+        { typeid(Color).hash_code(), [](int x, int& y, const Serialization::Node* color, Entity entity) { 
                 DrawText(std::format("{}:   | r:{}, g:{}, b:{}, a:{} |", color->name, 
                     color->children[0].value, color->children[1].value, color->children[2].value, color->children[3].value).c_str(), x, y, 10, WHITE); 
                 Color newCol = color->Read<Color>();              
                 DrawRectangle(MeasureText(color->name.c_str(), 10) + 7 + x, y, 10, 10, newCol);
-            } }
+            } },
+        { typeid(TileGrid).hash_code(), [](int x, int& y, const Serialization::Node* grid, Entity entity) {
+                DrawText(std::format("{}:", grid->name).c_str(), x, y, 10, WHITE);
+                y += 14;
+                const TileGrid& tg = Core::ECS::GetComponent<TileGrid>(entity);
+                int i = 0;
+                for(auto& [c, spriteID] : tg.tileSet.tiles) {
+                    DrawText(std::format("{}:", c).c_str(), x + (i * 38), y, 10, WHITE);
+                    const Sprite& sprite = SpriteManager::GetSprite(spriteID);
+                    const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
+                    
+                    DrawTexturePro(tex, sprite.rect, 
+                        { (float)x + (i * 38) + 10, (float)y, 24, 24 },
+                        { 0, 0 }, 0,  tg.tileSet.tileTints.at(c));
+                    
+                    i++;
+                }
+                y += 14;
+            } },
     };
 
     static Entity currentEntity = -1;
@@ -31,7 +50,7 @@ namespace Serialization::Debug {
         if(id == currentEntity) {
             for(auto const& comp : node.children) {
                 y += 14;
-                Serialization::Debug::PPrint(x + 10, y, &comp);
+                Serialization::Debug::PPrint(x + 10, y, &comp, id);
                 y += 14;
             }
         }
@@ -65,9 +84,9 @@ namespace Serialization::Debug {
         }
     }
 
-    void PPrint(int x, int& y, const Serialization::Node* whatToPrint) {
+    void PPrint(int x, int& y, const Serialization::Node* whatToPrint, Entity entity) {
         if(printFunctions.find(whatToPrint->type) != printFunctions.end()) {
-            printFunctions[whatToPrint->type](x, y, whatToPrint);
+            printFunctions[whatToPrint->type](x, y, whatToPrint, entity);
             return;
         }
 
@@ -75,7 +94,7 @@ namespace Serialization::Debug {
 
         for(auto const& comp : whatToPrint->children) {
             y += 14;
-            Serialization::Debug::PPrint(x + 10, y, &comp);
+            Serialization::Debug::PPrint(x + 10, y, &comp, entity);
         }
     }
 

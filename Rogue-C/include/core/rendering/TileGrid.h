@@ -28,9 +28,13 @@ struct TileSet {
     std::unordered_map<char, SpriteID> tiles;
     std::unordered_map<char, Color> tileTints;
     std::unordered_map<char, bool> colliders;
+
+    TileSet() = default;
 };
 
 struct TileGrid {
+    const char* filePath;
+
     float order;
     std::uint32_t width;
     std::uint32_t height;
@@ -40,7 +44,7 @@ struct TileGrid {
     std::vector<char> tiles;
     std::vector<float> rotations;
 
-    TileGrid() { }
+    TileGrid() = default;
     TileGrid(std::uint32_t width, std::uint32_t height);
     TileGrid(const char* filePath);
     TileGrid(std::uint8_t charPerTile, const char* filePath);

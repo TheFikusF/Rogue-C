@@ -27,13 +27,10 @@ void ESRenderer::Draw() {
         for(auto const& thing : queue) {
             const Sprite& sprite = SpriteManager::GetSprite(thing.what);
             const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
-
-            Vector2 scale(thing.where.scale.x / tex.width, thing.where.scale.y / tex.height);
             
             DrawTexturePro(tex, sprite.rect, 
                 { thing.where.position.x, thing.where.position.y, thing.where.scale.x * 2.0f, thing.where.scale.y * 2.0f },
                 { thing.where.scale.x, thing.where.scale.y }, thing.where.rotation,  thing.tint);
-            
         }
     }
 }

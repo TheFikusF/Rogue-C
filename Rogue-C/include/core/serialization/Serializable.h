@@ -50,7 +50,7 @@ namespace Serialization {
         template<typename T>
         void ReadVector(std::vector<T>& target) const;
 
-        void ReadUntyped(std::string type, void* where) const;
+        void ReadUntyped(std::string type, void** where) const;
     };
 
     template<typename T>
@@ -75,7 +75,7 @@ namespace Serialization {
     };
 
 #pragma region TYPE_REGISTERING
-    using ReadFunction = void (*)(const Node*, void*);
+    using ReadFunction = void (*)(const Node*, void**);
     using WriteFunction = void (*)(Node*, void const*);
 
     std::string demangle(const char* name);
@@ -87,7 +87,11 @@ namespace Serialization {
         std::string name = demangle(typeid(T).name());
         std::cout << name << std::endl;
         SetTypeSerializationData(name, typeid(T).hash_code(), sizeof(T), 
-            [](const Node* node, void* where) -> void { (*((T*)where)) = node->Read<T>(); },
+            [](const Node* node, void** where) -> void { 
+                auto newWhere = new T();
+                *newWhere = node->Read<T>(); 
+                (*where) = newWhere;
+            },
             [](Node* node, void const* what) -> void { Serialization::Write(node, *((T const*)what)); node->type = typeid(T).hash_code(); });
     }
 #pragma endregion

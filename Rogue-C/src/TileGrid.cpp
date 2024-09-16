@@ -1,4 +1,5 @@
 #include "./include/core/rendering/TileGrid.h"
+#include "./include/core/serialization/Serializable.h"
 #include "./include/core/rendering/ESRendering.h"
 #include "./include/core/systems/CameraControl.h"
 #include "./include/core/Transform.h"
@@ -129,7 +130,7 @@ void ReadGridLine(TileGrid* grid, const std::string& line) {
     grid->height++;
 }
 
-TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10) {
+TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10), filePath(fileName) {
     std::ifstream file(fileName);
     std::string line;
 
@@ -150,7 +151,7 @@ TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10) {
     file.close();
 }
 
-TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), height(0), order(-10) {
+TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), height(0), order(-10), filePath(fileName) {
     std::ifstream file(fileName);
     std::string line;
 
@@ -162,6 +163,16 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), h
     }
     
     file.close();
+}
+
+template<>
+void Serialization::Read<TileGrid>(const Serialization::Node* current, TileGrid& grid) {
+    if(current->name.compare("filePath") == 0) grid = current->value.c_str();
+}
+
+template<>
+void Serialization::Write<TileGrid>(Serialization::Node* current, const TileGrid& grid) {
+    current->AddChild(grid.filePath, "filePath");
 }
 
 // TODO: implement tilegrid collider
