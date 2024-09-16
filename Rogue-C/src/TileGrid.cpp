@@ -60,20 +60,20 @@ void ReadTileSetLine(TileGrid* grid, const std::string& line) {
     }
 
     grid->tileSet.tiles[c] = id;
-    grid->tileSet.colliders[id] = collider;
+    grid->tileSet.colliders[c] = collider;
     if(data.size() == 8) {
-        grid->tileSet.tileTints[id] = Color(FromChar(data[0], data[1]), FromChar(data[2], data[3]), FromChar(data[4], data[5]), FromChar(data[6], data[7]));
+        grid->tileSet.tileTints[c] = Color(FromChar(data[0], data[1]), FromChar(data[2], data[3]), FromChar(data[4], data[5]), FromChar(data[6], data[7]));
     } else if(data.size() == 6) {
-        grid->tileSet.tileTints[id] = Color(FromChar(data[0], data[1]), FromChar(data[2], data[3]), FromChar(data[4], data[5]), 255);
+        grid->tileSet.tileTints[c] = Color(FromChar(data[0], data[1]), FromChar(data[2], data[3]), FromChar(data[4], data[5]), 255);
     }
 }
 
-void ReadGridLine(TileGrid* grid, const std::string& line, const std::uint8_t charPerTile) {
+void ReadGridLine(TileGrid* grid, const std::string& line, const std::uint8_t charPerTile, std::unordered_map<SpriteID, char>& spriteToChar, char& maxChar) {
     std::uint8_t charNum = 0;
     SpriteID sprite = 0;
     for (std::uint32_t i = 0; i < line.size(); i++) {
         if(line[i] == '-') {
-            grid->tiles.push_back(-1);
+            grid->tiles.push_back('-');
             grid->rotations.push_back(0);
             i += charPerTile - charNum;
             sprite = 0;
@@ -89,10 +89,16 @@ void ReadGridLine(TileGrid* grid, const std::string& line, const std::uint8_t ch
         }
 
         if(charNum > charPerTile) {
-            grid->tiles.push_back(sprite);
-            grid->tileSet.colliders[sprite] = 0;
-            grid->tileSet.tileTints[sprite] = WHITE;
+            if(spriteToChar.find(sprite) == spriteToChar.end()) {
+                spriteToChar[sprite] = ++maxChar == '-' ? ++maxChar : maxChar;
+            }
+
+            grid->tiles.push_back(spriteToChar.at(sprite));
             grid->rotations.push_back(GetRotation(line[i]));
+            
+            grid->tileSet.tiles[spriteToChar.at(sprite)] = sprite;
+            grid->tileSet.colliders[spriteToChar.at(sprite)] = 0;
+            grid->tileSet.tileTints[spriteToChar.at(sprite)] = WHITE;
             sprite = 0;
             charNum = 0;
         }
@@ -113,7 +119,7 @@ void ReadGridLine(TileGrid* grid, const std::string& line) {
             continue;
         }
 
-        grid->tiles.push_back(grid->tileSet.tiles[line[i]]);
+        grid->tiles.push_back(line[i]);
         grid->rotations.push_back(GetRotation(line[i + 1]));
     }
 
@@ -149,9 +155,11 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), h
     std::ifstream file(fileName);
     std::string line;
 
+    std::unordered_map<SpriteID, char> spriteToChar;
+    char maxChar = 0;
 
     while (std::getline(file, line)) {
-        ReadGridLine(this, line, charPerTile);
+        ReadGridLine(this, line, charPerTile, spriteToChar, maxChar);
     }
     
     file.close();
@@ -173,20 +181,14 @@ void RenderGrid(const TileGrid& grid, const MTransform& tr) {
     //float width = grid.size.x * tr.scale.x;
     for(std::uint32_t y = 0; y < grid.height; y++) {
         for(std::uint32_t x = 0; x < grid.width; x++) {
-            SpriteID id = grid.tiles[(grid.width * y) + x];
-            if(id == -1) {
+            char id = grid.tiles[(grid.width * y) + x];
+            if(id == '-') {
                 continue;
             }
 
-            const Sprite& sprite = SpriteManager::GetSprite(id);
-            const Texture2D& tex = SpriteManager::GetTexture(sprite.texture);
-
-            Rendering::ESRenderer::Push(grid.order, id, 
+            Rendering::ESRenderer::Push(grid.order, grid.tileSet.tiles.at(id), 
                 MTransform(tr.position + (Vec2(x, y) * tr.scale.x * 2), tr.scale, grid.rotations[(grid.width * y) + x]), 
                 grid.tileSet.tileTints.at(id));
-            // DrawTexturePro(tex, sprite.rect, 
-            //     { tr.position.x + ((float)x * tr.scale.x * 2), tr.position.y + ((float)y * tr.scale.y * 2), tr.scale.x * 2.0f, tr.scale.y * 2.0f },
-            //     { 0, 0 }, 0,  WHITE);
         }
     }
 }

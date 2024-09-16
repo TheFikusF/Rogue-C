@@ -5,8 +5,8 @@
 
 struct TileSet {
     std::unordered_map<char, SpriteID> tiles;
-    std::unordered_map<SpriteID, Color> tileTints;
-    std::unordered_map<SpriteID, bool> colliders;
+    std::unordered_map<char, Color> tileTints;
+    std::unordered_map<char, bool> colliders;
 };
 
 struct TileGrid {
@@ -16,7 +16,7 @@ struct TileGrid {
     
     TileSet tileSet;
 
-    std::vector<SpriteID> tiles;
+    std::vector<char> tiles;
     std::vector<float> rotations;
 
     TileGrid() { }
