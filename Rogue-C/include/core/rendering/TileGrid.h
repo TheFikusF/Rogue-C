@@ -33,6 +33,7 @@ struct TileSet {
 };
 
 struct TileGrid {
+    std::uint8_t charPerTile;
     const char* filePath;
 
     float order;
@@ -44,7 +45,7 @@ struct TileGrid {
     std::vector<char> tiles;
     std::vector<float> rotations;
 
-    TileGrid() = default;
+    TileGrid() : charPerTile(0), filePath(""), order(-10) {};
     TileGrid(std::uint32_t width, std::uint32_t height);
     TileGrid(const char* filePath);
     TileGrid(std::uint8_t charPerTile, const char* filePath);

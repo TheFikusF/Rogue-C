@@ -68,14 +68,14 @@ void ReadTileSetLine(TileGrid* grid, const std::string& line) {
     }
 }
 
-void ReadGridLine(TileGrid* grid, const std::string& line, const std::uint8_t charPerTile, std::unordered_map<SpriteID, char>& spriteToChar, char& maxChar) {
+void ReadGridLine(TileGrid* grid, const std::string& line, std::unordered_map<SpriteID, char>& spriteToChar, char& maxChar) {
     std::uint8_t charNum = 0;
     SpriteID sprite = 0;
     for (std::uint32_t i = 0; i < line.size(); i++) {
         if(line[i] == '-') {
             grid->tiles.push_back('-');
             grid->rotations.push_back(0);
-            i += charPerTile - charNum;
+            i += grid->charPerTile - charNum;
             sprite = 0;
             charNum = 0;
             continue;
@@ -83,12 +83,12 @@ void ReadGridLine(TileGrid* grid, const std::string& line, const std::uint8_t ch
 
         charNum++;
             
-        if(charNum <= charPerTile) {
+        if(charNum <= grid->charPerTile) {
             sprite *= 16;
             sprite += FromChar(line[i]);
         }
 
-        if(charNum > charPerTile) {
+        if(charNum > grid->charPerTile) {
             if(spriteToChar.find(sprite) == spriteToChar.end()) {
                 spriteToChar[sprite] = ++maxChar == '-' ? ++maxChar : maxChar;
             }
@@ -130,7 +130,7 @@ void ReadGridLine(TileGrid* grid, const std::string& line) {
     grid->height++;
 }
 
-TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10), filePath(fileName) {
+TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10), filePath(fileName), charPerTile(0) {
     std::ifstream file(fileName);
     std::string line;
 
@@ -151,7 +151,7 @@ TileGrid::TileGrid(const char* fileName) : width(0), height(0), order(-10), file
     file.close();
 }
 
-TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), height(0), order(-10), filePath(fileName) {
+TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), height(0), order(-10), filePath(fileName), charPerTile(charPerTile) {
     std::ifstream file(fileName);
     std::string line;
 
@@ -159,7 +159,7 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), h
     char maxChar = 0;
 
     while (std::getline(file, line)) {
-        ReadGridLine(this, line, charPerTile, spriteToChar, maxChar);
+        ReadGridLine(this, line, spriteToChar, maxChar);
     }
     
     file.close();
@@ -167,7 +167,9 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), h
 
 template<>
 void Serialization::Read<TileGrid>(const Serialization::Node* current, TileGrid& grid) {
-    if(current->name.compare("filePath") == 0) grid = current->value.c_str();
+    if(current->name.compare("charPerTile") == 0) grid.charPerTile = std::stoi(current->value);
+    if(current->name.compare("filePath") == 0) grid = grid.charPerTile == 0 ? current->value.c_str() : TileGrid(grid.charPerTile, current->value.c_str());
+    if(current->name.compare("order") == 0) grid.order = std::stof(current->value);
 }
 
 template<>
