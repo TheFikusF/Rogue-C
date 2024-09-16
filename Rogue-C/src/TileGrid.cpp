@@ -5,7 +5,6 @@
 
 using namespace Core;
 
-// TODO: Implement usage of tileset in tilegrid
 
 TileGrid::TileGrid(std::uint32_t width, std::uint32_t height) 
     : width(width), height(height), order(-100) {
@@ -164,11 +163,6 @@ TileGrid::TileGrid(std::uint8_t charPerTile, const char* fileName) : width(0), h
     
     file.close();
 }
-
-// TODO: I NEED TO LIKE MAKE A DOUBLE BUFFER WITH SORTED HASH_MAP I 
-// DUNO AND ALL RENDERERS ARE SUBMITIG TO IT WHAT AND AT WHAT ORDER 
-// THEY WANT TO RENDER THE THING AND THEN IT JUST YA KNOW WHAT? 
-// TAKES AND RENDERS IT ON THE NEXT FRAME LOLLLLLLLL
 
 // TODO: implement tilegrid collider
 
