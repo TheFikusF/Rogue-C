@@ -73,6 +73,10 @@ void SpriteManager::LoadTexturesFromText(const char* path) {
                 break;
             }
 
+            if(c == '/' && quotesOpened == false) {
+                break;
+            }
+
             if(nameRead) {
                 data.push_back(c);
             } else {

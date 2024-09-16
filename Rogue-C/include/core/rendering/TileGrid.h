@@ -5,19 +5,23 @@
 
 struct TileSet {
     std::unordered_map<char, SpriteID> tiles;
-    std::unordered_map<char, Color> tileTints;
-    std::unordered_map<char, bool> colliders;
+    std::unordered_map<SpriteID, Color> tileTints;
+    std::unordered_map<SpriteID, bool> colliders;
 };
 
 struct TileGrid {
     float order;
     std::uint32_t width;
     std::uint32_t height;
-    TileSet* tileSet;
-    std::vector<SpriteID> tiles;
+    
+    TileSet tileSet;
 
-    TileGrid() : tileSet(nullptr) { }
+    std::vector<SpriteID> tiles;
+    std::vector<float> rotations;
+
+    TileGrid() { }
     TileGrid(std::uint32_t width, std::uint32_t height);
+    TileGrid(const char* filePath);
     TileGrid(std::uint8_t charPerTile, const char* filePath);
 };
 

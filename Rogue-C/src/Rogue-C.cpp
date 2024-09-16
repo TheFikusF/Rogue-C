@@ -34,8 +34,10 @@ std::vector<Scene> ConstructScenes() {
 
             Scene::FinishRegistration();
 
+            TileGrid grid1("tiles.txt");
+            //grid1.order = 10;
             Entity tileMap = ECS::CreateEntity();
-            ECS::AddComponent<TileGrid>(tileMap, TileGrid(1, "tiles.txt"));
+            ECS::AddComponent<TileGrid>(tileMap, grid1);
             ECS::AddComponent<MTransform>(tileMap, MTransform(Vec2(0, 0), Vec2(100, 100)));
             
             TileGrid grid2(1, "tiles1.txt");
