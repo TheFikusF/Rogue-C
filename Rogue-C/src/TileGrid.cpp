@@ -174,7 +174,9 @@ void Serialization::Read<TileGrid>(const Serialization::Node* current, TileGrid&
 
 template<>
 void Serialization::Write<TileGrid>(Serialization::Node* current, const TileGrid& grid) {
+    current->AddChild(grid.charPerTile, "charPerTile");
     current->AddChild(grid.filePath, "filePath");
+    current->AddChild(grid.order, "order");
 }
 
 // TODO: implement tilegrid collider
