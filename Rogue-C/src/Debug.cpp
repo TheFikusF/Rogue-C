@@ -73,10 +73,13 @@ namespace Serialization::Debug {
         Core::SerializedScene scene;
         Serialization::Write(&root, scene);
 
+        std::stringstream buffer;
+        root.Print(buffer);
+
         DrawRectangle(0, 0, 250, GetRenderHeight(), Color(0, 0, 0, 180));
         int y = 5;
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 5, y, 10, WHITE);
-        DrawText(std::format("Entities: {}", root.children.size()).c_str(), 5, y + 16, 10, WHITE);
+        DrawText(std::format("Entities: {}, bufLen: {}", root.children.size(), buffer.str().size()).c_str(), 5, y + 16, 10, WHITE);
         y += 36;
 
         for(auto const& entity : root.children) {

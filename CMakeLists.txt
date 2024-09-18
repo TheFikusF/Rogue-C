@@ -15,5 +15,8 @@ endif()
 
 project ("Rogue-C")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+
 # Include sub-projects.
 add_subdirectory ("Rogue-C")
