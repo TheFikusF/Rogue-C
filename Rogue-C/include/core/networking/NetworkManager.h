@@ -14,17 +14,19 @@ namespace Core::Networking {
         std::unordered_map<Entity, bool> _ownershipMap;
         std::unordered_map<Entity, Signature> _localSignatures;
 
-        std::shared_ptr<NetworkInstance> networkInstance;
+        std::unique_ptr<NetworkInstance> networkInstance;
 
-    public:
-        NetworkManager(/* args */);
+        NetworkManager();
         ~NetworkManager();
 
-        void StartServer(std::uint16_t port);
-        void StartClient(std::uint16_t port);
-        void OnConnect(Entity entity, bool isLocal);
+    public:
+        static void StartServer(std::uint16_t port);
+        static void StartClient(std::uint16_t port);
+        static void OnConnect(Entity entity, bool isLocal);
 
-        void Sync();
-        void Step();
+        static void Sync();
+        static void Step();
+    
+        static void Stop();
     };
 }

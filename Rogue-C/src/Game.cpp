@@ -7,6 +7,7 @@
 #include "./include/core/physics/Physics.h"
 #include "./include/core/Gradient.h"
 #include "./include/core/systems/Animation.h"
+#include "./include/core/networking/NetworkManager.h"
 
 namespace Core {
     namespace Debug {
@@ -62,6 +63,7 @@ namespace Core {
             this->_scenes[this->_scheduledScene].Start();
             this->_currentScene = this->_scheduledScene;
             this->_scheduledScene = -1;
+            Networking::NetworkManager::Stop();
 
             Debug::drawTimings.clear();
             Debug::updateTimings.clear();
@@ -71,6 +73,7 @@ namespace Core {
             return;
         }
         ECS::FreeBin();
+        Networking::NetworkManager::Sync();
         Rendering::ESRenderer::Sync();
         Debug::totalSyncTime += (std::chrono::high_resolution_clock::now() - syncTime).count();
     }

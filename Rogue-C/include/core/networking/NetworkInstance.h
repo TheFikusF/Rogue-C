@@ -6,5 +6,6 @@ namespace Core::Networking {
     public:
         virtual void Start(std::uint16_t port) = 0;
         virtual void Step(float tick) = 0;
+        virtual void Stop() = 0;
     };
 }
