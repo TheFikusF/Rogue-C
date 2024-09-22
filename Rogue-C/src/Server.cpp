@@ -1,4 +1,6 @@
 #include "./include/core/networking/Server.h"
+#include "./include/core/networking/NetworkManager.h"
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <netinet/in.h>
@@ -9,7 +11,13 @@
 
 using namespace Core::Networking;
 
-void Server::Start(std::uint16_t port) {
+Entity lastConnectedId = 0;
+
+Entity GetNextID() {
+    return (lastConnectedId + 1) % 9999;
+}
+
+void Server::Start(void (*setUpPlayer) (Entity), std::uint16_t port) {
  // creating socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -28,7 +36,7 @@ void Server::Start(std::uint16_t port) {
     // listening to the assigned socket
     listen(serverSocket, 5);
 
-    
+    NetworkManager::OnConnect(GetNextID(), true);
 }
 
 void Server::Step(float tick) {
@@ -44,7 +52,13 @@ void Server::Step(float tick) {
             // Set the client socket to non-blocking mode
             int flags = fcntl(clientSocket, F_GETFL, 0);
             fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK);
-            clients[clientSocket] = 0;
+            
+            clients[clientSocket] = GetNextID();
+            std::string idString = std::format("{:4}", clients[clientSocket]);
+            
+            send(clientSocket, idString.c_str(), idString.size(), 0); 
+            NetworkManager::OnConnect(clients[clientSocket], false);
+            LOG("CLIENT'S ENTITY: {}", clients[clientSocket]);
         }
     }
 

@@ -8,18 +8,22 @@ NetworkManager::NetworkManager() { }
 
 NetworkManager::~NetworkManager() { }
 
-void NetworkManager::StartServer(std::uint16_t port) {
+void NetworkManager::StartServer(void (*setUpPlayer) (Entity), std::uint16_t port) {
     _instance = new NetworkManager();
 
     _instance->networkInstance = std::make_unique<Server>();
-    _instance->networkInstance->Start(port);
+    _instance->networkInstance->Start(setUpPlayer, port);
 }
 
-void NetworkManager::StartClient(std::uint16_t port) {
+void NetworkManager::StartClient(void (*setUpPlayer) (Entity), std::uint16_t port) {
     _instance = new NetworkManager();
   
     _instance->networkInstance = std::make_unique<Client>();
-    _instance->networkInstance->Start(port);
+    _instance->networkInstance->Start(setUpPlayer, port);
+}
+
+void NetworkManager::OnConnect(Entity entity, bool isLocal) {
+    
 }
 
 void NetworkManager::Step() {

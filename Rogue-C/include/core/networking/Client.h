@@ -7,7 +7,7 @@ namespace Core::Networking {
         int clientSocket;
 
     public:
-        void Start(std::uint16_t port) override;
+        void Start(void (*setUpPlayer) (Entity), std::uint16_t port) override;
         void Step(float tick) override;
         void Stop() override;
     };

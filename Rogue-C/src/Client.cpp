@@ -9,10 +9,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include "./include/core/networking/NetworkManager.h"
+#include "core/LOG.h"
 
 using namespace Core::Networking;
 
-void Client::Start(std::uint16_t port) {
+void Client::Start(void (*setUpPlayer) (Entity), std::uint16_t port) {
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     int flags = fcntl(clientSocket, F_GETFL, 0);
@@ -26,6 +27,11 @@ void Client::Start(std::uint16_t port) {
 
     // sending connection request
     connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
+
+    char buffer[8];
+    int bytes = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+    NetworkManager::OnConnect(std::stoi(buffer), true);
+    LOG("MY ENTITY: {}", std::stoi(buffer));
 }
 
 void Client::Step(float tick) {
